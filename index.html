@@ -1,193 +1,954 @@
-<!doctype html>
-<!--
-	Read Only by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-  <head>
-    <title>Ce qui va apparaître dans la tab de votre site</title>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, user-scalable=no"
-    />
-    <link rel="stylesheet" href="assets/css/main.css" />
-  </head>
-  <body class="is-preload">
-    <!-- Header -->
-    <section id="header">
-      <header>
-        <span class="image avatar"
-          ><img src="images/portrait.png" alt=""
-        /></span>
-        <h1 id="logo"><a href="#">VOTRE NOM</a></h1>
-        <p>
-          Une courte description de vous<br />
-          Continuer la courte description
+<!DOCTYPE html>
+<html lang="fr" class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tom Séveno | Sécurité internationale</title>
+  <meta name="description" content="Tom Séveno, étudiant à la maîtrise en études internationales, concentration sécurité internationale, à l'Université Laval." />
+  <script>document.documentElement.className = 'js attente';</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =====================================================================
+       COULEURS ET POLICES : modifie ces valeurs pour changer tout le site
+       ===================================================================== */
+    :root {
+      --nuit: #0D1628;          /* fond sombre (ciel de nuit) */
+      --clair: #E8ECF1;         /* texte sur fond sombre */
+      --clair-2: #A3AEC2;       /* texte secondaire sur fond sombre */
+      --ligne-nuit: rgba(232, 236, 241, 0.14);
+      --rose-nuit: #EC6E9F;     /* accent sur fond sombre */
+
+      --papier: #EEF0EB;        /* fond clair */
+      --encre: #14203A;         /* texte sur fond clair */
+      --gris: #5A6475;          /* texte secondaire sur fond clair */
+      --ligne-papier: #CDD2CA;
+      --rose: #A8235A;          /* accent sur fond clair */
+
+      --titre: "Archivo", "Helvetica Neue", Arial, sans-serif;
+      --texte: "Source Serif 4", Georgia, serif;
+      --marge: clamp(16px, 4vw, 56px);
+      --sortie: cubic-bezier(.16, 1, .3, 1);
+    }
+
+    /* Le fond change de couleur en douceur selon la section affichée */
+    body {
+      --fond: var(--nuit); --txt: var(--clair); --txt2: var(--clair-2);
+      --ligne: var(--ligne-nuit); --acc: var(--rose-nuit);
+      margin: 0;
+      background: var(--fond);
+      color: var(--txt);
+      font-family: var(--texte);
+      font-size: 1.125rem;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      transition: background-color .9s cubic-bezier(.4, 0, .2, 1), color .9s cubic-bezier(.4, 0, .2, 1);
+    }
+    body[data-theme="papier"] {
+      --fond: var(--papier); --txt: var(--encre); --txt2: var(--gris);
+      --ligne: var(--ligne-papier); --acc: var(--rose);
+    }
+    .no-js section[data-theme="papier"] {
+      background: var(--papier); color: var(--encre);
+      --txt: var(--encre); --txt2: var(--gris); --ligne: var(--ligne-papier); --acc: var(--rose);
+    }
+
+    * { box-sizing: border-box; }
+    img { max-width: 100%; }
+    a { color: var(--acc); text-underline-offset: 3px; }
+    :focus-visible { outline: 2px solid var(--acc); outline-offset: 4px; }
+    ::selection { background: var(--acc); color: #fff; }
+
+    /* Défilement fluide (bibliothèque Lenis) */
+    html.lenis, html.lenis body { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto !important; }
+    .lenis.lenis-stopped { overflow: hidden; }
+
+    /* Avant l'animation d'ouverture */
+    .attente .lettre { transform: translateY(115%); }
+    .attente .hero-haut, .attente .defiler, .attente .entete { opacity: 0; }
+
+    /* ============================ EN-TÊTE ============================ */
+    .entete {
+      position: fixed; inset: 0 0 auto 0; z-index: 50;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 22px var(--marge);
+      color: #fff; mix-blend-mode: difference;
+      font-family: var(--titre);
+    }
+    .entete a { color: inherit; text-decoration: none; }
+    .marque { font-weight: 700; font-stretch: 85%; font-size: 1.05rem; }
+    .entete ul { display: flex; gap: clamp(14px, 2.4vw, 32px); list-style: none; margin: 0; padding: 0; }
+    .entete nav a { font-size: .95rem; position: relative; }
+    .entete nav a::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 1px;
+      background: currentColor; transform: scaleX(0); transform-origin: right;
+      transition: transform .6s var(--sortie);
+    }
+    .entete nav a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+    /* ============================ ACCUEIL ============================ */
+    .hero {
+      position: relative; min-height: 100svh; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 120px var(--marge) clamp(24px, 5vh, 56px);
+    }
+    #ciel { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+    .hero-haut {
+      position: absolute; z-index: 1;
+      top: clamp(110px, 18vh, 170px); right: var(--marge); max-width: 34ch;
+      font-family: var(--titre); font-size: clamp(1rem, 1.35vw, 1.2rem); line-height: 1.45;
+    }
+    .hero-haut p { margin: 0 0 18px; }
+    .hero-rotation { color: var(--txt2); }
+    .rot-zone { display: block; position: relative; height: 1.5em; overflow: hidden; color: var(--acc); font-weight: 600; }
+    .rot-zone span { position: absolute; left: 0; top: 0; white-space: nowrap; }
+    .hero-bas { position: relative; z-index: 1; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+    .hero-nom {
+      font-family: var(--titre); font-weight: 800;
+      font-size: clamp(5rem, 19vw, 19rem); line-height: .8; letter-spacing: -.01em;
+      margin: 0; white-space: nowrap;
+    }
+    .hero-nom .ligne { display: block; overflow: hidden; padding: .02em 0 .06em; }
+    .lettre { display: inline-block; --w: 72; font-variation-settings: "wdth" var(--w); }
+    .defiler {
+      font-family: var(--titre); font-size: .9rem; color: var(--txt2); text-decoration: none;
+      display: flex; flex-direction: column; align-items: center; gap: 12px; padding-bottom: .6em;
+    }
+    .defiler i { display: block; width: 1px; height: 64px; background: var(--ligne); position: relative; overflow: hidden; }
+    .defiler i::after {
+      content: ""; position: absolute; inset: 0; background: var(--txt);
+      animation: descente 2.4s var(--sortie) infinite;
+    }
+    @keyframes descente { from { transform: translateY(-100%); } to { transform: translateY(100%); } }
+
+    /* ======================= SECTIONS (commun) ======================= */
+    .section { position: relative; padding: clamp(96px, 16vh, 180px) var(--marge); }
+    .entete-section {
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 36ch);
+      gap: 32px; align-items: end; margin-bottom: clamp(40px, 8vh, 96px);
+    }
+    .entete-section p { margin: 0; color: var(--txt2); }
+    .titre-section {
+      font-family: var(--titre); font-weight: 700; font-stretch: 80%;
+      font-size: clamp(2.6rem, 6.5vw, 6rem); line-height: .95; letter-spacing: -.01em; margin: 0;
+    }
+    .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .1em; margin-bottom: -.1em; }
+    .w > span { display: inline-block; }
+
+    /* ============================ PARCOURS ============================ */
+    .parcours-grille { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 80px); }
+    .globe-colle {
+      position: sticky; top: 0; align-self: start; height: 100svh;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+    }
+    #globe { width: min(100%, 74vh); height: auto; aspect-ratio: 1; display: block; }
+    .globe-legende { font-family: var(--titre); font-size: .95rem; color: var(--txt2); margin-top: 10px; min-height: 1.6em; text-align: center; }
+    .globe-legende strong { color: var(--txt); font-weight: 600; margin-right: 10px; }
+    .g-sphere { fill: #111D33; }
+    .g-terre { fill: #26365A; }
+    .g-grat { fill: none; stroke: rgba(232, 236, 241, .08); stroke-width: .7; }
+    .g-contour { fill: none; stroke: rgba(232, 236, 241, .28); stroke-width: 1; }
+    .g-arc { fill: none; stroke: var(--rose-nuit); stroke-width: 2.6; stroke-linecap: round; }
+    .g-point { fill: var(--rose-nuit); stroke: var(--nuit); stroke-width: 2; transition: opacity .4s; }
+    .g-pouls { fill: none; stroke: var(--rose-nuit); stroke-width: 1.5; transform-box: fill-box; transform-origin: center; animation: pouls 2.2s ease-out infinite; }
+    @keyframes pouls { from { transform: scale(1); opacity: .9; } to { transform: scale(3.4); opacity: 0; } }
+    .g-etiquette { font-family: var(--titre); font-size: 19px; font-weight: 600; fill: var(--clair); paint-order: stroke; stroke: #111D33; stroke-width: 6px; }
+
+    .escales { list-style: none; margin: 0; padding: 0; }
+    .escale { min-height: 92svh; display: flex; flex-direction: column; justify-content: center; opacity: .25; transition: opacity .7s; }
+    .escale.active, .no-js .escale { opacity: 1; }
+    .escale-date { font-family: var(--titre); font-weight: 600; color: var(--acc); font-variant-numeric: tabular-nums; }
+    .escale h3 {
+      font-family: var(--titre); font-weight: 700; font-stretch: 85%;
+      font-size: clamp(1.9rem, 3.4vw, 3.1rem); line-height: 1.02; margin: .2em 0 .55em;
+    }
+    .escale p { margin: 0 0 .8em; max-width: 46ch; color: var(--txt2); }
+    .escale .fort { color: var(--txt); }
+
+    /* ============================ À PROPOS ============================ */
+    .apropos-grille { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 6vw, 110px); align-items: start; }
+    .portrait { margin: 0; position: relative; overflow: hidden; aspect-ratio: 3 / 4; background: var(--ligne); }
+    .portrait img { width: 100%; height: 112%; object-fit: cover; object-position: center top; display: block; margin-top: -6%; }
+    .phrase {
+      font-family: var(--titre); font-weight: 600; font-stretch: 88%;
+      font-size: clamp(1.7rem, 3vw, 2.7rem); line-height: 1.15; letter-spacing: -.005em; margin: 0 0 1.1em;
+    }
+    .apropos-texte > p:not(.phrase) { max-width: 60ch; }
+    .interets { list-style: none; margin: 56px 0 0; padding: 0; border-top: 1px solid var(--ligne); }
+    .interets li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--ligne); }
+    .interets strong { font-family: var(--titre); font-weight: 700; font-size: 1.1rem; line-height: 1.3; }
+    .interets span { color: var(--txt2); }
+
+    /* =========================== EXPÉRIENCES =========================== */
+    .liste-exp { border-top: 1px solid var(--ligne); }
+    .exp { border-bottom: 1px solid var(--ligne); }
+    .exp summary {
+      list-style: none; cursor: pointer; font-family: var(--titre);
+      display: grid; grid-template-columns: 170px minmax(0, 1fr) minmax(0, .8fr) 28px; gap: 24px; align-items: baseline;
+      padding: 30px 0;
+    }
+    .exp summary::-webkit-details-marker { display: none; }
+    .exp-date { color: var(--acc); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .exp-titre { font-weight: 700; font-stretch: 88%; font-size: clamp(1.3rem, 2.2vw, 1.95rem); line-height: 1.15; transition: transform .6s var(--sortie); }
+    .exp summary:hover .exp-titre { transform: translateX(12px); }
+    .exp-lieu { color: var(--txt2); }
+    .exp-plus { width: 20px; height: 20px; position: relative; align-self: center; }
+    .exp-plus::before, .exp-plus::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; background: currentColor; transition: transform .6s var(--sortie); }
+    .exp-plus::after { transform: rotate(90deg); }
+    .exp[open] .exp-plus::after { transform: rotate(0deg); }
+    .det-contenu { overflow: hidden; }
+    .det-contenu ul { margin: 0; padding: 0 0 34px 194px; color: var(--txt2); max-width: calc(194px + 64ch); }
+    .det-contenu li { margin-bottom: 6px; }
+
+    /* ============================= TRAVAUX ============================= */
+    .travaux { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ligne); }
+    .travail { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 24px; padding: 30px 0; border-bottom: 1px solid var(--ligne); position: relative; }
+    .travail::after {
+      content: ""; position: absolute; left: 0; bottom: -1px; height: 1px; width: 100%;
+      background: var(--acc); transform: scaleX(0); transform-origin: left; transition: transform .8s var(--sortie);
+    }
+    .travail:hover::after { transform: scaleX(1); }
+    .travail-type { font-family: var(--titre); font-weight: 600; color: var(--acc); padding-top: .25em; }
+    .travail h3 { font-family: var(--texte); font-weight: 600; font-size: clamp(1.25rem, 2vw, 1.65rem); line-height: 1.25; margin: 0 0 .35em; }
+    .travail p { margin: 0; color: var(--txt2); max-width: 62ch; }
+
+    /* ====================== LANGUES ET COMPÉTENCES ====================== */
+    .deux-col { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(40px, 7vw, 120px); }
+    .sous-titre { font-family: var(--titre); font-weight: 700; font-size: 1.15rem; margin: 0 0 18px; }
+    .cecr, .langue { display: grid; grid-template-columns: 110px repeat(6, minmax(0, 1fr)); gap: 4px; align-items: center; }
+    .cecr span { font-family: var(--titre); font-size: .8rem; color: var(--txt2); text-align: center; padding-bottom: 6px; }
+    .langue { padding: 16px 0; border-bottom: 1px solid var(--ligne); }
+    .langue-nom { font-family: var(--titre); font-weight: 700; }
+    .seg { height: 10px; background: var(--ligne); position: relative; overflow: hidden; }
+    .seg i { position: absolute; inset: 0; background: var(--acc); transform-origin: left; }
+    .langue-niveau { grid-column: 2 / -1; font-family: var(--titre); font-size: .9rem; color: var(--txt2); margin-top: 6px; }
+    .etiquettes { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0 0 40px; padding: 0; }
+    .etiquettes li { font-family: var(--titre); font-size: .95rem; border: 1px solid var(--ligne); padding: 6px 14px; border-radius: 2px; }
+
+    /* =============================== CV =============================== */
+    .cv-cadre { width: 100%; height: 82vh; border: 1px solid var(--ligne); background: #fff; display: block; margin-bottom: 28px; }
+    .cv-attente { color: var(--txt2); font-style: italic; margin: 0 0 28px; }
+    .bouton {
+      display: inline-flex; font-family: var(--titre); font-weight: 600; font-size: 1rem;
+      padding: 14px 26px; border: 1.5px solid currentColor; color: var(--txt); text-decoration: none;
+      border-radius: 2px; position: relative; overflow: hidden; z-index: 0; transition: color .6s var(--sortie);
+    }
+    .bouton::before {
+      content: ""; position: absolute; inset: 0; background: var(--txt); z-index: -1;
+      transform: translateY(101%); transition: transform .6s var(--sortie);
+    }
+    .bouton:hover { color: var(--fond); }
+    .bouton:hover::before { transform: translateY(0); }
+    .bouton[hidden] { display: none; }
+
+    /* ============================= CONTACT ============================= */
+    .contact { padding-bottom: 32px; }
+    .bandeau { overflow: hidden; margin: 0 calc(-1 * var(--marge)) clamp(48px, 9vh, 100px); border-top: 1px solid var(--ligne); border-bottom: 1px solid var(--ligne); }
+    .bandeau a { display: block; color: var(--txt); text-decoration: none; }
+    .piste { display: flex; width: max-content; }
+    .groupe { display: flex; }
+    .groupe span {
+      font-family: var(--titre); font-weight: 800; font-stretch: 72%;
+      font-size: clamp(3rem, 10vw, 9rem); line-height: 1.15; padding: .08em .35em; white-space: nowrap;
+      transition: color .5s;
+    }
+    .groupe .etoile { color: var(--acc); font-size: clamp(1.5rem, 4vw, 3.5rem); align-self: center; }
+    .bandeau a:hover .groupe span:not(.etoile) { color: var(--acc); }
+    .liens-contact { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+    .liens-contact > div > span { display: block; font-family: var(--titre); font-size: .9rem; color: var(--txt2); margin-bottom: 4px; }
+    .liens-contact a { font-family: var(--titre); font-size: 1.1rem; color: var(--txt); text-decoration: none; border-bottom: 1px solid var(--ligne); transition: border-color .4s; word-break: break-word; }
+    .liens-contact a:hover { border-color: var(--acc); }
+    .pied {
+      display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+      margin-top: clamp(64px, 12vh, 140px); padding-top: 24px; border-top: 1px solid var(--ligne);
+      font-family: var(--titre); font-size: .9rem; color: var(--txt2);
+    }
+    .pied a { color: var(--txt2); }
+
+    /* Éléments à compléter (surlignés) : cherche "a-completer" dans ce fichier */
+    .a-completer { background: #F3E58A; color: #14203A; padding: 0 4px; border-radius: 2px; }
+
+    /* ============================= MOBILE ============================= */
+    @media (max-width: 860px) {
+      .entete li:not(.toujours) { display: none; }
+      .hero { justify-content: space-between; padding-top: 110px; }
+      .hero-haut { position: relative; top: auto; right: auto; }
+      .hero-nom { font-size: 27vw; }
+      .g-etiquette { font-size: 30px; stroke-width: 8px; }
+      .defiler { display: none; }
+      .entete-section { grid-template-columns: 1fr; gap: 16px; }
+      .parcours-grille { grid-template-columns: 1fr; }
+      .globe-colle { top: 50px; height: auto; padding: 6px 0; z-index: 0; }
+      #globe { width: min(80vw, 44svh); }
+      .escale { min-height: 72svh; justify-content: flex-end; padding-bottom: 6svh; position: relative; z-index: 1; }
+      .escale > div { background: rgba(13, 22, 40, .86); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 18px; border: 1px solid var(--ligne); }
+      .apropos-grille, .deux-col { grid-template-columns: 1fr; }
+      .portrait { max-width: 420px; }
+      .interets li, .travail { grid-template-columns: 1fr; gap: 6px; }
+      .exp summary { grid-template-columns: minmax(0, 1fr) 24px; gap: 4px 16px; }
+      .exp-date { grid-column: 1; }
+      .exp-titre { grid-column: 1; }
+      .exp-lieu { grid-column: 1; }
+      .exp-plus { grid-column: 2; grid-row: 1 / span 3; }
+      .det-contenu ul { padding-left: 1.1em; }
+      .liens-contact { grid-template-columns: 1fr; }
+      .cecr, .langue { grid-template-columns: 84px repeat(6, minmax(0, 1fr)); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .defiler i::after, .g-pouls { animation: none; }
+      .escale { opacity: 1; }
+    }
+  </style>
+</head>
+<body data-theme="nuit" id="haut">
+
+  <header class="entete">
+    <a class="marque" href="#haut">Tom Séveno</a>
+    <nav aria-label="Navigation principale">
+      <ul>
+        <li class="toujours"><a href="#parcours">Parcours</a></li>
+        <li><a href="#apropos">À propos</a></li>
+        <li><a href="#experiences">Expériences</a></li>
+        <li><a href="#travaux">Travaux</a></li>
+        <li class="toujours"><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- =============================== ACCUEIL =============================== -->
+    <section class="hero" data-theme="nuit" aria-label="Accueil">
+      <canvas id="ciel" aria-hidden="true"></canvas>
+
+      <div class="hero-haut">
+        <p>Étudiant à la maîtrise en études internationales, concentration sécurité internationale, à l'Université Laval, à Québec.</p>
+        <p class="hero-rotation">Je travaille sur
+          <span class="rot-zone"><span>la sécurité internationale</span></span>
         </p>
-      </header>
-      <nav id="nav">
-        <ul>
-          <li><a href="#one" class="active">À propos</a></li>
-          <li><a href="#two">Mon travail</a></li>
-          <li><a href="#three">Mon CV</a></li>
-          <li><a href="#four">Contact</a></li>
-        </ul>
-      </nav>
-      <footer>
-        <ul class="icons">
-          <li>
-            <!-- Vous pouvez mettre en hyperlien vos reseaux sociaux en modifiant la valeur de href-->
-            <a href="https://x.com/MLB/" class="icon brands fa-twitter"
-              ><span class="label">Twitter</span></a
-            >
-          </li>
-          <li>
-            <a href="#" class="icon brands fa-facebook-f"
-              ><span class="label">Facebook</span></a
-            >
-          </li>
-          <li>
-            <a href="#" class="icon brands fa-linkedin"
-              ><span class="label">LinkedIn</span></a
-            >
-          </li>
-          <li>
-            <a href="#" class="icon brands fa-github"
-              ><span class="label">Github</span></a
-            >
-          </li>
-          <li>
-            <a href="#" class="icon solid fa-envelope"
-              ><span class="label">Email</span></a
-            >
-          </li>
-        </ul>
-      </footer>
-    </section>
-
-    <!-- Wrapper -->
-    <div id="wrapper">
-      <!-- Main -->
-      <div id="main">
-        <!-- One -->
-        <section id="one">
-          <div class="image main" data-position="center">
-            <img src="images/bg.jpeg" alt="" />
-          </div>
-          <div class="container">
-            <header class="major">
-              <h2>VOTRE NOM</h2>
-              <p>Le sous-titre de votre site.</p>
-            </header>
-            <p>
-              Faucibus sed lobortis aliquam lorem blandit. Lorem eu nunc metus
-              col. Commodo id in arcu ante lorem ipsum sed accumsan erat
-              praesent faucibus commodo ac mi lacus. Adipiscing mi ac commodo.
-              Vis aliquet tortor ultricies non ante erat nunc integer eu ante
-              ornare amet commetus vestibulum blandit integer in curae ac
-              faucibus integer non. Adipiscing cubilia elementum.
-            </p>
-          </div>
-        </section>
-
-        <!-- Two -->
-        <section id="two">
-          <div class="container">
-            <h3>Mes réalisations</h3>
-            <p>
-              Integer eu ante ornare amet commetus vestibulum blandit integer in
-              curae ac faucibus integer non. Adipiscing cubilia elementum
-              integer lorem ipsum dolor sit amet.
-            </p>
-            <ul class="feature-icons">
-              <li class="icon solid fa-code">
-                Ici vous pouvez écrire ce que vous voulez
-              </li>
-              <li class="icon solid fa-cubes">
-                Le class= s'occupe des logos à côté de votre texte
-              </li>
-              <li class="icon solid fa-book">
-                Trouvez autant de choses à écrire que vous le voulez
-              </li>
-              <li class="icon solid fa-coffee">Supprimez le reste</li>
-              <li class="icon solid fa-bolt">Lightning bolt</li>
-              <li class="icon solid fa-users">Shadow clone technique</li>
-            </ul>
-          </div>
-        </section>
-
-        <!-- Three -->
-        <section id="three">
-          <div class="container">
-            <h3>Mon CV</h3>
-            <p>
-              Integer eu ante ornare amet commetus vestibulum blandit integer in
-              curae ac faucibus integer non. Adipiscing cubilia elementum
-              integer. Integer eu ante ornare amet commetus.
-            </p>
-            <div class="features">
-              <article>
-                <a href="#" class="image"
-                  ><img src="images/pic01.jpg" alt=""
-                /></a>
-                <div class="inner">
-                  <h4>Possibly broke spacetime</h4>
-                  <p>
-                    Integer eu ante ornare amet commetus vestibulum blandit
-                    integer in curae ac faucibus integer adipiscing ornare amet.
-                  </p>
-                </div>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <!-- Four -->
-        <section id="four">
-          <div class="container">
-            <h3>Me joindre</h3>
-            <p>
-              Integer eu ante ornare amet commetus vestibulum blandit integer in
-              curae ac faucibus integer non.
-            </p>
-            <div class="row gtr-uniform">
-              <div class="col-12">
-                <!-- Vous pouvez mettre votre email ici au lieu de your-email@example.com -->
-                <a
-                  href="mailto:your-email@example.com?subject=Sujet&body=Votre message ici."
-                  class="button primary"
-                >
-                  Envoyer un email
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-        <!-- Five -->
-        <!-- -->
       </div>
 
-      <!-- Footer -->
-      <section id="footer">
-        <div class="container">
-          <ul class="copyright">
-            <li>&copy; Untitled. All rights reserved.</li>
-            <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+      <div class="hero-bas">
+        <h1 class="hero-nom" aria-label="Tom Séveno">
+          <span class="ligne"><span class="mot" aria-hidden="true">Tom</span></span>
+          <span class="ligne"><span class="mot" aria-hidden="true">Séveno</span></span>
+        </h1>
+        <a class="defiler" href="#parcours">Défiler<i></i></a>
+      </div>
+    </section>
+
+    <!-- =============================== PARCOURS =============================== -->
+    <section class="section" id="parcours" data-theme="nuit">
+      <div class="entete-section">
+        <h2 class="titre-section" data-split>Parcours</h2>
+        <p data-reveal>Quatre escales, de la Bretagne au Québec. Faites défiler pour suivre le trajet sur le globe.</p>
+      </div>
+
+      <div class="parcours-grille">
+        <div class="globe-colle">
+          <svg id="globe" viewBox="0 0 600 600" role="img" aria-label="Globe retraçant le parcours de Tom Séveno : Ploërmel, La Roche-sur-Yon, Livingston en Alabama, puis Québec"></svg>
+          <p class="globe-legende" id="globe-legende" aria-hidden="true"></p>
+        </div>
+
+        <ol class="escales">
+          <li class="escale">
+            <div>
+              <span class="escale-date">2018 – 2022</span>
+              <h3>Ploërmel, Bretagne</h3>
+              <p class="fort">Mes racines. Baccalauréat au lycée La Mennais.</p>
+              <p>Un premier stage au Musée de la Résistance de Saint-Marcel, puis, chaque été depuis 2023, la responsabilité de la collecte des céréales chez Eureden.</p>
+            </div>
+          </li>
+          <li class="escale">
+            <div>
+              <span class="escale-date">2022 – <span class="a-completer">20XX</span></span>
+              <h3>La Roche-sur-Yon, Vendée</h3>
+              <p class="fort">Licence de science politique à l'ICES, établissement membre de la Conférence des grandes écoles.</p>
+              <p>Affaires et relations internationales, politiques publiques, économie et gestion de crise. Projet de recherche : « L'intelligence artificielle au service du terrorisme » (2025).</p>
+            </div>
+          </li>
+          <li class="escale">
+            <div>
+              <span class="escale-date">Janvier – juin 2025</span>
+              <h3>Livingston, Alabama</h3>
+              <p class="fort">Semestre de mobilité à l'University of West Alabama. GPA de 4.0, inscrit à la President's List.</p>
+              <p>Étude du système politique et juridique américain, et une immersion qui a forgé mon adaptabilité et mon ouverture d'esprit.</p>
+            </div>
+          </li>
+          <li class="escale">
+            <div>
+              <span class="escale-date">Depuis 2026</span>
+              <h3>Québec</h3>
+              <p class="fort">Maîtrise en études internationales à l'Université Laval, concentration sécurité internationale.</p>
+              <p>Terrorisme et technologies émergentes, prévention de l'extrémisme violent, politiques de défense.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- =============================== À PROPOS =============================== -->
+    <section class="section" id="apropos" data-theme="papier">
+      <div class="apropos-grille">
+        <figure class="portrait">
+          <img src="images/tom.jpg" alt="Portrait de Tom Séveno" width="509" height="759" />
+        </figure>
+
+        <div class="apropos-texte">
+          <h2 class="phrase" data-split>Comprendre comment naissent les crises, et comment les États et les organisations internationales y répondent.</h2>
+          <p data-reveal>Formé en science politique à l'ICES, je poursuis aujourd'hui une maîtrise en études internationales à l'Université Laval. Mon semestre aux États-Unis m'a plongé dans un autre système politique et juridique ; ma préparation militaire au 511<sup>e</sup> régiment du Train m'a fait découvrir de l'intérieur la chaîne opérationnelle de l'Armée de terre.</p>
+          <p data-reveal>Je souhaite mettre ces compétences au service de la recherche stratégique, de la diplomatie ou d'une organisation internationale.</p>
+
+          <ul class="interets" data-cascade>
+            <li><strong>Terrorisme et technologies émergentes</strong><span>Usage de l'intelligence artificielle par les groupes terroristes, prévention de l'extrémisme violent, encadrement juridique international.</span></li>
+            <li><strong>Gestion de crise</strong><span>Prise de décision, coordination des acteurs et réponse des organisations internationales.</span></li>
+            <li><strong>Usage de la force et droit international</strong><span>Frappes de drones, légitimité et soutien de l'opinion publique.</span></li>
+            <li><strong>Politiques de défense</strong><span>Réarmement canadien et base industrielle de défense.</span></li>
+            <li><strong>Théories des relations internationales</strong><span>Du réalisme au constructivisme : Aron, Morgenthau, Waltz, Wendt, Bourdieu.</span></li>
           </ul>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
 
-    <!-- Scripts -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/jquery.scrollex.min.js"></script>
-    <script src="assets/js/jquery.scrolly.min.js"></script>
-    <script src="assets/js/browser.min.js"></script>
-    <script src="assets/js/breakpoints.min.js"></script>
-    <script src="assets/js/util.js"></script>
-    <script src="assets/js/main.js"></script>
-  </body>
+    <!-- ============================= EXPÉRIENCES ============================= -->
+    <section class="section" id="experiences" data-theme="papier">
+      <div class="entete-section">
+        <h2 class="titre-section" data-split>Expériences</h2>
+        <p data-reveal>Cliquez sur une ligne pour voir le détail.</p>
+      </div>
+
+      <div class="liste-exp" data-cascade>
+        <details class="exp">
+          <summary>
+            <span class="exp-date">Depuis 2023</span>
+            <span class="exp-titre">Responsable saisonnier de la collecte des céréales</span>
+            <span class="exp-lieu">Eureden, Ploërmel</span>
+            <span class="exp-plus" aria-hidden="true"></span>
+          </summary>
+          <div class="det-contenu">
+            <ul>
+              <li>Travail en autonomie complète sur site ; responsable du magasin et des saisonniers.</li>
+              <li>Gestion logistique et traçabilité : saisie des données, coordination avec les transporteurs et les agriculteurs.</li>
+              <li>Réception et enregistrement des livraisons agricoles : pesée, échantillonnage, contrôle.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="exp">
+          <summary>
+            <span class="exp-date">Octobre 2023</span>
+            <span class="exp-titre">Préparation militaire Terre</span>
+            <span class="exp-lieu">511<sup>e</sup> régiment du Train, Auxonne</span>
+            <span class="exp-plus" aria-hidden="true"></span>
+          </summary>
+          <div class="det-contenu">
+            <ul>
+              <li>Major de l'épreuve du parcours d'obstacles.</li>
+              <li>Vie en collectivité et discipline militaire ; gestion de la fatigue et du stress.</li>
+              <li>Découverte du fonctionnement de la chaîne opérationnelle de l'Armée de terre.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="exp">
+          <summary>
+            <span class="exp-date">Décembre 2018</span>
+            <span class="exp-titre">Stagiaire, Musée de France</span>
+            <span class="exp-lieu">Musée de la Résistance, Saint-Marcel</span>
+            <span class="exp-plus" aria-hidden="true"></span>
+          </summary>
+          <div class="det-contenu">
+            <ul>
+              <li>Accueil des visiteurs.</li>
+              <li>Catalogage et indexation d'ouvrages historiques ; manipulation d'objets rares.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- =============================== TRAVAUX =============================== -->
+    <section class="section" id="travaux" data-theme="papier">
+      <div class="entete-section">
+        <h2 class="titre-section" data-split>Travaux récents</h2>
+        <p data-reveal>Une sélection de travaux réalisés à l'ICES et à l'Université Laval.</p>
+      </div>
+
+      <ul class="travaux" data-cascade>
+        <li class="travail">
+          <span class="travail-type">Note politique</span>
+          <div>
+            <h3>Prévenir la radicalisation et l'extrémisme violent en Afrique francophone</h3>
+            <p>Note de décision adressée à l'Organisation internationale de la Francophonie, proposant un dispositif d'échange de pratiques et de formation entre États membres.</p>
+          </div>
+        </li>
+        <li class="travail">
+          <span class="travail-type">Bibliographie commentée</span>
+          <div>
+            <h3>L'émergence de l'IA dans les groupes terroristes et les tueries de masse</h3>
+            <p>Dynamiques politiques et encadrement juridique à l'international : quinze sources en science politique et en droit.</p>
+          </div>
+        </li>
+        <li class="travail">
+          <span class="travail-type">Exposé</span>
+          <div>
+            <h3>Droit international, efficacité militaire et soutien public aux frappes de drones</h3>
+            <p>Présentation critique de l'article de Kreps et Wallace (<cite>Journal of Peace Research</cite>, 2016).</p>
+          </div>
+        </li>
+        <li class="travail">
+          <span class="travail-type">Projet d'équipe</span>
+          <div>
+            <h3>Le réarmement canadien et la Stratégie industrielle de défense</h3>
+            <p>Analyse interdisciplinaire ; responsable des graphiques, des schémas et de l'appareil de notes.</p>
+          </div>
+        </li>
+        <li class="travail">
+          <span class="travail-type">Projet de recherche</span>
+          <div>
+            <h3>L'intelligence artificielle au service du terrorisme</h3>
+            <p>Projet de recherche mené en licence à l'ICES (2025).</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ======================== LANGUES ET COMPÉTENCES ======================== -->
+    <section class="section" id="competences" data-theme="papier">
+      <div class="entete-section">
+        <h2 class="titre-section" data-split>Langues et compétences</h2>
+        <p data-reveal>Niveaux de langue selon le Cadre européen commun de référence.</p>
+      </div>
+
+      <div class="deux-col">
+        <div>
+          <div class="cecr" aria-hidden="true">
+            <span></span><span>A1</span><span>A2</span><span>B1</span><span>B2</span><span>C1</span><span>C2</span>
+          </div>
+          <div class="langue">
+            <span class="langue-nom">Français</span>
+            <span class="seg"><i></i></span><span class="seg"><i></i></span><span class="seg"><i></i></span><span class="seg"><i></i></span><span class="seg"><i></i></span><span class="seg"><i></i></span>
+            <span class="langue-niveau">Langue maternelle</span>
+          </div>
+          <div class="langue">
+            <span class="langue-nom">Anglais</span>
+            <span class="seg"><i></i></span><span class="seg"><i></i></span><span class="seg"><i></i></span><span class="seg"><i></i></span><span class="seg"></span><span class="seg"></span>
+            <span class="langue-niveau">Courant (B2)</span>
+          </div>
+          <div class="langue">
+            <span class="langue-nom">Espagnol</span>
+            <span class="seg"><i></i></span><span class="seg"><i></i></span><span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span>
+            <span class="langue-niveau">Bases (A2)</span>
+          </div>
+          <div class="langue">
+            <span class="langue-nom">Italien</span>
+            <span class="seg"><i></i></span><span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span>
+            <span class="langue-niveau">En apprentissage (A1)</span>
+          </div>
+          <div class="langue">
+            <span class="langue-nom">Russe</span>
+            <span class="seg"><i></i></span><span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span>
+            <span class="langue-niveau">En apprentissage</span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="sous-titre">Savoir-faire</h3>
+          <ul class="etiquettes" data-cascade>
+            <li>Analyse politique</li><li>Rédaction</li><li>Synthèse de documents</li>
+            <li>Gestion de crise</li><li>Logistique et coordination</li><li>Prise d'initiative</li>
+          </ul>
+          <h3 class="sous-titre">Outils</h3>
+          <ul class="etiquettes" data-cascade>
+            <li>Git et GitHub</li><li>HTML et CSS</li><li>Certification PIX (615)</li><li>Dépannage informatique</li>
+          </ul>
+          <h3 class="sous-titre">En dehors des cours</h3>
+          <ul class="etiquettes" data-cascade>
+            <li>Astronomie</li><li>Échecs</li><li>Musculation</li><li>Badminton</li><li>Ski alpin</li><li>Sports mécaniques</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================== CV ================================== -->
+    <section class="section" id="cv" data-theme="papier">
+      <div class="entete-section">
+        <h2 class="titre-section" data-split>Curriculum vitæ</h2>
+        <p data-reveal>Mon CV complet, à consulter en ligne ou à télécharger.</p>
+      </div>
+      <!-- Place ton CV dans un dossier "cv" sous le nom "cv.pdf" : il s'affichera ici automatiquement -->
+      <div id="cv-zone" data-lenis-prevent>
+        <p class="cv-attente">Le CV complet sera mis en ligne prochainement.</p>
+      </div>
+      <a class="bouton" id="cv-bouton" href="cv/cv.pdf" download hidden>Télécharger mon CV (PDF)</a>
+    </section>
+
+    <!-- ================================ CONTACT ================================ -->
+    <section class="section contact" id="contact" data-theme="nuit">
+      <div class="entete-section">
+        <h2 class="titre-section" data-split>Me contacter</h2>
+        <p data-reveal>Pour un stage, un projet de recherche ou un échange sur les questions de sécurité internationale.</p>
+      </div>
+
+      <div class="bandeau">
+        <a href="mailto:tom.seveno56@gmail.com" aria-label="Écrire à tom.seveno56@gmail.com">
+          <div class="piste" aria-hidden="true">
+            <div class="groupe"><span>tom.seveno56@gmail.com</span><span class="etoile">✦</span><span>Écrivez-moi</span><span class="etoile">✦</span></div>
+            <div class="groupe"><span>tom.seveno56@gmail.com</span><span class="etoile">✦</span><span>Écrivez-moi</span><span class="etoile">✦</span></div>
+          </div>
+        </a>
+      </div>
+
+      <div class="liens-contact" data-cascade>
+        <div><span>Courriel</span><a href="mailto:tom.seveno56@gmail.com">tom.seveno56@gmail.com</a></div>
+        <div><span>LinkedIn</span><a href="https://www.linkedin.com/in/ton-profil"><span class="a-completer">ton lien LinkedIn</span></a></div>
+        <div><span>GitHub</span><a href="https://github.com/tomseveno">github.com/tomseveno</a></div>
+      </div>
+
+      <footer class="pied">
+        <span>© 2026 Tom Séveno. Site hébergé sur GitHub Pages.</span>
+        <a href="#haut">Retour en haut</a>
+      </footer>
+    </section>
+  </main>
+
+  <!-- ===================== Bibliothèques (animations et globe) ===================== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
+  <script>
+  (function () {
+    'use strict';
+    var html = document.documentElement;
+    var reduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var aGsap = !!(window.gsap && window.ScrollTrigger);
+    if (aGsap) gsap.registerPlugin(ScrollTrigger);
+    var finAttente = function () { html.classList.remove('attente'); };
+    setTimeout(finAttente, 3000); // sécurité : tout s'affiche même si une bibliothèque ne charge pas
+
+    /* ---------- 1. Défilement fluide ---------- */
+    var lenis = null;
+    if (!reduit && window.Lenis) {
+      lenis = new Lenis({ lerp: 0.085, smoothWheel: true });
+      if (aGsap) {
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+        gsap.ticker.lagSmoothing(0);
+      } else {
+        (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })();
+      }
+    }
+    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var id = a.getAttribute('href');
+        var cible = id === '#haut' ? 0 : document.querySelector(id);
+        if (lenis && cible !== null) { e.preventDefault(); lenis.scrollTo(cible, { duration: 1.6 }); }
+      });
+    });
+
+    /* ---------- 2. Changement de fond selon la section ---------- */
+    var io = new IntersectionObserver(function (entrees) {
+      entrees.forEach(function (en) { if (en.isIntersecting) document.body.dataset.theme = en.target.dataset.theme; });
+    }, { rootMargin: '-50% 0px -50% 0px' });
+    document.querySelectorAll('section[data-theme]').forEach(function (s) { io.observe(s); });
+
+    /* ---------- 3. Ciel étoilé ---------- */
+    (function () {
+      var ciel = document.getElementById('ciel');
+      var ctx = ciel.getContext('2d');
+      var etoiles = [], W = 0, H = 0, filante = null, actif = true;
+      var souris = { x: 0, y: 0 }, dec = { x: 0, y: 0 };
+      function taille() {
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        W = ciel.clientWidth; H = ciel.clientHeight;
+        ciel.width = W * dpr; ciel.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        etoiles = [];
+        var n = Math.round(W * H / 5000);
+        for (var i = 0; i < n; i++) {
+          etoiles.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.1 + 0.25,
+            p: Math.random() * 6.28, v: 0.4 + Math.random() * 1.4, z: Math.random() });
+        }
+      }
+      function dessin(t) {
+        ctx.clearRect(0, 0, W, H);
+        dec.x += (souris.x - dec.x) * 0.04; dec.y += (souris.y - dec.y) * 0.04;
+        ctx.fillStyle = '#E8ECF1';
+        for (var i = 0; i < etoiles.length; i++) {
+          var s = etoiles[i];
+          ctx.globalAlpha = reduit ? 0.7 : 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(t * 0.001 * s.v + s.p));
+          ctx.beginPath();
+          ctx.arc(s.x - dec.x * s.z * 18, s.y - dec.y * s.z * 18, s.r, 0, 6.283);
+          ctx.fill();
+        }
+        if (!reduit) {
+          if (!filante && Math.random() < 0.004) {
+            filante = { x: Math.random() * W * 0.7, y: Math.random() * H * 0.35, vx: 7 + Math.random() * 4, vy: 2.5 + Math.random() * 2, vie: 1 };
+          }
+          if (filante) {
+            var g = ctx.createLinearGradient(filante.x, filante.y, filante.x - filante.vx * 14, filante.y - filante.vy * 14);
+            g.addColorStop(0, 'rgba(232,236,241,' + filante.vie + ')');
+            g.addColorStop(1, 'rgba(232,236,241,0)');
+            ctx.globalAlpha = 1; ctx.strokeStyle = g; ctx.lineWidth = 1.4;
+            ctx.beginPath(); ctx.moveTo(filante.x, filante.y);
+            ctx.lineTo(filante.x - filante.vx * 14, filante.y - filante.vy * 14); ctx.stroke();
+            filante.x += filante.vx; filante.y += filante.vy; filante.vie -= 0.016;
+            if (filante.vie <= 0) filante = null;
+          }
+        }
+        ctx.globalAlpha = 1;
+      }
+      function boucle(t) { if (actif) dessin(t); if (!reduit) requestAnimationFrame(boucle); }
+      taille();
+      window.addEventListener('resize', function () { taille(); if (reduit) dessin(0); });
+      document.querySelector('.hero').addEventListener('pointermove', function (e) {
+        souris.x = e.clientX / W - 0.5; souris.y = e.clientY / H - 0.5;
+      });
+      new IntersectionObserver(function (e) { actif = e[0].isIntersecting; }).observe(ciel);
+      if (reduit) dessin(0); else requestAnimationFrame(boucle);
+    })();
+
+    /* ---------- 4. Nom : découpage en lettres, ouverture, effet au survol ---------- */
+    var lettres = [];
+    document.querySelectorAll('.hero-nom .mot').forEach(function (mot) {
+      var txt = mot.textContent.trim(); mot.textContent = '';
+      Array.from(txt).forEach(function (ch) {
+        var s = document.createElement('span');
+        s.className = 'lettre'; s.textContent = ch; s.style.setProperty('--w', 72);
+        mot.appendChild(s); lettres.push(s);
+      });
+    });
+
+    function ouverture() {
+      if (!aGsap || reduit) { finAttente(); return; }
+      var tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+      tl.fromTo(lettres, { y: 0, yPercent: 115 }, { y: 0, yPercent: 0, duration: 1.6, stagger: 0.055 }, 0.15)
+        .fromTo('#ciel', { opacity: 0 }, { opacity: 1, duration: 2.4, ease: 'power2.out' }, 0)
+        .fromTo('.hero-haut > *', { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: 1.3, stagger: 0.12 }, 0.75)
+        .fromTo(['.entete', '.defiler'], { opacity: 0 }, { opacity: 1, duration: 1.2 }, 1);
+      finAttente();
+    }
+    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(ouverture);
+
+    if (aGsap && !reduit && window.matchMedia('(hover: hover)').matches) {
+      var hero = document.querySelector('.hero');
+      hero.addEventListener('pointermove', function (e) {
+        lettres.forEach(function (l) {
+          var r = l.getBoundingClientRect();
+          var d = Math.hypot(e.clientX - (r.left + r.width / 2), (e.clientY - (r.top + r.height / 2)) * 0.6);
+          var f = Math.max(0, 1 - d / 280);
+          gsap.to(l, { '--w': 72 + f * 42, duration: 0.7, ease: 'power3.out', overwrite: 'auto' });
+        });
+      });
+      hero.addEventListener('pointerleave', function () {
+        gsap.to(lettres, { '--w': 72, duration: 1.2, ease: 'power3.out', overwrite: 'auto' });
+      });
+    }
+
+    /* ---------- 5. Mots qui défilent sous le nom ---------- */
+    var sujets = ['la sécurité internationale', 'la gestion de crise', "l'IA et le terrorisme", "l'usage de la force", 'les politiques de défense'];
+    var zone = document.querySelector('.rot-zone');
+    if (aGsap && !reduit) {
+      var idx = 0;
+      setInterval(function () {
+        var ancien = zone.querySelector('span');
+        idx = (idx + 1) % sujets.length;
+        var nouveau = document.createElement('span');
+        nouveau.textContent = sujets[idx];
+        zone.appendChild(nouveau);
+        gsap.fromTo(nouveau, { yPercent: 100 }, { yPercent: 0, duration: 1, ease: 'expo.out' });
+        gsap.to(ancien, { yPercent: -100, duration: 1, ease: 'expo.out', onComplete: function () { ancien.remove(); } });
+      }, 2800);
+    }
+
+    /* ---------- 6. Globe du parcours ---------- */
+    (function () {
+      var svg = document.getElementById('globe');
+      var legende = document.getElementById('globe-legende');
+      var listeEscales = document.querySelector('.escales');
+      if (!window.d3) return;
+
+      var E = [
+        { nom: 'Ploërmel', co: [-2.40, 47.93], rot: [2.4, -47.9], ech: 4.2, coord: '47°56′ N, 2°24′ O' },
+        { nom: 'La Roche-sur-Yon', co: [-1.43, 46.67], rot: [1.43, -46.4], ech: 3.0, coord: '46°40′ N, 1°26′ O' },
+        { nom: 'Livingston, Alabama', co: [-88.19, 32.58], rot: [58, -36], ech: 1.0, coord: '32°35′ N, 88°11′ O', dessous: true },
+        { nom: 'Québec', co: [-71.21, 46.81], rot: [44, -40], ech: 1.12, coord: '46°49′ N, 71°13′ O' }
+      ];
+      var R = 250, C = 300;
+      var proj = d3.geoOrthographic().translate([C, C]).clipAngle(90).precision(0.4);
+      var chemin = d3.geoPath(proj);
+      var s = d3.select(svg);
+
+      var defs = s.append('defs');
+      var rg = defs.append('radialGradient').attr('id', 'atmo');
+      [[0.88, 0], [0.92, 0.22], [0.96, 0.08], [1, 0]].forEach(function (st) {
+        rg.append('stop').attr('offset', st[0]).attr('stop-color', '#7FA2FF').attr('stop-opacity', st[1]);
+      });
+      var fl = defs.append('filter').attr('id', 'lueur').attr('filterUnits', 'userSpaceOnUse')
+        .attr('x', 0).attr('y', 0).attr('width', 600).attr('height', 600);
+      fl.append('feGaussianBlur').attr('stdDeviation', 3.5).attr('result', 'flou');
+      var fm = fl.append('feMerge');
+      fm.append('feMergeNode').attr('in', 'flou'); fm.append('feMergeNode').attr('in', 'SourceGraphic');
+
+      // Lentille ronde : quand on zoome, la carte reste dans un cercle
+      var lentille = defs.append('clipPath').attr('id', 'lentille').append('circle').attr('cx', C).attr('cy', C);
+      var atmo = s.append('circle').attr('cx', C).attr('cy', C).attr('fill', 'url(#atmo)');
+      var g = s.append('g').attr('clip-path', 'url(#lentille)');
+      var sphere = g.append('path').attr('class', 'g-sphere');
+      var terre = g.append('path').attr('class', 'g-terre');
+      var grat = g.append('path').attr('class', 'g-grat');
+      var arcs = [0, 1, 2].map(function () { return g.append('path').attr('class', 'g-arc').attr('filter', 'url(#lueur)'); });
+      var pouls = g.append('circle').attr('class', 'g-pouls').attr('r', 6);
+      var points = E.map(function () { return g.append('circle').attr('class', 'g-point').attr('r', 5.5); });
+      var contour = s.append('circle').attr('class', 'g-contour').attr('cx', C).attr('cy', C);
+      var etiquette = s.append('text').attr('class', 'g-etiquette');
+
+      var grille = d3.geoGraticule10(), terreD = null, besoin = true;
+      var lisse = function (t) { return t * t * (3 - 2 * t); };
+
+      function rendu(f) {
+        var i = Math.min(2, Math.floor(f)), t = lisse(f - i), a = E[i], b = E[i + 1];
+        var rot = [a.rot[0] + (b.rot[0] - a.rot[0]) * t, a.rot[1] + (b.rot[1] - a.rot[1]) * t];
+        var ech = Math.exp(Math.log(a.ech) + (Math.log(b.ech) - Math.log(a.ech)) * t);
+        proj.rotate(rot).scale(R * ech);
+        var rayonVu = Math.min(R * ech, 292);
+        sphere.attr('d', chemin({ type: 'Sphere' }));
+        lentille.attr('r', rayonVu); contour.attr('r', rayonVu);
+        atmo.attr('r', R * ech * 1.08).attr('opacity', ech > 1.25 ? 0 : 1);
+        grat.attr('d', chemin(grille));
+        if (terreD) terre.attr('d', chemin(terreD));
+        arcs.forEach(function (p, k) {
+          var fr = lisse(Math.max(0, Math.min(1, f - k)));
+          if (fr < 0.002) { p.attr('d', null); return; }
+          var A = E[k].co, fin = d3.geoInterpolate(A, E[k + 1].co)(fr);
+          p.attr('d', chemin({ type: 'LineString', coordinates: [A, fin] }));
+        });
+        var centre = [-rot[0], -rot[1]];
+        points.forEach(function (c, k) {
+          var p = proj(E[k].co);
+          var visible = f >= k - 0.05 && d3.geoDistance(E[k].co, centre) < Math.PI / 2;
+          c.attr('cx', p[0]).attr('cy', p[1]).attr('opacity', visible ? 1 : 0);
+        });
+        var act = Math.round(f), pa = proj(E[act].co), droite = pa[0] > 400, dessous = E[act].dessous;
+        pouls.attr('cx', pa[0]).attr('cy', pa[1]);
+        etiquette.attr('x', droite ? pa[0] - 16 : pa[0] + 16).attr('y', dessous ? pa[1] + 30 : pa[1] - 16)
+          .attr('text-anchor', droite ? 'end' : 'start').text(E[act].nom);
+        return act;
+      }
+
+      function progression() {
+        var r = listeEscales.getBoundingClientRect();
+        var p = (window.innerHeight / 2 - r.top) / r.height;
+        return Math.max(0, Math.min(3, p * 4 - 0.5));
+      }
+
+      var courant = progression(), dernier = -1, dernierAct = -1;
+      function majLegende(act) {
+        legende.innerHTML = '<strong>' + E[act].nom + '</strong>' + E[act].coord;
+        if (aGsap && !reduit) gsap.fromTo(legende, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' });
+      }
+      function boucle() {
+        var cible = progression();
+        courant += (cible - courant) * (reduit ? 1 : 0.1);
+        if (besoin || Math.abs(courant - dernier) > 0.0004) {
+          var act = rendu(courant);
+          dernier = courant; besoin = false;
+          if (act !== dernierAct) { majLegende(act); dernierAct = act; }
+        }
+        requestAnimationFrame(boucle);
+      }
+      requestAnimationFrame(boucle);
+
+      fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/land-110m.json')
+        .then(function (r) { return r.json(); })
+        .then(function (monde) { terreD = topojson.feature(monde, monde.objects.land); besoin = true; })
+        .catch(function () {});
+    })();
+
+    /* Escale active (texte en surbrillance) */
+    var ioEscales = new IntersectionObserver(function (entrees) {
+      entrees.forEach(function (en) { en.target.classList.toggle('active', en.isIntersecting); });
+    }, { rootMargin: '-40% 0px -40% 0px' });
+    document.querySelectorAll('.escale').forEach(function (el) { ioEscales.observe(el); });
+
+    /* ---------- 7. Apparitions au défilement ---------- */
+    if (aGsap && !reduit) {
+      document.querySelectorAll('[data-split]').forEach(function (el) {
+        var texte = el.textContent.trim();
+        el.setAttribute('aria-label', texte);
+        el.innerHTML = texte.split(/\s+/).map(function (m) {
+          return '<span class="w" aria-hidden="true"><span>' + m + '</span></span>';
+        }).join(' ');
+        gsap.from(el.querySelectorAll('.w > span'), {
+          yPercent: 115, duration: 1.4, ease: 'expo.out', stagger: 0.05,
+          scrollTrigger: { trigger: el, start: 'top 86%' }
+        });
+      });
+      gsap.utils.toArray('[data-reveal]').forEach(function (el) {
+        gsap.from(el, { y: 40, opacity: 0, duration: 1.3, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
+      });
+      gsap.utils.toArray('[data-cascade]').forEach(function (liste) {
+        gsap.from(liste.children, { y: 34, opacity: 0, duration: 1.1, ease: 'expo.out', stagger: 0.08, scrollTrigger: { trigger: liste, start: 'top 86%' } });
+      });
+
+      var portrait = document.querySelector('.portrait');
+      gsap.fromTo(portrait, { clipPath: 'inset(100% 0% 0% 0%)' }, {
+        clipPath: 'inset(0% 0% 0% 0%)', duration: 1.7, ease: 'expo.inOut', scrollTrigger: { trigger: portrait, start: 'top 80%' }
+      });
+      gsap.fromTo('.portrait img', { scale: 1.3 }, { scale: 1, duration: 2.2, ease: 'expo.out', scrollTrigger: { trigger: portrait, start: 'top 80%' } });
+      gsap.fromTo('.portrait img', { yPercent: -5 }, { yPercent: 5, ease: 'none', scrollTrigger: { trigger: portrait, start: 'top bottom', end: 'bottom top', scrub: true } });
+
+      gsap.utils.toArray('.langue').forEach(function (l) {
+        gsap.from(l.querySelectorAll('.seg i'), { scaleX: 0, duration: 0.9, ease: 'power3.out', stagger: 0.09, scrollTrigger: { trigger: l, start: 'top 90%' } });
+      });
+
+      var piste = document.querySelector('.piste');
+      var defile = gsap.to(piste, { xPercent: -50, duration: 30, ease: 'none', repeat: -1 });
+      ScrollTrigger.create({
+        trigger: '.contact', start: 'top bottom', end: 'bottom top',
+        onUpdate: function (st) {
+          var v = Math.min(Math.abs(st.getVelocity()) / 500, 6);
+          gsap.to(defile, { timeScale: 1 + v, duration: 0.25, overwrite: true,
+            onComplete: function () { gsap.to(defile, { timeScale: 1, duration: 1.4 }); } });
+        }
+      });
+    }
+
+    /* ---------- 8. Expériences : ouverture en douceur ---------- */
+    document.querySelectorAll('.exp').forEach(function (d) {
+      var c = d.querySelector('.det-contenu');
+      d.querySelector('summary').addEventListener('click', function (e) {
+        if (!aGsap || reduit) return;
+        e.preventDefault();
+        if (d.open) {
+          gsap.to(c, { height: 0, duration: 0.6, ease: 'power3.inOut', onComplete: function () { d.open = false; c.style.height = ''; ScrollTrigger.refresh(); } });
+        } else {
+          d.open = true;
+          gsap.fromTo(c, { height: 0 }, { height: c.scrollHeight, duration: 0.8, ease: 'expo.out', onComplete: function () { c.style.height = 'auto'; ScrollTrigger.refresh(); } });
+        }
+      });
+    });
+
+    /* ---------- 9. CV : affiché seulement si cv/cv.pdf existe ---------- */
+    fetch('cv/cv.pdf', { method: 'HEAD' })
+      .then(function (r) {
+        if (!r.ok) return;
+        document.getElementById('cv-zone').innerHTML =
+          '<object class="cv-cadre" data="cv/cv.pdf" type="application/pdf">' +
+          '<p>Votre navigateur ne peut pas afficher le PDF. <a href="cv/cv.pdf">Téléchargez-le ici</a>.</p></object>';
+        document.getElementById('cv-bouton').hidden = false;
+        if (aGsap) ScrollTrigger.refresh();
+      })
+      .catch(function () {});
+  })();
+  </script>
+</body>
 </html>
-
