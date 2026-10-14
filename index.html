@@ -32,7 +32,9 @@
       --texte: "Source Serif 4", Georgia, serif;
       --marge: clamp(20px, 5vw, 72px);
       --sortie: cubic-bezier(.16, 1, .3, 1);
+      --marge-g: var(--marge);  /* marge gauche (place pour la barre latérale) */
     }
+    @media (min-width: 861px) { :root { --marge-g: max(var(--marge), 128px); } }
 
     /* Le fond change de couleur en douceur selon la section affichée */
     body {
@@ -70,20 +72,39 @@
     .lenis.lenis-smooth { scroll-behavior: auto !important; }
     .lenis.lenis-stopped { overflow: hidden; }
 
-    /* ======================= RIDEAU D'OUVERTURE ======================= */
+    /* ======================= ÉCRAN DE CHARGEMENT ======================= */
     .rideau { display: none; }
     .js .rideau {
-      position: fixed; inset: 0; z-index: 100; background: var(--nuit); color: var(--clair);
-      display: grid; place-items: center; text-align: center; font-family: var(--titre);
+      position: fixed; inset: 0; z-index: 100; display: grid; place-items: center;
+      color: var(--clair); font-family: var(--titre);
     }
-    .rideau-nom { display: block; font-weight: 700; font-stretch: 85%; font-size: 1.1rem; letter-spacing: .01em; }
-    .rideau-barre { display: block; width: 180px; height: 1px; margin: 16px auto; background: var(--ligne-nuit); overflow: hidden; }
-    .rideau-barre i { display: block; height: 100%; background: var(--rose-nuit); transform: scaleX(0); transform-origin: left; }
-    .rideau-lieux { display: block; font-size: .85rem; color: var(--clair-2); }
+    .rideau-volet { position: absolute; left: 0; right: 0; height: 50.5%; background: var(--nuit); }
+    .rideau-volet.haut { top: 0; }
+    .rideau-volet.bas { bottom: 0; }
+    .rideau-contenu { position: relative; text-align: center; }
+    .rideau-globe { width: 128px; height: 128px; display: block; margin: 0 auto 28px; overflow: visible; }
+    .rg-trace path {
+      fill: none; stroke: var(--clair); stroke-width: 1.1; stroke-opacity: .45; stroke-linecap: round;
+      stroke-dasharray: 1; stroke-dashoffset: 1;
+    }
+    .rg-trace .rg-contour { stroke-opacity: .9; }
+    .rg-anneau { fill: none; stroke: var(--ligne-nuit); stroke-width: 1; stroke-dasharray: 2 5; }
+    .rg-orbite { transform-origin: 60px 60px; animation: orbite 2.6s linear infinite; }
+    .rg-point { fill: var(--rose-nuit); }
+    @keyframes orbite { to { transform: rotate(360deg); } }
+    .rideau-nom {
+      display: block; overflow: hidden; margin: 0 0 10px; padding-bottom: .06em;
+      font-weight: 700; font-stretch: 85%; font-size: 1.4rem; letter-spacing: .01em;
+    }
+    .rideau-nom span { display: inline-block; }
+    .rideau-ligne { display: flex; justify-content: center; gap: 14px; margin: 0; font-size: .82rem; color: var(--clair-2); }
+    .rideau-compteur { color: var(--rose-nuit); min-width: 3.4em; text-align: left; font-variant-numeric: tabular-nums; }
 
     /* Avant l'animation d'ouverture */
     .attente .lettre { transform: translateY(115%); }
-    .attente .hero-info > *, .attente .defiler, .attente .entete { opacity: 0; }
+    .attente .rideau-nom span { transform: translateY(110%); }
+    .attente .hero-info > *, .attente .defiler, .attente .rail,
+    .attente .rideau-ligne, .attente .rg-anneau, .attente .rg-orbite { opacity: 0; }
 
     /* ======================= PROGRESSION + CURSEUR ======================= */
     .progression {
@@ -97,55 +118,92 @@
     }
     .anneau.visible { opacity: 1; }
 
-    /* ============================ EN-TÊTE ============================ */
-    .entete {
-      position: fixed; inset: 0 0 auto 0; z-index: 50;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 24px var(--marge);
-      color: #fff; mix-blend-mode: difference;
+    /* ======================= NAVIGATION LATÉRALE ======================= */
+    .rail {
+      position: fixed; z-index: 55; left: 20px; top: 50%; translate: 0 -50%;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      padding: 10px 8px; border-radius: 999px;
+      background: color-mix(in srgb, var(--fond) 72%, transparent);
+      border: 1px solid var(--ligne);
+      backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%);
       font-family: var(--titre);
+      transition: background-color 1s, border-color 1s;
     }
-    .entete a { color: inherit; text-decoration: none; display: inline-block; }
-    .marque { font-weight: 700; font-stretch: 85%; font-size: 1rem; }
-    .entete ul { display: flex; gap: clamp(14px, 2.2vw, 30px); list-style: none; margin: 0; padding: 0; }
-    .entete nav a { font-size: .92rem; position: relative; }
-    .entete nav a::after {
-      content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 1px;
-      background: currentColor; transform: scaleX(0); transform-origin: right;
-      transition: transform .7s var(--sortie);
+    .rail-logo {
+      position: relative; width: 44px; height: 44px; border-radius: 50%;
+      display: grid; place-items: center; text-decoration: none; color: var(--txt);
+      font-weight: 800; font-stretch: 80%; font-size: .92rem; letter-spacing: .03em;
+      border: 1px solid var(--ligne); transition: color 1s, border-color 1s;
     }
-    .entete nav a:hover::after { transform: scaleX(1); transform-origin: left; }
+    .rail-logo::before {
+      content: ""; position: absolute; inset: -5px; border-radius: 50%;
+      background: radial-gradient(circle at 50% 3px, var(--acc) 0 2.4px, transparent 3px);
+      animation: orbite 8s linear infinite;
+    }
+    .rail-separateur { width: 18px; height: 1px; background: var(--ligne); }
+    .rail ul { list-style: none; margin: 0; padding: 0; position: relative; display: flex; flex-direction: column; gap: 4px; }
+    .rail li { position: relative; z-index: 1; }
+    .rail li.rail-indicateur {
+      position: absolute; z-index: 0; left: 0; top: 0; width: 44px; height: 44px; border-radius: 50%;
+      background: var(--txt); pointer-events: none; transition: background-color 1s;
+    }
+    .rail ul a {
+      position: relative; width: 44px; height: 44px; border-radius: 50%;
+      display: grid; place-items: center; color: var(--txt2); text-decoration: none;
+      transition: color .5s var(--sortie);
+    }
+    .rail ul a:hover { color: var(--txt); }
+    .rail ul a[aria-current="true"] { color: var(--fond); }
+    .rail svg { width: 20px; height: 20px; overflow: visible; transition: transform .6s var(--sortie); }
+    .rail svg path {
+      fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+      stroke-dasharray: 1; stroke-dashoffset: 0;
+    }
+    .rail ul a:hover svg { transform: scale(1.1); }
+    .rail ul a:hover svg path { animation: trace .9s var(--sortie); }
+    @keyframes trace { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+    .rail-label {
+      position: absolute; left: calc(100% + 18px); top: 50%; translate: 0 -50%;
+      white-space: nowrap; pointer-events: none;
+      font-size: .85rem; font-weight: 600; color: var(--fond); background: var(--txt);
+      padding: 6px 13px; border-radius: 999px;
+      opacity: 0; transform: translateX(-10px); clip-path: inset(0 100% 0 0 round 999px);
+      transition: opacity .35s, transform .6s var(--sortie), clip-path .6s var(--sortie);
+    }
+    .rail ul a:hover .rail-label, .rail ul a:focus-visible .rail-label {
+      opacity: 1; transform: none; clip-path: inset(0 0 0 0 round 999px);
+    }
 
     /* ============================ ACCUEIL ============================ */
     .hero {
       position: relative; min-height: 100svh; overflow: hidden;
-      display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 120px var(--marge) clamp(32px, 7vh, 72px);
+      display: grid; place-items: center; text-align: center;
+      padding: 100px var(--marge) 130px;
     }
     #ciel { position: absolute; inset: -5% 0 0 0; width: 100%; height: 110%; display: block; }
-    .hero-bas {
-      position: relative; z-index: 1;
-      display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 36ch); gap: 40px; align-items: end;
-    }
+    .hero-centre { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
     .hero-nom {
       font-family: var(--titre); font-weight: 800;
-      font-size: clamp(4rem, 12.5vw, 12rem); line-height: .82; letter-spacing: -.005em;
-      margin: 0; white-space: nowrap;
+      font-size: clamp(3.6rem, 10.5vw, 10.5rem); line-height: .86; letter-spacing: -.005em;
+      margin: 0; display: flex; flex-wrap: wrap; justify-content: center; column-gap: .22em;
     }
-    .hero-nom .ligne { display: block; overflow: hidden; padding: .03em 0 .07em; }
+    .hero-nom .ligne { display: block; overflow: hidden; padding: .04em 0 .08em; }
     .lettre { display: inline-block; --w: 74; font-variation-settings: "wdth" var(--w); }
 
-    .hero-info { padding-bottom: .6em; }
+    .hero-info { margin-top: clamp(28px, 5vh, 52px); display: flex; flex-direction: column; align-items: center; }
     .hero-info > * { margin: 0; }
-    .hero-trait { display: block; width: 48px; height: 2px; background: var(--acc); margin-bottom: 22px; transform-origin: left; }
+    .hero-trait { display: block; width: 48px; height: 2px; background: var(--acc); margin-bottom: 22px; }
     .hero-role {
       font-family: var(--titre); font-weight: 600; font-stretch: 92%;
-      font-size: clamp(1.3rem, 1.9vw, 1.65rem); line-height: 1.2; margin-bottom: 12px;
+      font-size: clamp(1.25rem, 1.8vw, 1.6rem); line-height: 1.2; margin-bottom: 10px;
     }
     .hero-detail { color: var(--txt2); font-size: 1rem; line-height: 1.6; margin-bottom: 22px; }
     .hero-rotation { font-family: var(--titre); font-size: .95rem; color: var(--txt2); }
-    .rot-zone { display: block; position: relative; height: 1.6em; overflow: hidden; color: var(--txt); font-weight: 600; font-size: 1.05rem; }
-    .rot-zone span { position: absolute; left: 0; top: 0; white-space: nowrap; }
+    .rot-zone {
+      display: block; position: relative; width: 24ch; height: 1.6em; margin: 2px auto 0; overflow: hidden;
+      color: var(--txt); font-weight: 600; font-size: 1.05rem;
+    }
+    .rot-zone span { position: absolute; left: 0; right: 0; top: 0; text-align: center; white-space: nowrap; }
 
     .defiler {
       position: absolute; left: 50%; bottom: clamp(24px, 5vh, 48px); z-index: 1; transform: translateX(-50%);
@@ -160,7 +218,7 @@
     @keyframes descente { from { transform: translateY(-100%); } to { transform: translateY(100%); } }
 
     /* ======================= SECTIONS (commun) ======================= */
-    .section { position: relative; padding: clamp(110px, 18vh, 200px) var(--marge); }
+    .section { position: relative; padding: clamp(110px, 18vh, 200px) var(--marge); padding-left: var(--marge-g); }
     .entete-section {
       display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 34ch);
       gap: 32px; align-items: end; margin-bottom: clamp(44px, 8vh, 88px);
@@ -294,7 +352,7 @@
 
     /* ============================= CONTACT ============================= */
     .contact { padding-bottom: 32px; }
-    .bandeau { overflow: hidden; margin: 0 calc(-1 * var(--marge)) clamp(48px, 9vh, 96px); border-top: 1px solid var(--ligne); border-bottom: 1px solid var(--ligne); }
+    .bandeau { overflow: hidden; margin: 0 calc(-1 * var(--marge)) clamp(48px, 9vh, 96px) calc(-1 * var(--marge-g)); border-top: 1px solid var(--ligne); border-bottom: 1px solid var(--ligne); }
     .bandeau a { display: block; color: var(--txt); text-decoration: none; }
     .piste { display: flex; width: max-content; }
     .groupe { display: flex; align-items: center; }
@@ -321,15 +379,18 @@
 
     /* ============================= MOBILE ============================= */
     @media (max-width: 860px) {
-      .entete li:not(.toujours) { display: none; }
-      .hero { padding-top: 110px; }
-      .hero-bas { grid-template-columns: 1fr; gap: 36px; }
-      .hero-nom { font-size: 22vw; order: 2; }
-      .hero-info { order: 1; }
+      .rail { left: 50%; top: auto; bottom: 14px; translate: -50% 0; flex-direction: row; padding: 6px; gap: 0; }
+      .rail-logo, .rail-separateur, .rail-label { display: none; }
+      .rail ul { flex-direction: row; gap: 2px; }
+      .rail ul a, .rail li.rail-indicateur { width: 40px; height: 40px; }
+      .rail svg { width: 19px; height: 19px; }
+      .hero { padding: 90px var(--marge) 120px; }
+      .hero-nom { font-size: 19vw; }
       .defiler { display: none; }
+      .contact { padding-bottom: 110px; }
       .entete-section { grid-template-columns: 1fr; gap: 14px; }
       .parcours-grille { grid-template-columns: 1fr; }
-      .globe-colle { top: 54px; height: auto; padding: 6px 0; z-index: 0; }
+      .globe-colle { top: 12px; height: auto; padding: 6px 0; z-index: 0; }
       #globe { width: min(80vw, 42svh); }
       .g-etiquette { font-size: 30px; stroke-width: 8px; }
       .escale { min-height: 72svh; justify-content: flex-end; padding-bottom: 6svh; position: relative; z-index: 1; }
@@ -346,7 +407,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .defiler i::after, .g-pouls { animation: none; }
+      .defiler i::after, .g-pouls, .rail-logo::before, .rg-orbite { animation: none; }
       .escale > div > * { opacity: 1; transform: none; }
     }
   </style>
@@ -354,33 +415,49 @@
 <body data-theme="nuit" id="haut">
 
   <div class="rideau" aria-hidden="true">
-    <div>
-      <span class="rideau-nom">Tom Séveno</span>
-      <span class="rideau-barre"><i></i></span>
-      <span class="rideau-lieux">De Ploërmel à Québec</span>
+    <div class="rideau-volet haut"></div>
+    <div class="rideau-volet bas"></div>
+    <div class="rideau-contenu">
+      <svg class="rideau-globe" viewBox="0 0 120 120">
+        <path class="rg-anneau" d="M60 4 a56 56 0 1 1 0 112 a56 56 0 1 1 0 -112" />
+        <g class="rg-trace">
+          <path class="rg-contour" pathLength="1" d="M60 18 a42 42 0 1 1 0 84 a42 42 0 1 1 0 -84" />
+          <path pathLength="1" d="M60 18 a15 42 0 1 1 0 84 a15 42 0 1 1 0 -84" />
+          <path pathLength="1" d="M60 18 a31 42 0 1 1 0 84 a31 42 0 1 1 0 -84" />
+          <path pathLength="1" d="M18 60 Q60 71 102 60" />
+          <path pathLength="1" d="M23.6 39 Q60 47 96.4 39" />
+          <path pathLength="1" d="M23.6 81 Q60 90 96.4 81" />
+        </g>
+        <g class="rg-orbite"><circle class="rg-point" cx="60" cy="4" r="3.5" /></g>
+      </svg>
+      <p class="rideau-nom">Tom Séveno</p>
+      <p class="rideau-ligne"><span>Sécurité internationale</span><span class="rideau-compteur">0 %</span></p>
     </div>
   </div>
   <div class="progression" aria-hidden="true"></div>
 
-  <header class="entete">
-    <a class="marque aimant" href="#haut">Tom Séveno</a>
-    <nav aria-label="Navigation principale">
-      <ul>
-        <li class="toujours"><a class="aimant" href="#parcours">Parcours</a></li>
-        <li><a class="aimant" href="#apropos">À propos</a></li>
-        <li><a class="aimant" href="#experiences">Expériences</a></li>
-        <li><a class="aimant" href="#travaux">Travaux</a></li>
-        <li class="toujours"><a class="aimant" href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
+  <nav class="rail" aria-label="Navigation principale">
+    <a class="rail-logo" href="#haut" aria-label="Tom Séveno, retour à l'accueil">TS</a>
+    <span class="rail-separateur" aria-hidden="true"></span>
+    <ul>
+        <li class="rail-indicateur" aria-hidden="true"></li>
+        <li><a href="#haut" data-section="accueil" aria-label="Accueil"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M4 11 L12 4 L20 11" /><path pathLength="1" d="M6 9.5 V20 H18 V9.5" /><path pathLength="1" d="M10 20 V14.5 H14 V20" /></svg><span class="rail-label" aria-hidden="true">Accueil</span></a></li>
+        <li><a href="#parcours" data-section="parcours" aria-label="Parcours"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M12 4 a8 8 0 1 1 0 16 a8 8 0 1 1 0 -16" /><path pathLength="1" d="M12 4 a3.6 8 0 1 1 0 16 a3.6 8 0 1 1 0 -16" /><path pathLength="1" d="M4 12 H20" /></svg><span class="rail-label" aria-hidden="true">Parcours</span></a></li>
+        <li><a href="#apropos" data-section="apropos" aria-label="À propos"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M12 4.5 a3.5 3.5 0 1 1 0 7 a3.5 3.5 0 1 1 0 -7" /><path pathLength="1" d="M5 20 C5 16 8.2 14 12 14 C15.8 14 19 16 19 20" /></svg><span class="rail-label" aria-hidden="true">À propos</span></a></li>
+        <li><a href="#experiences" data-section="experiences" aria-label="Expériences"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 7.5 H19 a2 2 0 0 1 2 2 V18 a2 2 0 0 1 -2 2 H5 a2 2 0 0 1 -2 -2 V9.5 a2 2 0 0 1 2 -2 Z" /><path pathLength="1" d="M9 7.5 V5.5 a1 1 0 0 1 1 -1 H14 a1 1 0 0 1 1 1 V7.5" /><path pathLength="1" d="M3 13 H21" /></svg><span class="rail-label" aria-hidden="true">Expériences</span></a></li>
+        <li><a href="#travaux" data-section="travaux" aria-label="Travaux"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M6 3.5 H14 L18.5 8 V20.5 H6 Z" /><path pathLength="1" d="M14 3.5 V8 H18.5" /><path pathLength="1" d="M9 12.5 H15.5" /><path pathLength="1" d="M9 16 H15.5" /></svg><span class="rail-label" aria-hidden="true">Travaux</span></a></li>
+        <li><a href="#competences" data-section="competences" aria-label="Langues et compétences"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M4 5 H15 V13 H9 L6 15.5 V13 H4 Z" /><path pathLength="1" d="M17.5 9 H20 V17 H18.5 V19.5 L15.5 17 H11 V15.5" /></svg><span class="rail-label" aria-hidden="true">Langues et compétences</span></a></li>
+        <li><a href="#cv" data-section="cv" aria-label="CV"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M6 3.5 H14 L18.5 8 V20.5 H6 Z" /><path pathLength="1" d="M12 10.5 V17" /><path pathLength="1" d="M9.2 14.4 L12 17.2 L14.8 14.4" /></svg><span class="rail-label" aria-hidden="true">CV</span></a></li>
+        <li><a href="#contact" data-section="contact" aria-label="Contact"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 5.5 H19 a2 2 0 0 1 2 2 V16.5 a2 2 0 0 1 -2 2 H5 a2 2 0 0 1 -2 -2 V7.5 a2 2 0 0 1 2 -2 Z" /><path pathLength="1" d="M3.6 7 L12 13 L20.4 7" /></svg><span class="rail-label" aria-hidden="true">Contact</span></a></li>
+    </ul>
+  </nav>
 
   <main>
     <!-- =============================== ACCUEIL =============================== -->
-    <section class="hero" data-theme="nuit" aria-label="Accueil">
+    <section class="hero" id="accueil" data-theme="nuit" aria-label="Accueil">
       <canvas id="ciel" aria-hidden="true"></canvas>
 
-      <div class="hero-bas">
+      <div class="hero-centre">
         <h1 class="hero-nom" aria-label="Tom Séveno">
           <span class="ligne"><span class="mot" aria-hidden="true">Tom</span></span>
           <span class="ligne"><span class="mot" aria-hidden="true">Séveno</span></span>
@@ -693,8 +770,15 @@
     var rideau = document.querySelector('.rideau');
     var finAttente = function () { html.classList.remove('attente'); };
     var retirerRideau = function () { if (rideau && rideau.parentNode) rideau.parentNode.removeChild(rideau); };
+    var ouvertureLancee = false;
     // Sécurité : tout s'affiche même si une bibliothèque ne charge pas
-    setTimeout(function () { finAttente(); retirerRideau(); }, 4500);
+    setTimeout(function () { if (!ouvertureLancee) { finAttente(); retirerRideau(); } }, 6000);
+
+    // Nom de l'écran de chargement découpé en lettres
+    var rnom = document.querySelector('.rideau-nom');
+    if (rnom) rnom.innerHTML = Array.from(rnom.textContent).map(function (c) {
+      return '<span>' + (c === ' ' ? '&nbsp;' : c) + '</span>';
+    }).join('');
 
     /* ---------- 1. Défilement fluide ---------- */
     var lenis = null;
@@ -721,6 +805,36 @@
       entrees.forEach(function (en) { if (en.isIntersecting) document.body.dataset.theme = en.target.dataset.theme; });
     }, { rootMargin: '-50% 0px -50% 0px' });
     document.querySelectorAll('section[data-theme]').forEach(function (s) { io.observe(s); });
+
+    /* ---------- 2 bis. Barre latérale : icône de la section affichée ---------- */
+    (function () {
+      var liens = Array.from(document.querySelectorAll('.rail ul a'));
+      var ind = document.querySelector('.rail-indicateur');
+      var actif = null;
+      function placer(a, instant) {
+        if (!a) return;
+        var x = a.parentNode.offsetLeft, y = a.parentNode.offsetTop;
+        if (aGsap && !reduit && !instant) gsap.to(ind, { x: x, y: y, duration: 0.9, ease: 'expo.out', overwrite: 'auto' });
+        else if (aGsap) gsap.set(ind, { x: x, y: y });
+        else ind.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+      }
+      function activer(id) {
+        var a = liens.filter(function (l) { return l.dataset.section === id; })[0];
+        if (!a || a === actif) return;
+        liens.forEach(function (l) { l.removeAttribute('aria-current'); });
+        a.setAttribute('aria-current', 'true');
+        actif = a; placer(a);
+        if (aGsap && !reduit) {
+          gsap.fromTo(a.querySelector('svg'), { scale: 0.6, rotate: -14 }, { scale: 1, rotate: 0, duration: 1, ease: 'elastic.out(1, 0.5)', clearProps: 'transform' });
+        }
+      }
+      var ioNav = new IntersectionObserver(function (entrees) {
+        entrees.forEach(function (en) { if (en.isIntersecting) activer(en.target.id); });
+      }, { rootMargin: '-48% 0px -48% 0px' });
+      liens.forEach(function (l) { var s = document.getElementById(l.dataset.section); if (s) ioNav.observe(s); });
+      activer('accueil'); placer(actif, true);
+      window.addEventListener('resize', function () { placer(actif, true); });
+    })();
 
     /* ---------- 3. Ciel étoilé ---------- */
     (function () {
@@ -789,21 +903,32 @@
       });
     });
 
-    /* ---------- 5. Ouverture : rideau puis accueil ---------- */
+    /* ---------- 5. Ouverture : écran de chargement puis accueil ---------- */
     function ouverture() {
+      ouvertureLancee = true;
       if (!aGsap || reduit) { finAttente(); retirerRideau(); return; }
       if (lenis) lenis.stop();
+      var compteur = document.querySelector('.rideau-compteur');
+      var etat = { v: 0 };
+      var bureau = window.matchMedia('(min-width: 861px)').matches;
       var tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-      tl.fromTo('.rideau-barre i', { scaleX: 0 }, { scaleX: 1, duration: 1.1, ease: 'power2.inOut' })
-        .to('.rideau > div', { opacity: 0, y: -12, duration: 0.5, ease: 'power2.in' }, '+=0.05')
-        .to(rideau, { clipPath: 'inset(0% 0% 100% 0%)', duration: 1.2, ease: 'expo.inOut', onComplete: retirerRideau }, '-=0.15')
-        .add('accueil', '-=0.55')
-        .fromTo(lettres, { y: 0, yPercent: 115 }, { y: 0, yPercent: 0, duration: 1.7, stagger: 0.055 }, 'accueil')
-        .fromTo('#ciel', { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 2.6, ease: 'power2.out' }, 'accueil-=0.4')
-        .fromTo('.hero-trait', { scaleX: 0 }, { scaleX: 1, duration: 1.2, ease: 'expo.inOut' }, 'accueil+=0.5')
-        .fromTo('.hero-info > *:not(.hero-trait)', { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 1.3, stagger: 0.1 }, 'accueil+=0.65')
-        .fromTo(['.entete', '.defiler'], { opacity: 0 }, { opacity: 1, duration: 1.2 }, 'accueil+=0.9')
-        .add(function () { if (lenis) lenis.start(); }, 'accueil+=0.6');
+      tl.to('.rg-trace path', { strokeDashoffset: 0, duration: 1.3, ease: 'power2.inOut', stagger: 0.1 }, 0)
+        .fromTo(['.rg-anneau', '.rg-orbite'], { opacity: 0 }, { opacity: 1, duration: 1 }, 0.25)
+        .fromTo('.rideau-nom span', { y: 0, yPercent: 110 }, { y: 0, yPercent: 0, duration: 1.2, stagger: 0.035 }, 0.3)
+        .fromTo('.rideau-ligne', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 1 }, 0.55)
+        .to(etat, { v: 100, duration: 1.5, ease: 'power2.inOut', onUpdate: function () { compteur.textContent = Math.round(etat.v) + ' %'; } }, 0.15)
+        .to('.rideau-contenu', { y: -24, opacity: 0, duration: 0.55, ease: 'power3.in' }, '+=0.1')
+        .to('.rideau-volet.haut', { yPercent: -100, duration: 1.2, ease: 'expo.inOut' }, '-=0.15')
+        .to('.rideau-volet.bas', { yPercent: 100, duration: 1.2, ease: 'expo.inOut', onComplete: retirerRideau }, '<')
+        .add('accueil', '-=0.65')
+        .fromTo(lettres, { y: 0, yPercent: 115 }, { y: 0, yPercent: 0, duration: 1.6, stagger: 0.05 }, 'accueil')
+        .fromTo('#ciel', { opacity: 0, scale: 1.12 }, { opacity: 1, scale: 1, duration: 2.6, ease: 'power2.out' }, 'accueil-=0.5')
+        .fromTo('.hero-trait', { scaleX: 0 }, { scaleX: 1, duration: 1.2, ease: 'expo.inOut' }, 'accueil+=0.45')
+        .fromTo('.hero-info > *:not(.hero-trait)', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1.3, stagger: 0.1 }, 'accueil+=0.6')
+        .fromTo('.rail', { opacity: 0, x: bureau ? -30 : 0, y: bureau ? 0 : 30 }, { opacity: 1, x: 0, y: 0, duration: 1.3 }, 'accueil+=0.4')
+        .fromTo('.rail-logo, .rail li:not(.rail-indicateur), .rail li.rail-indicateur', { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 1, ease: 'back.out(2)', stagger: 0.05 }, 'accueil+=0.55')
+        .fromTo('.defiler', { opacity: 0 }, { opacity: 1, duration: 1.2 }, 'accueil+=1')
+        .add(function () { if (lenis) lenis.start(); }, 'accueil+=0.5');
       gsap.set('.hero-trait', { scaleX: 0 });
       finAttente();
     }
