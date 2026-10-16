@@ -103,7 +103,7 @@
     /* Avant l'animation d'ouverture */
     .attente .lettre { transform: translateY(115%); }
     .attente .rideau-nom span { transform: translateY(110%); }
-    .attente .hero-info > *, .attente .defiler, .attente .rail,
+    .attente .hero-info > *, .attente .hero-je, .attente .reseau, .attente .hud, .attente .fusee-sol, .attente .rail,
     .attente .rideau-ligne, .attente .rg-anneau, .attente .rg-orbite { opacity: 0; }
 
     /* ======================= PROGRESSION + CURSEUR ======================= */
@@ -129,18 +129,6 @@
       font-family: var(--titre);
       transition: background-color 1s, border-color 1s;
     }
-    .rail-logo {
-      position: relative; width: 44px; height: 44px; border-radius: 50%;
-      display: grid; place-items: center; text-decoration: none; color: var(--txt);
-      font-weight: 800; font-stretch: 80%; font-size: .92rem; letter-spacing: .03em;
-      border: 1px solid var(--ligne); transition: color 1s, border-color 1s;
-    }
-    .rail-logo::before {
-      content: ""; position: absolute; inset: -5px; border-radius: 50%;
-      background: radial-gradient(circle at 50% 3px, var(--acc) 0 2.4px, transparent 3px);
-      animation: orbite 8s linear infinite;
-    }
-    .rail-separateur { width: 18px; height: 1px; background: var(--ligne); }
     .rail ul { list-style: none; margin: 0; padding: 0; position: relative; display: flex; flex-direction: column; gap: 4px; }
     .rail li { position: relative; z-index: 1; }
     .rail li.rail-indicateur {
@@ -176,28 +164,43 @@
 
     /* ============================ ACCUEIL ============================ */
     .hero {
-      position: relative; min-height: 100svh; overflow: hidden;
+      --horizon: 118px;      /* hauteur de Terre visible en bas de l'écran */
+      --zone-fusee: 232px;   /* espace réservé à la fusée */
+      position: relative; min-height: 100svh; overflow: hidden; isolation: isolate;
       display: grid; place-items: center; text-align: center;
-      padding: 100px var(--marge) 130px;
+      padding: 60px var(--marge) var(--zone-fusee);
     }
-    #ciel { position: absolute; inset: -5% 0 0 0; width: 100%; height: 110%; display: block; }
-    .hero-centre { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
+    .hero::before {   /* lueur de l'atmosphère au-dessus de l'horizon */
+      content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(62% 40% at 50% 100%, rgba(80, 122, 214, .2), transparent 72%);
+    }
+    #ciel, #terre, #fumee { position: absolute; left: 0; width: 100%; display: block; pointer-events: none; }
+    #ciel { top: -5%; height: 110%; z-index: 0; }
+    #terre { top: 0; height: 100%; z-index: 1; }
+    #fumee { top: 0; height: 100%; z-index: 3; }
+    .hero-centre { position: relative; z-index: 4; display: flex; flex-direction: column; align-items: center; }
+
+    .hero-titre { margin: 0; display: flex; flex-direction: column; align-items: center; font-weight: 400; }
+    .hero-je {
+      display: block; margin-bottom: .3em;
+      font-family: var(--texte); font-size: clamp(1.15rem, 1.7vw, 1.5rem); line-height: 1.2; color: var(--txt2);
+    }
     .hero-nom {
+      display: flex; flex-wrap: wrap; justify-content: center; column-gap: .22em;
       font-family: var(--titre); font-weight: 800;
-      font-size: clamp(3.6rem, 10.5vw, 10.5rem); line-height: .86; letter-spacing: -.005em;
-      margin: 0; display: flex; flex-wrap: wrap; justify-content: center; column-gap: .22em;
+      font-size: clamp(3.4rem, min(9vw, 15.5vh), 8.8rem); line-height: .86; letter-spacing: -.005em;
     }
     .hero-nom .ligne { display: block; overflow: hidden; padding: .04em 0 .08em; }
     .lettre { display: inline-block; --w: 74; font-variation-settings: "wdth" var(--w); }
 
-    .hero-info { margin-top: clamp(28px, 5vh, 52px); display: flex; flex-direction: column; align-items: center; }
+    .hero-info { margin-top: clamp(20px, 3.6vh, 40px); display: flex; flex-direction: column; align-items: center; }
     .hero-info > * { margin: 0; }
-    .hero-trait { display: block; width: 48px; height: 2px; background: var(--acc); margin-bottom: 22px; }
+    .hero-trait { display: block; width: 48px; height: 2px; background: var(--acc); margin-bottom: 18px; }
     .hero-role {
       font-family: var(--titre); font-weight: 600; font-stretch: 92%;
-      font-size: clamp(1.25rem, 1.8vw, 1.6rem); line-height: 1.2; margin-bottom: 10px;
+      font-size: clamp(1.2rem, 1.7vw, 1.5rem); line-height: 1.2; margin-bottom: 8px;
     }
-    .hero-detail { color: var(--txt2); font-size: 1rem; line-height: 1.6; margin-bottom: 22px; }
+    .hero-detail { color: var(--txt2); font-size: 1rem; line-height: 1.6; margin-bottom: 16px; }
     .hero-rotation { font-family: var(--titre); font-size: .95rem; color: var(--txt2); }
     .rot-zone {
       display: block; position: relative; width: 24ch; height: 1.6em; margin: 2px auto 0; overflow: hidden;
@@ -205,17 +208,94 @@
     }
     .rot-zone span { position: absolute; left: 0; right: 0; top: 0; text-align: center; white-space: nowrap; }
 
-    .defiler {
-      position: absolute; left: 50%; bottom: clamp(24px, 5vh, 48px); z-index: 1; transform: translateX(-50%);
-      font-family: var(--titre); font-size: .85rem; color: var(--txt2); text-decoration: none;
-      display: flex; flex-direction: column; align-items: center; gap: 12px;
+    /* Boutons GitHub, LinkedIn, courriel */
+    .reseaux {
+      list-style: none; margin: clamp(22px, 4vh, 38px) 0 0; padding: 0;
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
     }
-    .defiler i { display: block; width: 1px; height: 52px; background: var(--ligne); position: relative; overflow: hidden; }
-    .defiler i::after {
-      content: ""; position: absolute; inset: 0; background: var(--txt);
-      animation: descente 2.4s var(--sortie) infinite;
+    .reseau {
+      --mx: 50%; --my: 50%;
+      position: relative; isolation: isolate; overflow: hidden;
+      display: inline-flex; align-items: center; gap: 10px;
+      height: 46px; padding: 0 20px 0 17px; border-radius: 999px;
+      font-family: var(--titre); font-weight: 600; font-size: .95rem; color: var(--clair); text-decoration: none;
+      background: rgba(14, 24, 44, .55);
+      border: 1px solid rgba(232, 236, 241, .16);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      transition: border-color .5s, box-shadow .7s var(--sortie);
     }
-    @keyframes descente { from { transform: translateY(-100%); } to { transform: translateY(100%); } }
+    .reseau::before {
+      content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .5s;
+      background: radial-gradient(150px circle at var(--mx) var(--my), rgba(236, 110, 159, .32), transparent 70%);
+    }
+    .reseau:hover, .reseau:focus-visible { border-color: rgba(236, 110, 159, .6); box-shadow: 0 10px 34px -12px rgba(236, 110, 159, .6); }
+    .reseau:hover::before, .reseau:focus-visible::before { opacity: 1; }
+    .reseau svg { width: 18px; height: 18px; flex: none; overflow: visible; }
+    .reseau svg path {
+      fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+      stroke-dasharray: 1; stroke-dashoffset: 0;
+    }
+    .reseau:hover svg path { animation: trace .9s var(--sortie); }
+    .roule { display: block; height: 1.3em; line-height: 1.3; overflow: hidden; }
+    .roule span { display: block; transition: transform .6s var(--sortie); }
+    .reseau:hover .roule span, .reseau:focus-visible .roule span { transform: translateY(-100%); }
+
+    /* Fusée (remplace « Défiler ») */
+    .fusee-zone {
+      position: absolute; z-index: 2; left: 50%; bottom: var(--horizon); translate: -50% 0;
+      width: 124px; height: 110px; display: block; color: var(--clair-2); text-decoration: none;
+      -webkit-tap-highlight-color: transparent; outline-offset: 8px; border-radius: 12px;
+    }
+    .fusee { position: absolute; left: 50%; bottom: -21px; width: 52px; margin-left: -26px; display: block; }
+    .fusee-intro, .fusee-flotte { display: block; }
+    .fusee-flotte { animation: flotte 3.4s ease-in-out infinite; }
+    @keyframes flotte { 50% { transform: translateY(-4px); } }
+    .fusee-svg { display: block; width: 52px; height: auto; overflow: visible; transform-origin: 50% 62%; }
+    .fusee-sol { position: absolute; left: 0; right: 0; bottom: 0; height: 0; display: block; }
+    .fusee-halo {
+      position: absolute; left: 50%; bottom: -16px; width: 110px; height: 30px; margin-left: -55px; border-radius: 50%;
+      background: radial-gradient(closest-side, rgba(236, 110, 159, .6), rgba(236, 110, 159, 0)); opacity: .3;
+    }
+    .fusee-pad {
+      position: absolute; left: 50%; bottom: -1px; width: 78px; height: 2px; margin-left: -39px; border-radius: 2px;
+      background: linear-gradient(90deg, rgba(236, 110, 159, 0), var(--rose-nuit), rgba(236, 110, 159, 0));
+      box-shadow: 0 0 16px 2px rgba(236, 110, 159, .35);
+    }
+    .fusee-label {
+      position: absolute; left: 50%; top: 24px; translate: -50% 0;
+      height: 1.3em; line-height: 1.3; overflow: hidden; white-space: nowrap;
+      font-family: var(--titre); font-size: .8rem; letter-spacing: .03em; color: var(--clair-2);
+    }
+    .fusee-label span { display: block; text-align: center; transition: transform .6s var(--sortie); }
+    .fusee-zone:hover .fusee-label span, .fusee-zone:focus-visible .fusee-label span,
+    .fusee-zone.lance .fusee-label span { transform: translateY(-100%); }
+    .fusee-zone.lance .fl-alt { color: var(--rose-nuit); font-weight: 600; }
+
+    /* Repères discrets : coordonnées de Québec et heure UTC */
+    .hud {
+      position: absolute; z-index: 4; left: 0; right: 0; bottom: 22px; padding: 0 26px;
+      display: flex; justify-content: space-between; align-items: center; pointer-events: none;
+      font-family: var(--titre); font-size: .74rem; letter-spacing: .03em; color: var(--clair-2);
+      font-variant-numeric: tabular-nums;
+    }
+    .hud-direct { display: inline-flex; align-items: center; gap: 8px; }
+    .hud-direct::before {
+      content: ""; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--rose-nuit); box-shadow: 0 0 8px var(--rose-nuit); animation: direct 1.8s ease-in-out infinite;
+    }
+    @keyframes direct { 50% { opacity: .2; } }
+
+    /* Message « adresse copiée » */
+    .toast {
+      position: fixed; z-index: 80; left: 50%; bottom: 28px; translate: -50% 0;
+      display: flex; align-items: center; gap: 9px; padding: 10px 18px 10px 14px; border-radius: 999px;
+      font-family: var(--titre); font-size: .9rem; font-weight: 600; color: var(--fond); background: var(--txt);
+      box-shadow: 0 14px 40px -14px rgba(0, 0, 0, .5);
+      opacity: 0; transform: translateY(14px) scale(.96); pointer-events: none;
+      transition: opacity .4s, transform .7s var(--sortie);
+    }
+    .toast.visible { opacity: 1; transform: none; }
+    .toast svg { width: 16px; height: 16px; fill: none; stroke: var(--acc); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 
     /* ======================= SECTIONS (commun) ======================= */
     .section { position: relative; padding: clamp(110px, 18vh, 200px) var(--marge); padding-left: var(--marge-g); }
@@ -380,13 +460,16 @@
     /* ============================= MOBILE ============================= */
     @media (max-width: 860px) {
       .rail { left: 50%; top: auto; bottom: 14px; translate: -50% 0; flex-direction: row; padding: 6px; gap: 0; }
-      .rail-logo, .rail-separateur, .rail-label { display: none; }
+      .rail-label { display: none; }
       .rail ul { flex-direction: row; gap: 2px; }
       .rail ul a, .rail li.rail-indicateur { width: 40px; height: 40px; }
       .rail svg { width: 19px; height: 19px; }
-      .hero { padding: 90px var(--marge) 120px; }
-      .hero-nom { font-size: 19vw; }
-      .defiler { display: none; }
+      .hero { --horizon: 150px; --zone-fusee: 282px; padding: 52px var(--marge) var(--zone-fusee); }
+      .hero-nom { font-size: 18vw; }
+      .hero-detail { font-size: .95rem; }
+      .reseau { height: 42px; padding: 0 14px 0 12px; gap: 8px; font-size: .88rem; }
+      .hud { display: none; }
+      .toast { bottom: 84px; }
       .contact { padding-bottom: 110px; }
       .entete-section { grid-template-columns: 1fr; gap: 14px; }
       .parcours-grille { grid-template-columns: 1fr; }
@@ -406,8 +489,24 @@
       .cecr, .langue { grid-template-columns: 80px repeat(6, minmax(0, 1fr)); }
     }
 
+    @media (min-width: 861px) and (max-height: 760px) {
+      .hero { --zone-fusee: 212px; padding-top: 40px; }
+      .hero-rotation { display: none; }
+      .hero-detail { margin-bottom: 0; }
+    }
+    @media (min-width: 861px) and (max-height: 640px) {
+      .hero { --horizon: 96px; --zone-fusee: 190px; }
+    }
+    @media (max-width: 860px) and (max-height: 700px) {
+      .hero { --horizon: 132px; --zone-fusee: 246px; padding-top: 36px; }
+      .hero-rotation { display: none; }
+      .hero-detail { margin-bottom: 0; }
+      .reseaux { gap: 8px; }
+      .reseau { padding: 0 12px 0 11px; font-size: .84rem; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
-      .defiler i::after, .g-pouls, .rail-logo::before, .rg-orbite { animation: none; }
+      .g-pouls, .rg-orbite, .fusee-flotte, .hud-direct::before { animation: none; }
       .escale > div > * { opacity: 1; transform: none; }
     }
   </style>
@@ -437,8 +536,6 @@
   <div class="progression" aria-hidden="true"></div>
 
   <nav class="rail" aria-label="Navigation principale">
-    <a class="rail-logo" href="#haut" aria-label="Tom Séveno, retour à l'accueil">TS</a>
-    <span class="rail-separateur" aria-hidden="true"></span>
     <ul>
         <li class="rail-indicateur" aria-hidden="true"></li>
         <li><a href="#haut" data-section="accueil" aria-label="Accueil"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M4 11 L12 4 L20 11" /><path pathLength="1" d="M6 9.5 V20 H18 V9.5" /><path pathLength="1" d="M10 20 V14.5 H14 V20" /></svg><span class="rail-label" aria-hidden="true">Accueil</span></a></li>
@@ -456,11 +553,16 @@
     <!-- =============================== ACCUEIL =============================== -->
     <section class="hero" id="accueil" data-theme="nuit" aria-label="Accueil">
       <canvas id="ciel" aria-hidden="true"></canvas>
+      <canvas id="terre" aria-hidden="true"></canvas>
+      <canvas id="fumee" aria-hidden="true"></canvas>
 
       <div class="hero-centre">
-        <h1 class="hero-nom" aria-label="Tom Séveno">
-          <span class="ligne"><span class="mot" aria-hidden="true">Tom</span></span>
-          <span class="ligne"><span class="mot" aria-hidden="true">Séveno</span></span>
+        <h1 class="hero-titre" aria-label="Je suis Tom Séveno">
+          <span class="hero-je" aria-hidden="true">Je suis</span>
+          <span class="hero-nom" aria-hidden="true">
+            <span class="ligne"><span class="mot">Tom</span></span>
+            <span class="ligne"><span class="mot">Séveno</span></span>
+          </span>
         </h1>
 
         <div class="hero-info">
@@ -471,9 +573,61 @@
             <span class="rot-zone"><span>le terrorisme et l'IA</span></span>
           </p>
         </div>
+
+        <ul class="reseaux" aria-label="Me retrouver en ligne">
+          <li><a class="reseau aimant" href="https://github.com/tomseveno" target="_blank" rel="noopener" aria-label="GitHub (nouvel onglet)"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M8.5 7.5 L4 12 L8.5 16.5" /><path pathLength="1" d="M15.5 7.5 L20 12 L15.5 16.5" /><path pathLength="1" d="M13.4 5 L10.6 19" /></svg><span class="roule" aria-hidden="true"><span>GitHub</span><span>GitHub</span></span></a></li>
+          <li><a class="reseau aimant" href="https://www.linkedin.com/in/tom-s%C3%A9veno-1286243b2/" target="_blank" rel="noopener" aria-label="LinkedIn (nouvel onglet)"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 4.5 H19 a1.5 1.5 0 0 1 1.5 1.5 V18 a1.5 1.5 0 0 1 -1.5 1.5 H5 a1.5 1.5 0 0 1 -1.5 -1.5 V6 a1.5 1.5 0 0 1 1.5 -1.5 Z" /><path pathLength="1" d="M9 8.8 a2 2 0 1 1 0 4 a2 2 0 1 1 0 -4" /><path pathLength="1" d="M5.8 16.6 C6.4 14.9 7.6 14.2 9 14.2 C10.4 14.2 11.6 14.9 12.2 16.6" /><path pathLength="1" d="M14.6 10 H18" /><path pathLength="1" d="M14.6 13.4 H18" /></svg><span class="roule" aria-hidden="true"><span>LinkedIn</span><span>LinkedIn</span></span></a></li>
+          <li><a class="reseau aimant" href="mailto:tom.seveno56@gmail.com" data-copier="tom.seveno56@gmail.com" aria-label="Écrire à tom.seveno56@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 5.5 H19 a2 2 0 0 1 2 2 V16.5 a2 2 0 0 1 -2 2 H5 a2 2 0 0 1 -2 -2 V7.5 a2 2 0 0 1 2 -2 Z" /><path pathLength="1" d="M3.6 7 L12 13 L20.4 7" /></svg><span class="roule" aria-hidden="true"><span>Courriel</span><span>Courriel</span></span></a></li>
+        </ul>
       </div>
 
-      <a class="defiler aimant" href="#parcours">Défiler<i></i></a>
+      <a class="fusee-zone" href="#parcours" aria-label="Décoller vers la section Parcours">
+        <span class="fusee"><span class="fusee-intro"><span class="fusee-flotte">
+            <svg class="fusee-svg" viewBox="0 0 60 130" aria-hidden="true">
+              <defs>
+                <linearGradient id="fCorps" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0" stop-color="#AEB9CB" /><stop offset=".38" stop-color="#F5F7FB" />
+                  <stop offset=".62" stop-color="#E2E7EF" /><stop offset="1" stop-color="#8C99B0" />
+                </linearGradient>
+                <linearGradient id="fRose" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0" stop-color="#F38FB7" /><stop offset="1" stop-color="#A8235A" />
+                </linearGradient>
+                <linearGradient id="fFlamme" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="#FFF4F8" /><stop offset=".22" stop-color="#FFC08A" />
+                  <stop offset=".55" stop-color="#EC6E9F" stop-opacity=".85" /><stop offset="1" stop-color="#EC6E9F" stop-opacity="0" />
+                </linearGradient>
+                <linearGradient id="fCoeur" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="#FFFFFF" /><stop offset=".6" stop-color="#FFE9C2" stop-opacity=".9" />
+                  <stop offset="1" stop-color="#FFE9C2" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+              <g class="flamme" transform="translate(30 91) scale(.84 .32) translate(-30 -91)">
+                <path fill="url(#fFlamme)" d="M20.5 91 C19.5 104 24.5 117 30 129 C35.5 117 40.5 104 39.5 91 Z" />
+                <path fill="url(#fCoeur)" d="M24.8 91 C24.6 99 27.2 106 30 112 C32.8 106 35.4 99 35.2 91 Z" />
+              </g>
+              <path fill="url(#fRose)" d="M16 58 C9 64 6 75 6 90 L16 83 Z" />
+              <path fill="url(#fRose)" d="M44 58 C51 64 54 75 54 90 L44 83 Z" />
+              <path fill="#56637C" d="M21 83 H39 L36.4 91.5 H23.6 Z" />
+              <path fill="url(#fCorps)" d="M30 2.5 C40 12.5 45 26.5 45 42.5 V83 H15 V42.5 C15 26.5 20 12.5 30 2.5 Z" />
+              <path fill="url(#fRose)" d="M30 2.5 C36.4 8.9 40.5 16.4 42.5 24.5 H17.5 C19.5 16.4 23.6 8.9 30 2.5 Z" />
+              <path fill="#14203A" opacity=".16" d="M15 24.5 H45 V27.2 H15 Z" />
+              <rect x="15" y="68.5" width="30" height="3" fill="#EC6E9F" />
+              <circle cx="30" cy="45" r="7.2" fill="#14203A" stroke="#8FA4C4" stroke-width="2.4" />
+              <path d="M26 42.4 a4.8 4.8 0 0 1 4.9 -2.3" fill="none" stroke="#E4ECF8" stroke-width="1.4" stroke-linecap="round" />
+              <path fill="#A8235A" d="M28.5 71.5 H31.5 V91 L30 93 L28.5 91 Z" />
+            </svg>
+        </span></span></span>
+        <span class="fusee-sol" aria-hidden="true">
+          <span class="fusee-halo"></span>
+          <span class="fusee-pad"></span>
+          <span class="fusee-label"><span>Défiler</span><span class="fl-alt">Décoller</span></span>
+        </span>
+      </a>
+
+      <div class="hud" aria-hidden="true">
+        <span>Québec, 46°49′ N, 71°13′ O</span>
+        <span class="hud-direct">UTC <span class="hud-heure">--:--:--</span></span>
+      </div>
     </section>
 
     <!-- =============================== PARCOURS =============================== -->
@@ -740,8 +894,8 @@
       </div>
 
       <div class="liens-contact" data-cascade>
-        <div><span>Courriel</span><a href="mailto:tom.seveno56@gmail.com">tom.seveno56@gmail.com</a></div>
-        <div><span>LinkedIn</span><a href="https://www.linkedin.com/in/ton-profil"><span class="a-completer">ton lien LinkedIn</span></a></div>
+        <div><span>Courriel</span><a href="mailto:tom.seveno56@gmail.com" data-copier="tom.seveno56@gmail.com">tom.seveno56@gmail.com</a></div>
+        <div><span>LinkedIn</span><a href="https://www.linkedin.com/in/tom-s%C3%A9veno-1286243b2/" target="_blank" rel="noopener">linkedin.com/in/tom-séveno-1286243b2</a></div>
         <div><span>GitHub</span><a href="https://github.com/tomseveno">github.com/tomseveno</a></div>
       </div>
 
@@ -751,6 +905,8 @@
       </footer>
     </section>
   </main>
+
+  <div class="toast" role="status" aria-live="polite"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 L10 17 L19 7.5" /></svg><span class="toast-texte"></span></div>
 
   <!-- ===================== Bibliothèques (animations et globe) ===================== -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -792,7 +948,7 @@
         (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })();
       }
     }
-    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    document.querySelectorAll('a[href^="#"]:not(.fusee-zone)').forEach(function (a) {
       a.addEventListener('click', function (e) {
         var id = a.getAttribute('href');
         var cible = id === '#haut' ? 0 : document.querySelector(id);
@@ -840,7 +996,7 @@
     (function () {
       var ciel = document.getElementById('ciel');
       var ctx = ciel.getContext('2d');
-      var etoiles = [], W = 0, H = 0, filante = null, actif = true;
+      var etoiles = [], W = 0, H = 0, filante = null, actif = true, vitesse = 0;
       var souris = { x: 0, y: 0 }, dec = { x: 0, y: 0 };
       function taille() {
         var dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -857,13 +1013,21 @@
       function dessin(t) {
         ctx.clearRect(0, 0, W, H);
         dec.x += (souris.x - dec.x) * 0.035; dec.y += (souris.y - dec.y) * 0.035;
-        ctx.fillStyle = '#E8ECF1';
+        ctx.fillStyle = ctx.strokeStyle = '#E8ECF1';
+        var v = lenis ? Math.abs(lenis.velocity || 0) : 0;
+        vitesse += (Math.min(v, 36) - vitesse) * 0.12;
+        var trainee = vitesse > 1.5 ? vitesse * 1.2 : 0;
+        ctx.lineCap = 'round';
         for (var i = 0; i < etoiles.length; i++) {
           var s = etoiles[i];
+          var sx = s.x - dec.x * s.z * 22, sy = s.y - dec.y * s.z * 22;
           ctx.globalAlpha = reduit ? 0.7 : 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(t * 0.001 * s.v + s.p));
-          ctx.beginPath();
-          ctx.arc(s.x - dec.x * s.z * 22, s.y - dec.y * s.z * 22, s.r, 0, 6.283);
-          ctx.fill();
+          if (trainee) {
+            ctx.globalAlpha *= 0.65; ctx.lineWidth = s.r * 1.2;
+            ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx, sy - trainee * (0.35 + s.z)); ctx.stroke();
+          } else {
+            ctx.beginPath(); ctx.arc(sx, sy, s.r, 0, 6.283); ctx.fill();
+          }
         }
         if (!reduit) {
           if (!filante && Math.random() < 0.004) {
@@ -891,6 +1055,334 @@
       new IntersectionObserver(function (e) { actif = e[0].isIntersecting; }).observe(ciel);
       if (reduit) dessin(0); else requestAnimationFrame(boucle);
     })();
+
+    /* ---------- 3 bis. Planète, satellites et fusée ---------- */
+    (function () {
+      var hero = document.querySelector('.hero');
+      var cT = document.getElementById('terre'), xT = cT.getContext('2d');
+      var cF = document.getElementById('fumee'), xF = cF.getContext('2d');
+      var zoneF = document.querySelector('.fusee-zone');
+      var svgF = document.querySelector('.fusee-svg');
+      var flamme = svgF.querySelector('.flamme');
+      var halo = document.querySelector('.fusee-halo');
+      var altF = document.querySelector('.fl-alt');
+      var RAD = Math.PI / 180, TOUR = Math.PI * 2;
+      var W = 0, H = 0, R = 0, cx = 0, cy = 0, horizon = 118, actif = true;
+      var degTerre, degHalo, degAir;
+      var derive = { x: 0, y: 0, cx: 0, cy: 0 };
+
+      // Terres émergées : grille de points précalculée (latitudes -56° à 78°, un rang par degré)
+      var TERRES = '|2w.6|2x.1,2z.3|2z.2,32.2|30.6,3e.3|32.6|34.8|36.9,7k.1|39.a|3c.9|3e.8,b5.5|3g.b,bd.5|3k.a,bm.4|3l.1,3n.a,b1.3,bv.4|3n.b,b7.4,c3.4|3p.c,42.2,bc.2,bf.2,cb.1,ce.2|3s.e,cl.3|3u.e,cr.5|3w.l,bp.5,bv.4,cy.5|3y.m,bu.d,d4.2|41.k,bz.e,d9.1|43.k,b9.2,c1.1,c3.h,de.1|45.q,7m.5,bc.6,c4.1,c7.j|48.q,7p.e,bh.c,c7.p|49.s,7s.g,bm.h,ca.s|4b.u,7v.h,bq.1i|4d.v,7x.j,bu.1j|4e.x,7z.m,by.1k|4g.x,80.p,c1.1m|4i.x,82.q,c4.1n|4k.x,84.r,c9.1m|4l.z,86.t,9e.5,cc.1m|4n.11,88.w,9h.5,cf.1m|4o.16,8a.x,9j.6,cj.1l|4q.19,8c.x,9l.7,cm.1j,ev.1|4r.1a,8d.y,9o.7,ct.1f,ew.2|4s.1b,8e.y,9r.7,d0.1a|4t.1c,8f.11,9t.8,d7.13|4t.1e,8g.14,9v.9,db.12,fq.2|4s.1h,8i.17,9x.9,de.1,dg.o,e8.7|4q.1k,8j.1a,a1.7,dk.k,eb.6|4o.1n,8l.1a,a6.5,dn.h,ee.6,fi.1|4o.1o,8n.1a,a9.3,ds.1,dx.a,eg.3|4o.1q,8p.19,ac.1,e0.a,ei.3|4o.1s,8s.17,e6.2,el.2|4n.1v,8t.18,en.1|4n.1x,8t.18,do.2,du.2,ey.4|4n.1z,8u.17,dl.1,dy.2,eo.4,ey.3,fl.1|4m.21,8v.17,db.8,el.9,ey.3,fj.2|4l.23,8v.18,d6.a,en.e,fh.1|4k.24,8v.18,d6.2,eh.1,eo.f,f5.4,ff.1|4k.22,8v.19,d3.4,dt.2,dy.1,em.f,fa.2|4l.1z,8u.1b,d2.5,dm.1,du.1,dx.2,eg.1,ej.h,fd.1|4m.1v,8s.1e,d1.7,dg.1,di.7,dt.3,dx.2,e9.3,eg.4,em.a,fb.1|4l.1p,8r.1h,d0.6,df.b,du.4,eg.3,eo.3|4l.1m,8r.1j,cz.6,de.d,dv.2,dy.3,ee.5|4m.1e,8r.1k,cy.7,de.e|4n.1e,8s.1l,cx.6,de.g,dx.2,e3.1,e8.2|4p.1b,8s.1o,cw.5,d3.2,dh.b|4q.19,8s.1p,cu.4,d0.4,dj.8|4r.17,8q.1s,cr.4,cz.4,dk.7|4q.16,7w.5,85.4,8k.1z,cp.4,cy.4,dl.7|4q.y,7t.k,8i.22,cx.3,dn.2,e1.2|4p.w,7q.2u,by.3,cv.2,dz.2,e2.1|4i.2,4o.w,7o.2w,bx.3,cs.3,dv.7|4f.2,4j.5,4q.q,7m.2x,bq.4,bw.2,cq.3,d1.1,dm.1,dz.1|4b.4,4r.6,4z.e,7k.2z,bp.4,cp.1,d0.3,dm.1,dt.1|4a.4,4s.5,4y.5,7i.2o,ac.6,bn.6,co.1,cv.9,dq.2,du.1|48.5,4w.1,4z.1,7f.2p,ag.1,bk.8,cm.2,ct.b,dt.1|46.7,7d.2o,a3.3,bi.9,ck.3,co.e,dk.2,dp.1|3z.d,7c.2m,a1.9,bg.9,ci.i,di.5|3x.f,7a.2l,9z.c,bd.a,cf.i,df.2|3o.3,3u.8,7a.2h,9x.f,ba.c,c7.3,cd.h,dc.3|3j.j,79.2g,9v.i,b8.e,c5.l,db.3|3f.n,4i.2,4s.1,4z.2,78.2e,9r.o,b5.h,c3.j,d8.3|3b.d,3w.6,4p.6,76.2d,9o.r,b2.j,bz.j,cn.3|12.1,39.e,3w.5,4g.5,74.2c,9l.r,b0.l,bv.l,cm.1|38.d,3w.5,4e.4,72.2c,9h.v,au.2,ax.m,bs.n,cj.1|v.1,37.c,43.1,4a.4,70.2b,9e.w,ap.x,bo.x|2z.1,35.d,45.4,6z.28,9c.v,am.20,ct.1|2x.2,33.e,4b.1,6y.26,98.t,ah.24,cp.2|2u.3,30.h,6x.23,94.k,9p.1,9v.2,ad.27,cn.1|2t.2,2y.i,43.3,6w.21,90.l,9m.1,9v.2m|2q.3,2w.j,41.3,6v.1y,8x.k,9m.4,9s.2m|2p.2,2t.l,3z.3,6u.1x,8t.k,9h.2u|2n.2,2r.o,3y.3,6v.2e,9c.2w|2l.1,2p.y,3s.2,3v.3,6u.2c,98.2w|2j.2,2n.1a,6r.13,7y.c,8b.3o|2h.1f,6p.z,7v.5,8f.3f,c7.1|2g.1h,6n.t,8d.3c,c1.3,c5.1|2d.1k,6n.o,8a.39,bx.8|29.1p,6l.o,7s.1,82.2,87.36,bm.3,bu.b|27.1q,6j.1,6r.e,83.36,bh.4,bu.6|25.1p,6c.1,6e.7,6w.2,6z.2,77.1,7g.2,7o.v,8n.2k,bc.4,bp.1,br.4|23.1p,69.b,71.5,7c.4,7j.u,8j.2d,b4.6,bn.3|21.1r,65.c,6s.1,72.1,78.3,7g.t,8f.2b,az.4,bi.3|1z.1s,62.c,6p.1,6y.1,73.4,7c.t,8a.2d,ap.8,bd.2|1y.1u,5z.c,6s.4,6z.a,7b.b,7n.d,87.2n,b7.1|1x.1u,5w.f,6i.1,6l.5,6v.b,7c.3,7n.8,80.1,82.2m,b0.2|1w.1t,5s.f,6g.4,6o.d,7h.8,7v.2p,al.2,au.5|1v.1u,3t.1,5y.c,6c.3,6i.g,7b.9,7p.2t,ap.5|1u.1v,3r.4,5v.g,6c.1,6e.h,70.2,74.c,7l.2s,aj.1|1t.1x,3r.1,3t.2,5r.11,6v.2,70.d,7i.2q|1s.1o,3h.6,3x.1,3z.1,5m.19,6x.35,a6.2|1q.1,1s.1n,3g.4,3r.7,5g.4g,9z.1|1n.2,1r.1n,3g.2,3p.5,5f.4b,9s.1|1k.2,1n.1q,3n.2,5e.45,9l.2|1j.20,3l.1,54.6,5b.41,9e.1|1h.1c,2w.n,4v.2,4z.7,59.3z,9l.2|1f.1b,2u.n,4r.3,4w.5,55.3t,8z.1,9d.3|1a.1,1d.1b,2r.l,4n.3,4t.3,55.5,5b.3c,8o.2,95.4|f.2,1b.1a,2p.j,4l.1,4n.4,50.2,53.1,5c.32,8x.6|i.2,19.15,2o.f,4j.2,4v.2,50.1,57.31,8p.6|j.2,n.1,16.14,2m.e,4e.3,4r.2,4u.4,53.2y,8h.6|k.2,15.10,2j.d,4a.2,4p.5,50.2v,8a.4|f.8,z.12,2f.8,2q.2,4f.4,4k.6,4v.2u,7w.2,84.2|b.1,d.a,o.3,w.13,2d.7,4a.c,4p.1,4u.2x,7w.5|c.b,o.19,2b.6,2y.5,46.a,4j.31,7n.1,7p.8|b.1l,26.1,28.4,2u.6,41.9,4e.32,7h.9|c.1k,2a.3,2e.1,2q.6,3y.8,48.3c|e.1g,1w.5,26.6,2m.8,37.4,3v.8,44.a,4f.2v|3.2,9.1k,1u.2,20.8,2i.8,33.6,3r.7,40.7,4b.2q|0.7,9.1j,20.4,25.3,2e.b,2y.2,31.3,3m.f,46.2m|0.3,b.1h,1y.6,2a.d,3i.i,42.1,44.g,4l.1x|0.2,9.w,19.3,1f.1,1h.4,1n.2,1s.1,1v.4,27.d,3e.f,3w.1,40.e,4f.1t|9.g,q.b,14.3,19.1,1d.1,1f.2,1i.1,1k.3,1q.5,25.f,3a.b,40.3,44.3,48.1k,5u.5|a.b,s.2,v.1,10.9,1a.1,1c.2,1i.3,1m.6,1z.j,36.6,3x.3,41.1d|0.1,c.2,y.7,19.2,1d.a,1x.h,33.2,3j.2,3q.3,3u.u,4p.b,52.1|s.b,15.2,1a.8,1s.h,3b.2,3k.2,3n.3,3r.o,4l.5|r.3,v.1,z.2,13.1,15.2,18.4,1d.2,1p.g,36.1,3j.k,44.2|q.3,13.2,1l.g,30.1,3f.b|t.3,y.1,10.1,12.5,1h.g,2u.2,37.b,3t.3,3x.2|n.1,q.1,s.2,v.2,z.1,1c.h,2p.2,32.1,34.6,3k.2|m.2,v.1,y.4,15.k,21.1,2x.2|n.1,r.2,x.3,11.j,1v.2,1y.1';
+      var pts = [];
+      TERRES.split('|').forEach(function (ligne, i) {
+        if (!ligne) return;
+        var lat = (-56 + i) * RAD, pas = 0.6 / Math.cos(lat);
+        ligne.split(',').forEach(function (run) {
+          var p = run.split('.'), debut = parseInt(p[0], 36), n = parseInt(p[1], 36);
+          for (var k = 0; k < n; k++) {
+            var h1 = Math.sin((i * 733 + debut + k) * 12.9898) * 43758.5453; h1 -= Math.floor(h1);
+            var h2 = Math.sin((i * 733 + debut + k) * 78.233) * 12543.1234; h2 -= Math.floor(h2);
+            var la = lat + (h1 - 0.5) * 0.8 * RAD;
+            var lon = (-180 + (debut + k + 0.5 + (h2 - 0.5) * 0.8) * pas) * RAD;
+            pts.push(Math.cos(la), Math.sin(la), Math.cos(lon), Math.sin(lon));
+          }
+        });
+      });
+      pts = new Float32Array(pts);
+
+      // Lieux repères : Québec, et les villes des grandes organisations internationales
+      var LIEUX = [['Québec', -71.21, 46.81], ['Paris', 2.35, 48.86], ['Bruxelles', 4.35, 50.85],
+        ['Genève', 6.14, 46.2], ['New York', -74.0, 40.71], ['Washington', -77.04, 38.9]].map(function (l, i) {
+        return { nom: ['Québec', 'Paris', 'New York'].indexOf(l[0]) >= 0 ? l[0] : '', cp: Math.cos(l[2] * RAD), sp: Math.sin(l[2] * RAD), cl: Math.cos(l[1] * RAD), sl: Math.sin(l[1] * RAD), ph: i * 0.23 };
+      });
+      // Satellites en orbite basse
+      var SATS = [{ kx: 1.07, ky: 1.04, inc: -4, duree: 38, ph: 0.15, sens: 1 },
+        { kx: 1.2, ky: 1.09, inc: 6, duree: 52, ph: 0.62, sens: -1 },
+        { kx: 1.38, ky: 1.15, inc: -8, duree: 70, ph: 0.4, sens: 1 }];
+      var OUV = 0.62;
+
+      function taille() {
+        var dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+        W = hero.clientWidth; H = hero.clientHeight;
+        horizon = parseFloat(getComputedStyle(hero).getPropertyValue('--horizon')) || 118;
+        [cT, cF].forEach(function (c) { c.width = W * dpr; c.height = H * dpr; c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0); });
+        R = Math.max(W * 0.92, 420); cx = W / 2; cy = H - horizon + R;
+        degTerre = xT.createRadialGradient(cx, cy, R - 170, cx, cy, R);
+        degTerre.addColorStop(0, '#060B17'); degTerre.addColorStop(1, '#122140');
+        degHalo = xT.createRadialGradient(cx, cy, R, cx, cy, R + 70);
+        degHalo.addColorStop(0, 'rgba(120, 160, 255, .26)'); degHalo.addColorStop(1, 'rgba(120, 160, 255, 0)');
+        degAir = xT.createRadialGradient(cx, cy, R - 34, cx, cy, R);
+        degAir.addColorStop(0, 'rgba(120, 160, 255, 0)'); degAir.addColorStop(1, 'rgba(120, 160, 255, .16)');
+      }
+
+      function posSat(S, a) {
+        var ex = R * S.kx * Math.cos(a), ey = R * S.ky * Math.sin(a), ci = Math.cos(S.inc * RAD), si = Math.sin(S.inc * RAD);
+        return [cx + ex * ci - ey * si, cy + ex * si + ey * ci];
+      }
+
+      function dessinerTerre(t) {
+        var s = t * 0.001;
+        xT.clearRect(0, 0, W, H);
+        derive.cx += (derive.x - derive.cx) * 0.03; derive.cy += (derive.y - derive.cy) * 0.03;
+
+        // Orbites et satellites (derrière la Terre)
+        xT.lineWidth = 1;
+        SATS.forEach(function (S) {
+          xT.globalAlpha = 0.13; xT.strokeStyle = '#B9C8E6'; xT.setLineDash([2, 7]);
+          xT.beginPath(); xT.ellipse(cx, cy, R * S.kx, R * S.ky, S.inc * RAD, -Math.PI / 2 - OUV, -Math.PI / 2 + OUV); xT.stroke();
+          xT.setLineDash([]);
+          var u = reduit ? 0.5 : (s / S.duree + S.ph) % 1;
+          var a = -Math.PI / 2 + (S.sens > 0 ? u * 2 - 1 : 1 - u * 2) * OUV;
+          var fondu = Math.sin(u * Math.PI);
+          for (var q = 22; q >= 1; q--) {
+            var p = posSat(S, a - S.sens * q * 0.0042);
+            xT.globalAlpha = fondu * (1 - q / 22) * 0.55; xT.fillStyle = '#C9D6EE';
+            xT.fillRect(p[0] - 0.6, p[1] - 0.6, 1.2, 1.2);
+          }
+          var tete = posSat(S, a);
+          xT.globalAlpha = fondu * 0.35; xT.fillStyle = '#EC6E9F';
+          xT.beginPath(); xT.arc(tete[0], tete[1], 4.5, 0, TOUR); xT.fill();
+          xT.globalAlpha = fondu; xT.fillStyle = '#FFFFFF';
+          xT.beginPath(); xT.arc(tete[0], tete[1], 1.6, 0, TOUR); xT.fill();
+        });
+
+        // Disque de la Terre
+        xT.globalAlpha = 1; xT.fillStyle = degTerre;
+        xT.beginPath(); xT.arc(cx, cy, R, 0, TOUR); xT.fill();
+
+        // Continents en points, la Terre tourne lentement
+        var lam0 = (-30 - (reduit ? 0 : s * 1.1) + derive.cx * 7) * RAD, phi0 = (-30 + derive.cy * 2.5) * RAD;
+        var c0 = Math.cos(lam0), s0 = Math.sin(lam0), cp0 = Math.cos(phi0), sp0 = Math.sin(phi0);
+        xT.fillStyle = '#B3C6E4';
+        for (var i = 0; i < pts.length; i += 4) {
+          var cp = pts[i], sp = pts[i + 1], cl = pts[i + 2], sl = pts[i + 3];
+          var cd = cl * c0 + sl * s0;
+          var cosc = sp0 * sp + cp0 * cp * cd;
+          if (cosc < 0.003) continue;
+          var y = cy - R * (cp0 * sp - sp0 * cp * cd);
+          if (y > H + 2) continue;
+          var x = cx + R * cp * (sl * c0 - cl * s0);
+          if (x < -2 || x > W + 2) continue;
+          xT.globalAlpha = Math.min(1, cosc * 4.5) * 0.8;
+          xT.fillRect(x - 0.75, y - 0.75, 1.5, 1.5);
+        }
+
+        // Lieux repères : point rose et onde
+        xT.font = '500 11px Archivo, "Helvetica Neue", Arial, sans-serif';
+        LIEUX.forEach(function (L) {
+          var cd = L.cl * c0 + L.sl * s0, cosc = sp0 * L.sp + cp0 * L.cp * cd;
+          if (cosc < 0.01) return;
+          var y = cy - R * (cp0 * L.sp - sp0 * L.cp * cd);
+          if (y > H) return;
+          var x = cx + R * L.cp * (L.sl * c0 - L.cl * s0);
+          var a = Math.min(1, cosc * 5);
+          var ph = reduit ? 0.4 : (s * 0.4 + L.ph) % 1;
+          xT.globalAlpha = a * (1 - ph) * 0.8; xT.strokeStyle = '#EC6E9F'; xT.lineWidth = 1;
+          xT.beginPath(); xT.ellipse(x, y, 2 + ph * 16, (2 + ph * 16) * 0.45, 0, 0, TOUR); xT.stroke();
+          xT.globalAlpha = a; xT.fillStyle = '#EC6E9F';
+          xT.beginPath(); xT.arc(x, y, 2.2, 0, TOUR); xT.fill();
+          var centre = 1 - Math.min(1, Math.abs(x - cx) / (W * 0.42));
+          if (centre > 0 && L.nom) {
+            xT.globalAlpha = a * centre * 0.7; xT.fillStyle = '#D4DCEA';
+            xT.fillText(L.nom, x + 7, y - 6);
+          }
+        });
+
+        // Atmosphère : halo, lueur et limbe
+        xT.globalAlpha = 1;
+        xT.fillStyle = degAir; xT.beginPath(); xT.arc(cx, cy, R, 0, TOUR); xT.fill();
+        xT.fillStyle = degHalo; xT.beginPath(); xT.arc(cx, cy, R + 70, 0, TOUR); xT.arc(cx, cy, R, 0, TOUR, true); xT.fill();
+        xT.strokeStyle = 'rgba(176, 204, 255, .8)'; xT.lineWidth = 1.2;
+        xT.beginPath(); xT.arc(cx, cy, R, 0, TOUR); xT.stroke();
+      }
+
+      /* Fusée : flamme, fumée, étincelles */
+      var poussee = 0.32, altPrec = 0, enVol = false, survol = false, incl = 0, inclCible = 0;
+      var lancement = { actif: false, poussee: 0, secousse: 0 };
+      var fumees = [], etincelles = [], effets = [];
+      var sprite = (function () {
+        var c = document.createElement('canvas'); c.width = c.height = 64;
+        var g = c.getContext('2d'), r = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+        r.addColorStop(0, 'rgba(208, 218, 238, 1)'); r.addColorStop(0.45, 'rgba(208, 218, 238, .45)'); r.addColorStop(1, 'rgba(208, 218, 238, 0)');
+        g.fillStyle = r; g.fillRect(0, 0, 64, 64); return c;
+      })();
+      function fumee(x, y, vx, vy, r, g, a, d) {
+        if (fumees.length < 440) fumees.push({ x: x, y: y, vx: vx, vy: vy, r: r, g: g, a: a, d: d });
+      }
+      function etincelle(x, y, vx, vy, v) {
+        if (etincelles.length < 280) etincelles.push({ x: x, y: y, vx: vx, vy: vy, v: v, v0: v, c: Math.random() < 0.5 ? '255, 210, 168' : '236, 110, 159' });
+      }
+      function etatFusee() {
+        var hr = hero.getBoundingClientRect(), fr = svgF.getBoundingClientRect();
+        var by = fr.top + fr.height * (91.5 / 130) - hr.top;
+        var sol = H - horizon;
+        return { x: fr.left + fr.width / 2 - hr.left, y: by, sol: sol, alt: (sol - 12) - by };
+      }
+      function poussiere(e, force) {
+        for (var i = 0; i < 30 * force; i++) {
+          var dir = i % 2 ? -1 : 1;
+          fumee(e.x + dir * Math.random() * 8, e.sol - 2 - Math.random() * 3, dir * (1 + Math.random() * 3.4) * force, -(0.1 + Math.random() * 0.45),
+            4 + Math.random() * 4, 0.3 + Math.random() * 0.3, 0.13 + Math.random() * 0.06, 0.0035);
+        }
+      }
+
+      function etape() {
+        var e = etatFusee();
+        var vit = e.alt - altPrec; altPrec = e.alt;
+        var vol = e.alt > 16;
+        if (enVol && !vol && !lancement.actif) poussiere(e, 0.8);   // atterrissage
+        enVol = vol;
+        var cible = lancement.actif ? lancement.poussee : vol ? 1.15 + Math.min(Math.abs(vit) * 0.05, 1.1) : survol ? 0.68 : 0.32;
+        poussee += (cible - poussee) * 0.14;
+        var vacille = poussee * (0.86 + Math.random() * 0.28);
+        flamme.setAttribute('transform', 'translate(30 91) scale(' + (0.78 + poussee * 0.2).toFixed(3) + ' ' + vacille.toFixed(3) + ') translate(-30 -91)');
+        var sec = Math.max(lancement.secousse, vol ? Math.min(Math.max(poussee - 1.2, 0), 0.7) : 0);
+        incl += ((vol || lancement.actif ? 0 : inclCible) - incl) * 0.06;
+        svgF.style.transform = 'translate(' + ((Math.random() - 0.5) * sec * 2).toFixed(2) + 'px,' + ((Math.random() - 0.5) * sec).toFixed(2) + 'px) rotate(' + incl.toFixed(2) + 'deg)';
+        cT.style.translate = lancement.secousse > 0.05 ? ((Math.random() - 0.5) * lancement.secousse * 0.8).toFixed(2) + 'px ' + ((Math.random() - 0.5) * lancement.secousse * 0.5).toFixed(2) + 'px' : '';
+        halo.style.opacity = Math.max(0, Math.min(1, (0.2 + poussee * 0.42) * (1 - Math.min(e.alt, 180) / 180))).toFixed(3);
+
+        // Émission
+        var bas = e.y + 4;
+        if (poussee < 0.5) {
+          if (Math.random() < 0.16) fumee(e.x + (Math.random() - 0.5) * 3, bas + 6, (Math.random() - 0.5) * 0.3, 0.35 + Math.random() * 0.4, 2.5, 0.12, 0.09, 0.004);
+        } else {
+          var n = Math.round(poussee * 2.2);
+          for (var i = 0; i < n; i++) {
+            fumee(e.x + (Math.random() - 0.5) * 5, bas + 8 + poussee * 8, (Math.random() - 0.5) * 0.8, (1.2 + Math.random() * 1.6) * poussee,
+              3 + poussee * 2.5, 0.22 + poussee * 0.18, 0.08 + poussee * 0.05, 0.0045);
+          }
+          var m = Math.round(poussee * 1.7);
+          for (var j = 0; j < m; j++) etincelle(e.x + (Math.random() - 0.5) * 4, bas + 6, (Math.random() - 0.5) * 1.5, (2.2 + Math.random() * 3) * poussee, 16 + Math.random() * 22);
+        }
+        var proche = e.alt < 80 ? 1 - Math.max(e.alt, 0) / 80 : 0;
+        if (poussee > 0.85 && proche > 0) {
+          var k = Math.round(poussee * 3 * proche);
+          for (var q = 0; q < k; q++) {
+            var dir = Math.random() < 0.5 ? -1 : 1;
+            fumee(e.x + dir * (4 + Math.random() * 10), e.sol - 2 - Math.random() * 4, dir * (1.6 + Math.random() * 3.4) * poussee, -(0.15 + Math.random() * 0.5),
+              5 + Math.random() * 4, 0.35 + Math.random() * 0.3, 0.15 + Math.random() * 0.08, 0.0035);
+          }
+        }
+
+        // Rendu des particules
+        xF.clearRect(0, 0, W, H);
+        for (var a = fumees.length - 1; a >= 0; a--) {
+          var p = fumees[a];
+          p.x += p.vx; p.y += p.vy; p.vx *= 0.965; p.vy = p.vy * 0.955 - 0.012; p.r += p.g; p.a -= p.d;
+          if (p.a <= 0) { fumees[a] = fumees[fumees.length - 1]; fumees.pop(); continue; }
+          xF.globalAlpha = p.a; xF.drawImage(sprite, p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
+        }
+        xF.globalCompositeOperation = 'lighter';
+        for (var b = etincelles.length - 1; b >= 0; b--) {
+          var st = etincelles[b];
+          st.x += st.vx; st.y += st.vy; st.vy *= 0.97; st.v -= 1;
+          if (st.v <= 0) { etincelles[b] = etincelles[etincelles.length - 1]; etincelles.pop(); continue; }
+          xF.globalAlpha = st.v / st.v0; xF.fillStyle = 'rgb(' + st.c + ')'; xF.fillRect(st.x - 1, st.y - 1, 2, 2);
+        }
+        for (var f = effets.length - 1; f >= 0; f--) {
+          var ef = effets[f]; ef.t += 1;
+          if (ef.type === 'eclair') {
+            var al = 1 - ef.t / 42;
+            if (al <= 0) { effets.splice(f, 1); continue; }
+            var gr = xF.createRadialGradient(ef.x, ef.y, 0, ef.x, ef.y, 240);
+            gr.addColorStop(0, 'rgba(255, 224, 238, ' + (al * 0.6).toFixed(3) + ')'); gr.addColorStop(1, 'rgba(236, 110, 159, 0)');
+            xF.globalAlpha = 1; xF.fillStyle = gr; xF.fillRect(ef.x - 240, ef.y - 240, 480, 480);
+          } else {
+            var u = ef.t / 72;
+            if (u >= 1) { effets.splice(f, 1); continue; }
+            var rr = 20 + (1 - Math.pow(1 - u, 3)) * 560;
+            xF.globalAlpha = (1 - u) * 0.6; xF.strokeStyle = '#F4A9C6'; xF.lineWidth = 1.6;
+            xF.beginPath(); xF.ellipse(ef.x, ef.y, rr, rr * 0.12, 0, 0, TOUR); xF.stroke();
+          }
+        }
+        xF.globalCompositeOperation = 'source-over'; xF.globalAlpha = 1;
+      }
+
+      function boucle(t) {
+        if (actif) { dessinerTerre(t); etape(); }
+        requestAnimationFrame(boucle);
+      }
+
+      taille();
+      window.addEventListener('resize', function () { taille(); if (reduit) dessinerTerre(0); });
+      if (reduit) { dessinerTerre(0); } else {
+        new IntersectionObserver(function (en) { actif = en[0].isIntersecting; }).observe(hero);
+        requestAnimationFrame(boucle);
+        hero.addEventListener('pointermove', function (ev) {
+          derive.x = ev.clientX / W - 0.5; derive.y = ev.clientY / window.innerHeight - 0.5;
+          var fr = svgF.getBoundingClientRect();
+          inclCible = Math.max(-8, Math.min(8, (ev.clientX - (fr.left + fr.width / 2)) / 40));
+        });
+        hero.addEventListener('pointerleave', function () { inclCible = 0; derive.x = derive.y = 0; });
+        zoneF.addEventListener('pointerenter', function () { survol = true; });
+        zoneF.addEventListener('pointerleave', function () { survol = false; });
+      }
+
+      /* Décollage : compte à rebours, allumage, puis la page défile */
+      zoneF.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        var cible = document.getElementById('parcours');
+        function aller(duree) {
+          if (lenis) lenis.scrollTo(cible, { duration: duree, lock: true, easing: function (x) { return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; } });
+          else cible.scrollIntoView({ behavior: reduit ? 'auto' : 'smooth' });
+        }
+        if (lancement.actif) return;
+        if (!aGsap || reduit || enVol || window.scrollY > 40) { aller(1.6); return; }
+        lancement.actif = true;
+        zoneF.classList.add('lance');
+        gsap.timeline()
+          .call(function () { altF.textContent = '3'; }, null, 0)
+          .to(lancement, { poussee: 0.95, secousse: 0.8, duration: 0.3, ease: 'power1.in' }, 0)
+          .call(function () { altF.textContent = '2'; }, null, 0.34)
+          .to(lancement, { poussee: 1.35, secousse: 1.6, duration: 0.3, ease: 'power1.in' }, 0.34)
+          .call(function () { altF.textContent = '1'; }, null, 0.68)
+          .to(lancement, { poussee: 2.1, secousse: 2.8, duration: 0.3, ease: 'power1.in' }, 0.68)
+          .call(function () {
+            altF.textContent = 'Décollage';
+            var e = etatFusee();
+            effets.push({ type: 'eclair', x: e.x, y: e.sol, t: 0 }, { type: 'onde', x: e.x, y: e.sol, t: 0 });
+            poussiere(e, 1.6);
+            for (var i = 0; i < 40; i++) etincelle(e.x, e.sol - 2, (Math.random() - 0.5) * 9, -Math.random() * 3, 20 + Math.random() * 26);
+            aller(2.4);
+          }, null, 1.02)
+          .to(lancement, { secousse: 0, duration: 1.4, ease: 'power2.out' }, 1.06)
+          .call(function () { lancement.actif = false; }, null, 1.6)
+          .call(function () { zoneF.classList.remove('lance'); altF.textContent = 'Décoller'; }, null, 3.8);
+      });
+
+      /* Repères : heure UTC en direct */
+      var heure = document.querySelector('.hud-heure');
+      function majHeure() {
+        var d = new Date();
+        heure.textContent = [d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()].map(function (n) { return (n < 10 ? '0' : '') + n; }).join(':');
+      }
+      majHeure(); setInterval(majHeure, 1000);
+    })();
+
+    /* ---------- 3 ter. Boutons : halo qui suit la souris, courriel copié ---------- */
+    document.querySelectorAll('.reseau').forEach(function (b) {
+      b.addEventListener('pointermove', function (e) {
+        var r = b.getBoundingClientRect();
+        b.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        b.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      });
+    });
+    var toast = document.querySelector('.toast'), toastTexte = document.querySelector('.toast-texte'), minuterie = null;
+    function annoncer(texte) {
+      toastTexte.textContent = texte;
+      toast.classList.add('visible');
+      clearTimeout(minuterie);
+      minuterie = setTimeout(function () { toast.classList.remove('visible'); }, 2800);
+    }
+    document.querySelectorAll('[data-copier]').forEach(function (a) {
+      a.addEventListener('click', function () {
+        var adresse = a.getAttribute('data-copier');
+        try {
+          navigator.clipboard.writeText(adresse).then(function () { annoncer('Adresse copiée : ' + adresse); }, function () {});
+        } catch (err) { /* presse-papiers indisponible : le lien mailto suffit */ }
+      });
+    });
 
     /* ---------- 4. Nom découpé en lettres ---------- */
     var lettres = [];
@@ -921,13 +1413,18 @@
         .to('.rideau-volet.haut', { yPercent: -100, duration: 1.2, ease: 'expo.inOut' }, '-=0.15')
         .to('.rideau-volet.bas', { yPercent: 100, duration: 1.2, ease: 'expo.inOut', onComplete: retirerRideau }, '<')
         .add('accueil', '-=0.65')
+        .fromTo('.hero-je', { opacity: 0, y: 16, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.3, clearProps: 'filter' }, 'accueil-=0.2')
         .fromTo(lettres, { y: 0, yPercent: 115 }, { y: 0, yPercent: 0, duration: 1.6, stagger: 0.05 }, 'accueil')
         .fromTo('#ciel', { opacity: 0, scale: 1.12 }, { opacity: 1, scale: 1, duration: 2.6, ease: 'power2.out' }, 'accueil-=0.5')
+        .fromTo('#terre', { opacity: 0, yPercent: 9 }, { opacity: 1, yPercent: 0, duration: 2.4 }, 'accueil-=0.3')
         .fromTo('.hero-trait', { scaleX: 0 }, { scaleX: 1, duration: 1.2, ease: 'expo.inOut' }, 'accueil+=0.45')
         .fromTo('.hero-info > *:not(.hero-trait)', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1.3, stagger: 0.1 }, 'accueil+=0.6')
+        .fromTo('.reseau', { opacity: 0, y: 22, filter: 'blur(6px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2, stagger: 0.09, clearProps: 'filter' }, 'accueil+=0.85')
         .fromTo('.rail', { opacity: 0, x: bureau ? -30 : 0, y: bureau ? 0 : 30 }, { opacity: 1, x: 0, y: 0, duration: 1.3 }, 'accueil+=0.4')
-        .fromTo('.rail-logo, .rail li:not(.rail-indicateur), .rail li.rail-indicateur', { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 1, ease: 'back.out(2)', stagger: 0.05 }, 'accueil+=0.55')
-        .fromTo('.defiler', { opacity: 0 }, { opacity: 1, duration: 1.2 }, 'accueil+=1')
+        .fromTo('.rail li:not(.rail-indicateur), .rail li.rail-indicateur', { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 1, ease: 'back.out(2)', stagger: 0.05 }, 'accueil+=0.55')
+        .fromTo('.fusee-intro', { y: function () { return -window.innerHeight; } }, { y: 0, duration: 2.6, ease: 'power3.out' }, 'accueil+=0.5')
+        .fromTo('.fusee-sol', { opacity: 0 }, { opacity: 1, duration: 1.2 }, 'accueil+=1.7')
+        .fromTo('.hud', { opacity: 0 }, { opacity: 1, duration: 1.4 }, 'accueil+=1.3')
         .add(function () { if (lenis) lenis.start(); }, 'accueil+=0.5');
       gsap.set('.hero-trait', { scaleX: 0 });
       finAttente();
@@ -1110,10 +1607,17 @@
       gsap.to('.progression', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.4 } });
 
       // L'accueil s'éloigne en douceur
-      var sortie = { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true };
-      gsap.to('.hero-nom', { yPercent: -22, ease: 'none', scrollTrigger: sortie });
-      gsap.to('.hero-info', { y: -90, opacity: 0, ease: 'none', scrollTrigger: sortie });
+      var sortie = { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true, invalidateOnRefresh: true };
+      var heroEl = document.querySelector('.hero');
+      gsap.to('.hero-titre', { yPercent: -22, ease: 'none', scrollTrigger: sortie });
+      gsap.to(['.hero-info', '.reseaux'], { y: -90, opacity: 0, ease: 'none', scrollTrigger: sortie });
       gsap.to('#ciel', { yPercent: 18, ease: 'none', scrollTrigger: sortie });
+      gsap.to(['#terre', '.fusee-sol'], { y: function () { return heroEl.offsetHeight * 0.32; }, ease: 'none', scrollTrigger: sortie });
+      // La fusée décolle quand on fait défiler, et se repose quand on remonte
+      gsap.to('.fusee', {
+        y: function () { return -(heroEl.offsetHeight + 280); }, ease: 'power2.in',
+        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.9, invalidateOnRefresh: true }
+      });
 
       // Titres : mots qui montent
       document.querySelectorAll('[data-split]').forEach(function (el) {
