@@ -87,39 +87,13 @@
     .lenis.lenis-smooth { scroll-behavior: auto !important; }
     .lenis.lenis-stopped { overflow: hidden; }
 
-    /* ======================= ÉCRAN DE CHARGEMENT ======================= */
-    .rideau { display: none; }
-    .js .rideau {
-      position: fixed; inset: 0; z-index: 100; display: grid; place-items: center;
-      color: var(--clair); font-family: var(--titre);
-    }
-    .rideau-volet { position: absolute; left: 0; right: 0; height: 50.5%; background: var(--nuit); }
-    .rideau-volet.haut { top: 0; }
-    .rideau-volet.bas { bottom: 0; }
-    .rideau-contenu { position: relative; text-align: center; }
-    .rideau-globe { width: 128px; height: 128px; display: block; margin: 0 auto 28px; overflow: visible; }
-    .rg-trace path {
-      fill: none; stroke: var(--clair); stroke-width: 1.1; stroke-opacity: .45; stroke-linecap: round;
-      stroke-dasharray: 1; stroke-dashoffset: 1;
-    }
-    .rg-trace .rg-contour { stroke-opacity: .9; }
-    .rg-anneau { fill: none; stroke: var(--ligne-nuit); stroke-width: 1; stroke-dasharray: 2 5; }
-    .rg-orbite { transform-origin: 60px 60px; animation: orbite 2.6s linear infinite; }
-    .rg-point { fill: var(--rose-nuit); }
-    @keyframes orbite { to { transform: rotate(360deg); } }
-    .rideau-nom {
-      display: block; overflow: hidden; margin: 0 0 10px; padding-bottom: .06em;
-      font-weight: 700; font-stretch: 85%; font-size: 1.4rem; letter-spacing: .01em;
-    }
-    .rideau-nom span { display: inline-block; }
-    .rideau-ligne { display: flex; justify-content: center; gap: 14px; margin: 0; font-size: .82rem; color: var(--clair-2); }
-    .rideau-compteur { color: var(--rose-nuit); min-width: 3.4em; text-align: left; font-variant-numeric: tabular-nums; }
+    /* ================ OUVERTURE : arrivée depuis l'orbite ================ */
+    .fusee-intro { transform-origin: 50% 100%; }
 
     /* Avant l'animation d'ouverture */
     .attente .lettre { transform: translateY(115%); }
-    .attente .rideau-nom span { transform: translateY(110%); }
     .attente .hero-info > *, .attente .hero-je, .attente .reseau, .attente .fusee-sol, .attente .rail,
-    .attente .rideau-ligne, .attente .rg-anneau, .attente .rg-orbite { opacity: 0; }
+    .attente #ciel, .attente #terre, .attente .fusee { opacity: 0; }
 
     /* ======================= PROGRESSION + CURSEUR ======================= */
     .progression {
@@ -190,6 +164,7 @@
     .hero::before {   /* lueur de l'atmosphère au-dessus de l'horizon */
       content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
       background: radial-gradient(62% 40% at 50% 100%, rgba(80, 122, 214, .2), transparent 72%);
+      opacity: var(--lueur, 1);
     }
     #ciel, #terre, #fumee { position: absolute; left: 0; width: 100%; display: block; pointer-events: none; }
     #ciel { top: -5%; height: 110%; z-index: 0; }
@@ -256,7 +231,10 @@
     .ico.a-logo img { display: block; }
     .ico.a-logo svg { display: none; }
     .reseau .ico { transition: transform .6s var(--sortie); }
-    .reseau:hover .ico.a-logo { transform: scale(1.12) rotate(-6deg); }
+    .reseau:hover .ico { transform: scale(1.12) rotate(-6deg); }
+    /* Icône courriel pleine, au même gabarit que les logos LinkedIn et GitHub */
+    .ico .ico-plein { width: 22px; height: 22px; }
+    .ico-plein .pli { fill: none; stroke: #000; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
     .reseau svg { width: 18px; height: 18px; flex: none; overflow: visible; }
     .reseau svg path {
       fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
@@ -589,33 +567,13 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .g-pouls, .rg-orbite, .fusee-flotte { animation: none; }
+      .g-pouls, .fusee-flotte { animation: none; }
       .escale > div > * { opacity: 1; transform: none; }
     }
   </style>
 </head>
 <body data-theme="nuit" id="haut">
 
-  <div class="rideau" aria-hidden="true">
-    <div class="rideau-volet haut"></div>
-    <div class="rideau-volet bas"></div>
-    <div class="rideau-contenu">
-      <svg class="rideau-globe" viewBox="0 0 120 120">
-        <path class="rg-anneau" d="M60 4 a56 56 0 1 1 0 112 a56 56 0 1 1 0 -112" />
-        <g class="rg-trace">
-          <path class="rg-contour" pathLength="1" d="M60 18 a42 42 0 1 1 0 84 a42 42 0 1 1 0 -84" />
-          <path pathLength="1" d="M60 18 a15 42 0 1 1 0 84 a15 42 0 1 1 0 -84" />
-          <path pathLength="1" d="M60 18 a31 42 0 1 1 0 84 a31 42 0 1 1 0 -84" />
-          <path pathLength="1" d="M18 60 Q60 71 102 60" />
-          <path pathLength="1" d="M23.6 39 Q60 47 96.4 39" />
-          <path pathLength="1" d="M23.6 81 Q60 90 96.4 81" />
-        </g>
-        <g class="rg-orbite"><circle class="rg-point" cx="60" cy="4" r="3.5" /></g>
-      </svg>
-      <p class="rideau-nom">Tom Séveno</p>
-      <p class="rideau-ligne"><span>Sécurité internationale</span><span class="rideau-compteur">0 %</span></p>
-    </div>
-  </div>
   <div class="progression" aria-hidden="true"></div>
 
   <nav class="rail" aria-label="Navigation principale">
@@ -660,7 +618,7 @@
         <ul class="reseaux" aria-label="Me retrouver en ligne">
           <li><a class="reseau aimant" href="https://github.com/tomseveno" target="_blank" rel="noopener" aria-label="GitHub (nouvel onglet)"><span class="ico a-logo"><img src="images/logo-github.svg" alt="" width="22" height="22" /></span><span class="roule" aria-hidden="true"><span>GitHub</span><span>GitHub</span></span></a></li>
           <li><a class="reseau aimant" href="https://www.linkedin.com/in/tom-s%C3%A9veno-1286243b2/" target="_blank" rel="noopener" aria-label="LinkedIn (nouvel onglet)"><span class="ico a-logo"><img src="images/logo-linkedin.png" alt="" width="22" height="22" /></span><span class="roule" aria-hidden="true"><span>LinkedIn</span><span>LinkedIn</span></span></a></li>
-          <li><a class="reseau aimant" href="mailto:tom.seveno56@gmail.com" data-copier="tom.seveno56@gmail.com" aria-label="Écrire à tom.seveno56@gmail.com"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 5.5 H19 a2 2 0 0 1 2 2 V16.5 a2 2 0 0 1 -2 2 H5 a2 2 0 0 1 -2 -2 V7.5 a2 2 0 0 1 2 -2 Z" /><path pathLength="1" d="M3.6 7 L12 13 L20.4 7" /></svg></span><span class="roule" aria-hidden="true"><span>Courriel</span><span>Courriel</span></span></a></li>
+          <li><a class="reseau aimant" href="mailto:tom.seveno56@gmail.com" data-copier="tom.seveno56@gmail.com" aria-label="Écrire à tom.seveno56@gmail.com"><span class="ico"><svg class="ico-plein" viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mMail1" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" /><path class="pli" pathLength="1" d="M5.6 8.4 L12 12.9 L18.4 8.4" /></mask></defs><rect x="1.5" y="3.5" width="21" height="17" rx="3.4" fill="currentColor" mask="url(#mMail1)" /></svg></span><span class="roule" aria-hidden="true"><span>Courriel</span><span>Courriel</span></span></a></li>
         </ul>
       </div>
 
@@ -965,7 +923,7 @@
 
       <ul class="canaux" aria-label="Me contacter">
         <li class="canal">
-          <span class="canal-ico"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 5.5 H19 a2 2 0 0 1 2 2 V16.5 a2 2 0 0 1 -2 2 H5 a2 2 0 0 1 -2 -2 V7.5 a2 2 0 0 1 2 -2 Z" /><path pathLength="1" d="M3.6 7 L12 13 L20.4 7" /></svg></span></span>
+          <span class="canal-ico"><span class="ico"><svg class="ico-plein" viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mMail2" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" /><path class="pli" pathLength="1" d="M5.6 8.4 L12 12.9 L18.4 8.4" /></mask></defs><rect x="1.5" y="3.5" width="21" height="17" rx="3.4" fill="currentColor" mask="url(#mMail2)" /></svg></span></span>
           <span class="canal-type">Courriel</span>
           <a class="canal-lien" href="mailto:tom.seveno56@gmail.com">tom.seveno56<wbr>@gmail.com</a>
           <span class="canal-actions">
@@ -1018,18 +976,14 @@
     var sourisFine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     var aGsap = !!(window.gsap && window.ScrollTrigger);
     if (aGsap) gsap.registerPlugin(ScrollTrigger);
-    var rideau = document.querySelector('.rideau');
     var finAttente = function () { html.classList.remove('attente'); };
-    var retirerRideau = function () { if (rideau && rideau.parentNode) rideau.parentNode.removeChild(rideau); };
     var ouvertureLancee = false;
+    // Caméra de l'ouverture : 0 = la Terre vue de loin, 1 = l'horizon de l'accueil
+    var camera = { a: aGsap && !reduit ? 0 : 1, s: 1 };
+    var effetAtterrissage = function () {};
+    var retirerVol = function () { var v = document.querySelector('.vol'); if (v && v.parentNode) v.parentNode.removeChild(v); };
     // Sécurité : tout s'affiche même si une bibliothèque ne charge pas
-    setTimeout(function () { if (!ouvertureLancee) { finAttente(); retirerRideau(); } }, 6000);
-
-    // Nom de l'écran de chargement découpé en lettres
-    var rnom = document.querySelector('.rideau-nom');
-    if (rnom) rnom.innerHTML = Array.from(rnom.textContent).map(function (c) {
-      return '<span>' + (c === ' ' ? '&nbsp;' : c) + '</span>';
-    }).join('');
+    setTimeout(function () { if (!ouvertureLancee) { camera.a = 1; finAttente(); retirerVol(); } }, 6000);
 
     /* ---------- 1. Défilement fluide ---------- */
     var lenis = null;
@@ -1215,43 +1169,86 @@
         degAir.addColorStop(0, 'rgba(120, 160, 255, 0)'); degAir.addColorStop(1, 'rgba(120, 160, 255, .16)');
       }
 
-      function posSat(S, a) {
-        var ex = R * S.kx * Math.cos(a), ey = R * S.ky * Math.sin(a), ci = Math.cos(S.inc * RAD), si = Math.sin(S.inc * RAD);
-        return [cx + ex * ci - ey * si, cy + ex * si + ey * ci];
+      function posSat(S, a, Rr, cyr) {
+        var ex = Rr * S.kx * Math.cos(a), ey = Rr * S.ky * Math.sin(a), ci = Math.cos(S.inc * RAD), si = Math.sin(S.inc * RAD);
+        return [cx + ex * ci - ey * si, cyr + ex * si + ey * ci];
+      }
+      function lisse(a, b, x) { var t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
+
+      // Caméra : de la Terre entière (a = 0) à son horizon en bas de l'accueil (a = 1)
+      function geometrie() {
+        var a = camera.a;
+        if (a >= 1) return { R: R, cy: cy, a: 1, top: cy - R, top0: cy - R };
+        var r0 = Math.min(W, H) * 0.17, top0 = H * 0.6 - r0, topF = H - horizon;
+        var Rr = Math.exp(Math.log(r0) + (Math.log(R) - Math.log(r0)) * a);
+        var top = top0 + (topF - top0) * a;
+        return { R: Rr, cy: top + Rr, a: a, top: top, top0: top0 };
       }
 
+      // La fusée suit la caméra : minuscule au loin, elle grandit et se pose sur sa base
+      var fuseeIntro = document.querySelector('.fusee-intro');
+      function placerFusee(G) {
+        if (G.a >= 1) {
+          if (camera.s !== 1) { fuseeIntro.style.transform = ''; svgF.style.filter = ''; camera.s = 1; }
+          return;
+        }
+        var sol = H - horizon;
+        var ech = 0.12 + 0.88 * Math.pow(G.a, 1.8);
+        var ecart = Math.pow(1 - G.a, 1.3) * Math.max(0, G.top0 - H * 0.16);
+        camera.s = ech;
+        fuseeIntro.style.transform = 'translate3d(0,' + ((G.top - sol) - ecart).toFixed(1) + 'px,0) scale(' + ech.toFixed(4) + ')';
+        var plasma = Math.max(0, 1 - Math.abs(G.a - 0.48) / 0.2);   // rentrée atmosphérique
+        svgF.style.filter = plasma > 0.01 ? 'drop-shadow(0 0 ' + (4 + plasma * 14).toFixed(1) + 'px rgba(255, 150, 110, ' + (plasma * 0.9).toFixed(2) + '))' : '';
+      }
+
+      var sPose = 0;
       function dessinerTerre(t) {
-        var s = t * 0.001;
+        var s = t * 0.001, G = geometrie(), Rr = G.R, cyr = G.cy, ap = G.a;
+        if (ap < 1) sPose = s;
+        hero.style.setProperty('--lueur', (ap * ap * ap).toFixed(3));
         xT.clearRect(0, 0, W, H);
         derive.cx += (derive.x - derive.cx) * 0.03; derive.cy += (derive.y - derive.cy) * 0.03;
 
-        // Orbites et satellites (derrière la Terre)
+        // Orbites et satellites (orbites entières tant que la Terre est vue de loin)
+        var ouv = OUV + (Math.PI - OUV) * (1 - ap);
         xT.lineWidth = 1;
         SATS.forEach(function (S) {
           xT.globalAlpha = 0.13; xT.strokeStyle = '#B9C8E6'; xT.setLineDash([2, 7]);
-          xT.beginPath(); xT.ellipse(cx, cy, R * S.kx, R * S.ky, S.inc * RAD, -Math.PI / 2 - OUV, -Math.PI / 2 + OUV); xT.stroke();
+          xT.beginPath(); xT.ellipse(cx, cyr, Rr * S.kx, Rr * S.ky, S.inc * RAD, -Math.PI / 2 - ouv, -Math.PI / 2 + ouv); xT.stroke();
           xT.setLineDash([]);
           var u = reduit ? 0.5 : (s / S.duree + S.ph) % 1;
-          var a = -Math.PI / 2 + (S.sens > 0 ? u * 2 - 1 : 1 - u * 2) * OUV;
-          var fondu = Math.sin(u * Math.PI);
+          var a = -Math.PI / 2 + (S.sens > 0 ? u * 2 - 1 : 1 - u * 2) * ouv;
+          var fondu = 1 + (Math.sin(u * Math.PI) - 1) * lisse(0.8, 1, ap);
           for (var q = 22; q >= 1; q--) {
-            var p = posSat(S, a - S.sens * q * 0.0042);
+            var p = posSat(S, a - S.sens * q * 0.0042 * Math.sqrt(R / Rr), Rr, cyr);
             xT.globalAlpha = fondu * (1 - q / 22) * 0.55; xT.fillStyle = '#C9D6EE';
             xT.fillRect(p[0] - 0.6, p[1] - 0.6, 1.2, 1.2);
           }
-          var tete = posSat(S, a);
+          var tete = posSat(S, a, Rr, cyr);
           xT.globalAlpha = fondu * 0.35; xT.fillStyle = '#EC6E9F';
           xT.beginPath(); xT.arc(tete[0], tete[1], 4.5, 0, TOUR); xT.fill();
           xT.globalAlpha = fondu; xT.fillStyle = '#FFFFFF';
           xT.beginPath(); xT.arc(tete[0], tete[1], 1.6, 0, TOUR); xT.fill();
         });
 
-        // Disque de la Terre
-        xT.globalAlpha = 1; xT.fillStyle = degTerre;
-        xT.beginPath(); xT.arc(cx, cy, R, 0, TOUR); xT.fill();
+        // Dégradés : mis en cache à l'horizon final, recalculés pendant l'approche
+        var gT = degTerre, gH = degHalo, gA = degAir, larg = 70 * (0.45 + 0.55 * ap);
+        if (ap < 1) {
+          gT = xT.createRadialGradient(cx, cyr, Math.max(0, Rr - Math.min(170, Rr * 0.6)), cx, cyr, Rr);
+          gT.addColorStop(0, '#060B17'); gT.addColorStop(1, '#122140');
+          gH = xT.createRadialGradient(cx, cyr, Rr, cx, cyr, Rr + larg);
+          gH.addColorStop(0, 'rgba(120, 160, 255, .26)'); gH.addColorStop(1, 'rgba(120, 160, 255, 0)');
+          gA = xT.createRadialGradient(cx, cyr, Rr - Math.min(34, Rr * 0.25), cx, cyr, Rr);
+          gA.addColorStop(0, 'rgba(120, 160, 255, 0)'); gA.addColorStop(1, 'rgba(120, 160, 255, .16)');
+        }
 
-        // Continents en points, la Terre tourne lentement
-        var lam0 = (-30 - (reduit ? 0 : s * 1.1) + derive.cx * 7) * RAD, phi0 = (-30 + derive.cy * 2.5) * RAD;
+        // Disque de la Terre
+        xT.globalAlpha = 1; xT.fillStyle = gT;
+        xT.beginPath(); xT.arc(cx, cyr, Rr, 0, TOUR); xT.fill();
+
+        // Continents en points : pendant l'approche, la Terre tourne de l'Europe vers Québec
+        var lam0 = (-64 + (1 - ap) * 72 - (reduit ? 0 : (s - sPose) * 1.1) + derive.cx * 7 * ap) * RAD;
+        var phi0 = (-30 + (1 - ap) * 50 + derive.cy * 2.5 * ap) * RAD;
         var c0 = Math.cos(lam0), s0 = Math.sin(lam0), cp0 = Math.cos(phi0), sp0 = Math.sin(phi0);
         xT.fillStyle = '#B3C6E4';
         for (var i = 0; i < pts.length; i += 4) {
@@ -1259,29 +1256,30 @@
           var cd = cl * c0 + sl * s0;
           var cosc = sp0 * sp + cp0 * cp * cd;
           if (cosc < 0.003) continue;
-          var y = cy - R * (cp0 * sp - sp0 * cp * cd);
+          var y = cyr - Rr * (cp0 * sp - sp0 * cp * cd);
           if (y > H + 2) continue;
-          var x = cx + R * cp * (sl * c0 - cl * s0);
+          var x = cx + Rr * cp * (sl * c0 - cl * s0);
           if (x < -2 || x > W + 2) continue;
           xT.globalAlpha = Math.min(1, cosc * 4.5) * 0.8;
           xT.fillRect(x - 0.75, y - 0.75, 1.5, 1.5);
         }
 
-        // Lieux repères : point rose et onde
+        // Lieux repères : point rose et onde (étiquettes une fois posé, jamais sous la fusée)
         xT.font = '500 11px Archivo, "Helvetica Neue", Arial, sans-serif';
+        var etiq = lisse(0.8, 1, ap);
         LIEUX.forEach(function (L) {
           var cd = L.cl * c0 + L.sl * s0, cosc = sp0 * L.sp + cp0 * L.cp * cd;
           if (cosc < 0.01) return;
-          var y = cy - R * (cp0 * L.sp - sp0 * L.cp * cd);
+          var y = cyr - Rr * (cp0 * L.sp - sp0 * L.cp * cd);
           if (y > H) return;
-          var x = cx + R * L.cp * (L.sl * c0 - L.cl * s0);
+          var x = cx + Rr * L.cp * (L.sl * c0 - L.cl * s0);
           var a = Math.min(1, cosc * 5);
-          var ph = reduit ? 0.4 : (s * 0.4 + L.ph) % 1;
+          var ph = reduit ? 0.4 : (s * 0.4 + L.ph) % 1, onde = (2 + ph * 16) * (0.4 + 0.6 * ap);
           xT.globalAlpha = a * (1 - ph) * 0.8; xT.strokeStyle = '#EC6E9F'; xT.lineWidth = 1;
-          xT.beginPath(); xT.ellipse(x, y, 2 + ph * 16, (2 + ph * 16) * 0.45, 0, 0, TOUR); xT.stroke();
+          xT.beginPath(); xT.ellipse(x, y, onde, onde * (0.45 + 0.55 * (1 - ap)), 0, 0, TOUR); xT.stroke();
           xT.globalAlpha = a; xT.fillStyle = '#EC6E9F';
           xT.beginPath(); xT.arc(x, y, 2.2, 0, TOUR); xT.fill();
-          var centre = 1 - Math.min(1, Math.abs(x - cx) / (W * 0.42));
+          var dx = Math.abs(x - cx), centre = (1 - Math.min(1, dx / (W * 0.42))) * lisse(45, 95, dx) * etiq;
           if (centre > 0 && L.nom) {
             xT.globalAlpha = a * centre * 0.7; xT.fillStyle = '#D4DCEA';
             xT.fillText(L.nom, x + 7, y - 6);
@@ -1290,10 +1288,12 @@
 
         // Atmosphère : halo, lueur et limbe
         xT.globalAlpha = 1;
-        xT.fillStyle = degAir; xT.beginPath(); xT.arc(cx, cy, R, 0, TOUR); xT.fill();
-        xT.fillStyle = degHalo; xT.beginPath(); xT.arc(cx, cy, R + 70, 0, TOUR); xT.arc(cx, cy, R, 0, TOUR, true); xT.fill();
+        xT.fillStyle = gA; xT.beginPath(); xT.arc(cx, cyr, Rr, 0, TOUR); xT.fill();
+        xT.fillStyle = gH; xT.beginPath(); xT.arc(cx, cyr, Rr + larg, 0, TOUR); xT.arc(cx, cyr, Rr, 0, TOUR, true); xT.fill();
         xT.strokeStyle = 'rgba(176, 204, 255, .8)'; xT.lineWidth = 1.2;
-        xT.beginPath(); xT.arc(cx, cy, R, 0, TOUR); xT.stroke();
+        xT.beginPath(); xT.arc(cx, cyr, Rr, 0, TOUR); xT.stroke();
+
+        placerFusee(G);
       }
 
       /* Fusée : flamme, fumée, étincelles */
@@ -1306,11 +1306,14 @@
         r.addColorStop(0, 'rgba(208, 218, 238, 1)'); r.addColorStop(0.45, 'rgba(208, 218, 238, .45)'); r.addColorStop(1, 'rgba(208, 218, 238, 0)');
         g.fillStyle = r; g.fillRect(0, 0, 64, 64); return c;
       })();
+      var echelle = 1;
       function fumee(x, y, vx, vy, r, g, a, d) {
-        if (fumees.length < 440) fumees.push({ x: x, y: y, vx: vx, vy: vy, r: r, g: g, a: a, d: d });
+        var k = echelle;
+        if (fumees.length < 440) fumees.push({ x: x, y: y, vx: vx * k, vy: vy * k, r: r * k, g: g * k, a: a, d: d });
       }
       function etincelle(x, y, vx, vy, v) {
-        if (etincelles.length < 280) etincelles.push({ x: x, y: y, vx: vx, vy: vy, v: v, v0: v, c: Math.random() < 0.5 ? '255, 210, 168' : '236, 110, 159' });
+        var k = echelle;
+        if (etincelles.length < 280) etincelles.push({ x: x, y: y, vx: vx * k, vy: vy * k, v: v, v0: v, c: Math.random() < 0.5 ? '255, 210, 168' : '236, 110, 159' });
       }
       function etatFusee() {
         var hr = hero.getBoundingClientRect(), fr = svgF.getBoundingClientRect();
@@ -1327,6 +1330,7 @@
       }
 
       function etape() {
+        echelle = camera.a < 1 ? camera.s : 1;
         var e = etatFusee();
         var vit = e.alt - altPrec; altPrec = e.alt;
         var vol = e.alt > 16;
@@ -1398,6 +1402,12 @@
         }
         xF.globalCompositeOperation = 'source-over'; xF.globalAlpha = 1;
       }
+
+      effetAtterrissage = function () {
+        var e = etatFusee();
+        effets.push({ type: 'eclair', x: e.x, y: e.sol, t: 24 }, { type: 'onde', x: e.x, y: e.sol, t: 0 });
+        poussiere(e, 1);
+      };
 
       function boucle(t) {
         if (actif) { dessinerTerre(t); etape(); }
@@ -1497,36 +1507,35 @@
       });
     });
 
-    /* ---------- 5. Ouverture : écran de chargement puis accueil ---------- */
+    /* ---------- 5. Ouverture : la caméra plonge vers la Terre, la fusée se pose, puis l'accueil ---------- */
     function ouverture() {
       ouvertureLancee = true;
-      if (!aGsap || reduit) { finAttente(); retirerRideau(); return; }
+      if (!aGsap || reduit) { camera.a = 1; finAttente(); retirerVol(); return; }
       if (lenis) lenis.stop();
-      var compteur = document.querySelector('.rideau-compteur');
-      var etat = { v: 0 };
+      var dejaVu = false;
+      try { dejaVu = sessionStorage.getItem('ts-ouverture') === '1'; sessionStorage.setItem('ts-ouverture', '1'); } catch (err) { /* stockage indisponible */ }
+      var D = dejaVu ? 1 : 1.7;   // durée de l'approche (plus courte si la page a déjà été vue)
       var bureau = window.matchMedia('(min-width: 861px)').matches;
+
       var tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-      tl.to('.rg-trace path', { strokeDashoffset: 0, duration: 1.3, ease: 'power2.inOut', stagger: 0.1 }, 0)
-        .fromTo(['.rg-anneau', '.rg-orbite'], { opacity: 0 }, { opacity: 1, duration: 1 }, 0.25)
-        .fromTo('.rideau-nom span', { y: 0, yPercent: 110 }, { y: 0, yPercent: 0, duration: 1.2, stagger: 0.035 }, 0.3)
-        .fromTo('.rideau-ligne', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 1 }, 0.55)
-        .to(etat, { v: 100, duration: 1.5, ease: 'power2.inOut', onUpdate: function () { compteur.textContent = Math.round(etat.v) + ' %'; } }, 0.15)
-        .to('.rideau-contenu', { y: -24, opacity: 0, duration: 0.55, ease: 'power3.in' }, '+=0.1')
-        .to('.rideau-volet.haut', { yPercent: -100, duration: 1.2, ease: 'expo.inOut' }, '-=0.15')
-        .to('.rideau-volet.bas', { yPercent: 100, duration: 1.2, ease: 'expo.inOut', onComplete: retirerRideau }, '<')
-        .add('accueil', '-=0.65')
-        .fromTo('.hero-je', { opacity: 0, y: 16, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.3, clearProps: 'filter' }, 'accueil-=0.2')
-        .fromTo(lettres, { y: 0, yPercent: 115 }, { y: 0, yPercent: 0, duration: 1.6, stagger: 0.05 }, 'accueil')
-        .fromTo('#ciel', { opacity: 0, scale: 1.12 }, { opacity: 1, scale: 1, duration: 2.6, ease: 'power2.out' }, 'accueil-=0.5')
-        .fromTo('#terre', { opacity: 0, yPercent: 9 }, { opacity: 1, yPercent: 0, duration: 2.4 }, 'accueil-=0.3')
-        .fromTo('.hero-trait', { scaleX: 0 }, { scaleX: 1, duration: 1.2, ease: 'expo.inOut' }, 'accueil+=0.45')
-        .fromTo('.hero-info > *:not(.hero-trait)', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1.3, stagger: 0.1 }, 'accueil+=0.6')
-        .fromTo('.reseau', { opacity: 0, y: 22, filter: 'blur(6px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.2, stagger: 0.09, clearProps: 'filter' }, 'accueil+=0.85')
-        .fromTo('.rail', { opacity: 0, x: bureau ? -30 : 0, y: bureau ? 0 : 30 }, { opacity: 1, x: 0, y: 0, duration: 1.3 }, 'accueil+=0.4')
-        .fromTo('.rail li:not(.rail-indicateur), .rail li.rail-indicateur', { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 1, ease: 'back.out(2)', stagger: 0.05 }, 'accueil+=0.55')
-        .fromTo('.fusee-intro', { y: function () { return -window.innerHeight; } }, { y: 0, duration: 2.6, ease: 'power3.out' }, 'accueil+=0.5')
-        .fromTo('.fusee-sol', { opacity: 0 }, { opacity: 1, duration: 1.2 }, 'accueil+=1.7')
-        .add(function () { if (lenis) lenis.start(); }, 'accueil+=0.5');
+      tl.fromTo('#ciel', { opacity: 0, scale: 1.2 }, { opacity: 1, duration: 0.9, ease: 'power2.out' }, 0)
+        .to('#ciel', { scale: 1, duration: D + 0.3, ease: 'power2.inOut' }, 0)
+        .fromTo('#terre', { opacity: 0 }, { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0)
+        .fromTo('.fusee', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.1)
+        .to(camera, { a: 1, duration: D, ease: 'power3.inOut' }, 0.15)
+        .addLabel('pose', 0.15 + D)
+        .call(effetAtterrissage, null, 'pose')
+        .addLabel('accueil', 'pose-=0.35')
+        .fromTo('.hero-je', { opacity: 0, y: 14, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.1, clearProps: 'filter' }, 'accueil')
+        .fromTo(lettres, { y: 0, yPercent: 115 }, { y: 0, yPercent: 0, duration: 1.3, stagger: 0.04 }, 'accueil+=0.05')
+        .fromTo('.hero-trait', { scaleX: 0 }, { scaleX: 1, duration: 1, ease: 'expo.inOut' }, 'accueil+=0.3')
+        .fromTo('.hero-info > *:not(.hero-trait)', { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, stagger: 0.08 }, 'accueil+=0.4')
+        .fromTo('.reseau', { opacity: 0, y: 18, filter: 'blur(6px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1, stagger: 0.07, clearProps: 'filter' }, 'accueil+=0.6')
+        .fromTo('.rail', { opacity: 0, x: bureau ? -26 : 0, y: bureau ? 0 : 26 }, { opacity: 1, x: 0, y: 0, duration: 1.1 }, 'accueil+=0.4')
+        .fromTo('.rail li:not(.rail-indicateur), .rail li.rail-indicateur', { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.9, ease: 'back.out(2)', stagger: 0.04 }, 'accueil+=0.5')
+        .fromTo('.fusee-sol', { opacity: 0 }, { opacity: 1, duration: 1 }, 'pose+=0.1')
+        .add(function () { if (lenis) lenis.start(); }, 'accueil+=0.3')
+        .add(function () { if (typeof changerLangue === 'function') gsap.delayedCall(3.2, changerLangue); }, 'accueil+=1');
       gsap.set('.hero-trait', { scaleX: 0 });
       finAttente();
     }
@@ -1588,7 +1597,6 @@
       };
       gsap.set(motsJe[1].querySelectorAll('.je-l'), { y: 0, yPercent: 115, opacity: 0, transformPerspective: 500 });
       gsap.set(motsJe[0].querySelectorAll('.je-l'), { transformPerspective: 500 });
-      gsap.delayedCall(6.5, changerLangue);
     } else {
       motsJe[1].style.display = 'none';
     }
