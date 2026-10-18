@@ -64,9 +64,12 @@
     }
     /* La section suivante monte par-dessus la précédente, comme une feuille */
     .feuille {
-      position: relative; z-index: 2; margin-top: -44px; border-radius: 44px 44px 0 0;
-      box-shadow: 0 -28px 60px -24px rgba(5, 10, 22, .45);
+      --rayon: 56px;
+      position: relative; z-index: 2; margin-top: -56px; border-radius: var(--rayon) var(--rayon) 0 0;
+      box-shadow: 0 -30px 70px -30px rgba(3, 7, 16, .55);
     }
+    /* Voile qui assombrit doucement la section recouverte */
+    .voile { position: absolute; inset: 0; z-index: 6; pointer-events: none; opacity: 0; background: rgba(4, 8, 18, .62); }
     .no-js section[data-theme="papier"] {
       background: var(--papier); color: var(--encre);
       --txt: var(--encre); --txt2: var(--gris); --ligne: var(--ligne-papier); --acc: var(--rose);
@@ -442,104 +445,83 @@
 
     /* ============================= CONTACT ============================= */
     .contact { padding-bottom: 32px; }
-    .contact-grille {
-      display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1fr); gap: 16px;
+    .canaux { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ligne); }
+    .canal {
+      position: relative; isolation: isolate;
+      display: grid; grid-template-columns: 48px minmax(0, 150px) minmax(0, 1fr) auto; align-items: center; gap: 22px;
+      padding: 18px 10px; border-bottom: 1px solid var(--ligne);
     }
-    .carte {
-      --mx: 50%; --my: 50%;
-      position: relative; isolation: isolate; overflow: hidden;
-      display: flex; flex-direction: column; align-items: flex-start;
-      min-height: 300px; padding: 28px; border-radius: 22px;
-      background: linear-gradient(165deg, rgba(232, 236, 241, .07), rgba(232, 236, 241, .015) 60%);
-      border: 1px solid var(--ligne);
-      color: var(--txt); text-decoration: none;
-      transition: box-shadow .8s var(--sortie);
+    .canal::before {   /* reflet qui balaie la ligne au survol */
+      content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+      background: linear-gradient(90deg, rgba(236, 110, 159, .13), rgba(236, 110, 159, 0) 75%);
+      transform: scaleX(0); transform-origin: left; transition: transform .9s var(--sortie);
     }
-    .carte::before {
-      content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .6s;
-      background: radial-gradient(300px circle at var(--mx) var(--my), rgba(236, 110, 159, .16), transparent 70%);
+    .canal::after {    /* fil rose qui se dessine sous la ligne */
+      content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; pointer-events: none;
+      background: var(--acc); transform: scaleX(0); transform-origin: left; transition: transform .9s var(--sortie);
     }
-    .carte::after {
-      content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
-      background: radial-gradient(240px circle at var(--mx) var(--my), rgba(236, 110, 159, .95), transparent 65%);
-      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor; mask-composite: exclude;
-      opacity: 0; transition: opacity .6s;
+    .canal:hover::before, .canal:focus-within::before, .canal:hover::after, .canal:focus-within::after { transform: scaleX(1); }
+    .canal-ico {
+      width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center;
+      border: 1px solid var(--ligne); color: var(--txt);
+      transition: border-color .6s, scale .8s var(--sortie), rotate .8s var(--sortie);
     }
-    .carte:hover, .carte:focus-within { box-shadow: 0 40px 70px -40px rgba(0, 0, 0, .75); }
-    .carte:hover::before, .carte:hover::after, .carte:focus-within::before, .carte:focus-within::after { opacity: 1; }
-    .carte-ico {
-      width: 56px; height: 56px; border-radius: 50%; margin-bottom: auto;
-      display: grid; place-items: center; border: 1px solid var(--ligne);
-      background: rgba(232, 236, 241, .04); color: var(--txt);
-      transition: background-color .6s, border-color .6s, color .6s, transform .8s var(--sortie);
-    }
-    .carte-ico .ico { width: 26px; height: 26px; }
-    .carte-ico .ico img { width: 26px; height: 26px; }
-    .carte-ico svg { width: 22px; height: 22px; overflow: visible; }
-    .carte-ico svg path, .pilule svg path, .carte-fleche svg path {
+    .canal-ico .ico, .canal-ico .ico img { width: 22px; height: 22px; }
+    .canal-ico svg { width: 21px; height: 21px; overflow: visible; }
+    .canal-ico svg path, .canal-copier svg path, .canal-fleche svg path {
       fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
     }
-    .carte-ico svg path { stroke-dasharray: 1; stroke-dashoffset: 0; }
-    .carte:hover .carte-ico { background: var(--acc); border-color: var(--acc); color: #fff; transform: scale(1.06); }
-    .carte:hover .carte-ico svg path { animation: trace .9s var(--sortie); }
-    .carte-type { margin: 26px 0 4px; font-family: var(--titre); font-size: .85rem; color: var(--txt2); }
-    .carte-valeur {
-      margin: 0; font-family: var(--titre); font-weight: 700; font-stretch: 88%;
-      font-size: clamp(1.3rem, 1.9vw, 1.75rem); line-height: 1.15; overflow-wrap: anywhere;
+    .canal-ico svg path { stroke-dasharray: 1; stroke-dashoffset: 0; }
+    .canal:hover .canal-ico { border-color: var(--acc); scale: 1.08; rotate: -6deg; }
+    .canal:hover .canal-ico svg path { animation: trace .9s var(--sortie); }
+    .canal-type { font-family: var(--titre); font-size: .85rem; color: var(--txt2); }
+    .canal-lien {
+      font-family: var(--titre); font-weight: 600; font-stretch: 92%;
+      font-size: clamp(1.1rem, 1.7vw, 1.45rem); color: var(--txt); text-decoration: none;
+      overflow-wrap: break-word; transition: translate .8s var(--sortie);
     }
-    .carte-note { margin: 6px 0 0; font-size: .95rem; line-height: 1.5; color: var(--txt2); }
-    .carte-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
-    .pilule {
-      position: relative; overflow: hidden; isolation: isolate;
-      display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 999px;
-      font: 600 .9rem/1 var(--titre); color: var(--txt); text-decoration: none; cursor: pointer;
-      background: transparent; border: 1px solid var(--ligne);
-      transition: color .5s, border-color .5s;
+    .canal-lien::after { content: ""; position: absolute; inset: 0; z-index: 1; }   /* toute la ligne est cliquable */
+    .canal-lien:focus-visible { outline: none; }
+    .canal:focus-within { outline: 2px solid var(--acc); outline-offset: -2px; }
+    .canal:hover .canal-lien { translate: 10px 0; }
+    .canal-actions { display: flex; align-items: center; gap: 10px; }
+    .canal-copier {
+      position: relative; z-index: 2; overflow: hidden; isolation: isolate;
+      display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 14px; border-radius: 999px;
+      font: 600 .82rem/1 var(--titre); color: var(--txt); background: transparent; border: 1px solid var(--ligne);
+      cursor: pointer; transition: color .5s, border-color .5s;
     }
-    .pilule::before {
+    .canal-copier::before {
       content: ""; position: absolute; inset: 0; z-index: -1; background: var(--acc);
       transform: translateY(101%); transition: transform .6s var(--sortie);
     }
-    .pilule:hover, .pilule:focus-visible { color: #fff; border-color: var(--acc); }
-    .pilule:hover::before, .pilule:focus-visible::before { transform: none; }
-    .pilule-pleine { background: var(--txt); color: var(--fond); border-color: var(--txt); }
-    .pilule svg { width: 16px; height: 16px; }
-    .pilule.copie { border-color: var(--acc); color: #fff; }
-    .pilule.copie::before { transform: none; }
-    .carte-cta {
-      position: relative; margin-top: 22px; padding-bottom: 4px;
-      font-family: var(--titre); font-weight: 600; font-size: .92rem;
-    }
-    .carte-cta::after {
-      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor;
-      transform: scaleX(.25); transform-origin: left; transition: transform .7s var(--sortie);
-    }
-    .carte:hover .carte-cta::after { transform: scaleX(1); }
-    .carte-fleche {
-      position: absolute; top: 24px; right: 24px; width: 42px; height: 42px; border-radius: 50%; overflow: hidden;
+    .canal-copier:hover, .canal-copier:focus-visible, .canal-copier.copie { color: #fff; border-color: var(--acc); }
+    .canal-copier:hover::before, .canal-copier:focus-visible::before, .canal-copier.copie::before { transform: none; }
+    .canal-copier svg { width: 14px; height: 14px; }
+    .canal-fleche {
+      position: relative; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex: none;
       border: 1px solid var(--ligne); color: var(--txt);
       transition: background-color .5s, border-color .5s, color .5s;
     }
-    .carte-fleche svg {
-      position: absolute; left: 50%; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px;
+    .canal-fleche svg {
+      position: absolute; left: 50%; top: 50%; width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px;
       transition: transform .6s var(--sortie);
     }
-    .carte-fleche svg + svg { transform: translate(-150%, 150%); }
-    .carte:hover .carte-fleche { background: var(--txt); border-color: var(--txt); color: var(--fond); }
-    .carte:hover .carte-fleche svg:first-child { transform: translate(150%, -150%); }
-    .carte:hover .carte-fleche svg + svg { transform: none; }
+    .canal-fleche svg + svg { transform: translate(-160%, 160%); }
+    .canal:hover .canal-fleche { background: var(--txt); border-color: var(--txt); color: var(--fond); }
+    .canal:hover .canal-fleche svg:first-child { transform: translate(160%, -160%); }
+    .canal:hover .canal-fleche svg + svg { transform: none; }
 
     /* Bandeau décoratif de fin de page */
     .bandeau {
-      overflow: hidden; margin: clamp(64px, 12vh, 120px) calc(-1 * var(--marge)) 0 calc(-1 * var(--marge-g));
+      overflow: hidden; margin: clamp(48px, 8vh, 84px) calc(-1 * var(--marge)) 0 calc(-1 * var(--marge-g));
       border-top: 1px solid var(--ligne); border-bottom: 1px solid var(--ligne);
     }
     .piste { display: flex; width: max-content; }
     .groupe { display: flex; align-items: center; }
     .groupe span {
       font-family: var(--titre); font-weight: 700; font-stretch: 80%;
-      font-size: clamp(2.2rem, 6vw, 5.2rem); line-height: 1.2; padding: .12em .4em; white-space: nowrap;
+      font-size: clamp(1.7rem, 4.4vw, 3.8rem); line-height: 1.2; padding: .12em .4em; white-space: nowrap;
       color: transparent; -webkit-text-stroke: 1px var(--txt2);
     }
     .groupe .etoile { color: var(--acc); -webkit-text-stroke: 0; font-size: clamp(1.1rem, 2.4vw, 2rem); }
@@ -580,9 +562,13 @@
       .exp-date, .exp-titre, .exp-lieu { grid-column: 1; }
       .exp-plus { grid-column: 2; grid-row: 1 / span 3; }
       .det-contenu ul { padding-left: 1.1em; }
-      .contact-grille { grid-template-columns: 1fr; }
-      .carte { min-height: 0; padding: 24px; }
-      .carte-type { margin-top: 22px; }
+      .canal { grid-template-columns: 44px minmax(0, 1fr) auto; gap: 4px 14px; padding: 16px 4px; }
+      .canal-ico { width: 44px; height: 44px; grid-row: 1 / span 2; }
+      .canal-type { grid-column: 2; }
+      .canal-lien { grid-column: 2; font-size: .95rem; }
+      .canal-actions { grid-column: 3; grid-row: 1 / span 2; }
+      .canal-copier span { display: none; }
+      .canal-copier { width: 36px; padding: 0; justify-content: center; }
       .cecr, .langue { grid-template-columns: 80px repeat(6, minmax(0, 1fr)); }
     }
 
@@ -672,8 +658,8 @@
         </div>
 
         <ul class="reseaux" aria-label="Me retrouver en ligne">
-          <li><a class="reseau aimant" href="https://github.com/tomseveno" target="_blank" rel="noopener" aria-label="GitHub (nouvel onglet)"><span class="ico" data-logo="github"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M8.5 7.5 L4 12 L8.5 16.5" /><path pathLength="1" d="M15.5 7.5 L20 12 L15.5 16.5" /><path pathLength="1" d="M13.4 5 L10.6 19" /></svg><img alt="" /></span><span class="roule" aria-hidden="true"><span>GitHub</span><span>GitHub</span></span></a></li>
-          <li><a class="reseau aimant" href="https://www.linkedin.com/in/tom-s%C3%A9veno-1286243b2/" target="_blank" rel="noopener" aria-label="LinkedIn (nouvel onglet)"><span class="ico" data-logo="linkedin"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 4.5 H19 a1.5 1.5 0 0 1 1.5 1.5 V18 a1.5 1.5 0 0 1 -1.5 1.5 H5 a1.5 1.5 0 0 1 -1.5 -1.5 V6 a1.5 1.5 0 0 1 1.5 -1.5 Z" /><path pathLength="1" d="M9 8.8 a2 2 0 1 1 0 4 a2 2 0 1 1 0 -4" /><path pathLength="1" d="M5.8 16.6 C6.4 14.9 7.6 14.2 9 14.2 C10.4 14.2 11.6 14.9 12.2 16.6" /><path pathLength="1" d="M14.6 10 H18" /><path pathLength="1" d="M14.6 13.4 H18" /></svg><img alt="" /></span><span class="roule" aria-hidden="true"><span>LinkedIn</span><span>LinkedIn</span></span></a></li>
+          <li><a class="reseau aimant" href="https://github.com/tomseveno" target="_blank" rel="noopener" aria-label="GitHub (nouvel onglet)"><span class="ico a-logo"><img src="images/logo-github.svg" alt="" width="22" height="22" /></span><span class="roule" aria-hidden="true"><span>GitHub</span><span>GitHub</span></span></a></li>
+          <li><a class="reseau aimant" href="https://www.linkedin.com/in/tom-s%C3%A9veno-1286243b2/" target="_blank" rel="noopener" aria-label="LinkedIn (nouvel onglet)"><span class="ico a-logo"><img src="images/logo-linkedin.png" alt="" width="22" height="22" /></span><span class="roule" aria-hidden="true"><span>LinkedIn</span><span>LinkedIn</span></span></a></li>
           <li><a class="reseau aimant" href="mailto:tom.seveno56@gmail.com" data-copier="tom.seveno56@gmail.com" aria-label="Écrire à tom.seveno56@gmail.com"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 5.5 H19 a2 2 0 0 1 2 2 V16.5 a2 2 0 0 1 -2 2 H5 a2 2 0 0 1 -2 -2 V7.5 a2 2 0 0 1 2 -2 Z" /><path pathLength="1" d="M3.6 7 L12 13 L20.4 7" /></svg></span><span class="roule" aria-hidden="true"><span>Courriel</span><span>Courriel</span></span></a></li>
         </ul>
       </div>
@@ -977,34 +963,29 @@
         <p data-reveal>Pour un stage, un projet de recherche ou un échange sur les questions de sécurité internationale.</p>
       </div>
 
-      <div class="contact-grille" data-cascade>
-        <article class="carte carte-courriel">
-          <span class="carte-ico"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 5.5 H19 a2 2 0 0 1 2 2 V16.5 a2 2 0 0 1 -2 2 H5 a2 2 0 0 1 -2 -2 V7.5 a2 2 0 0 1 2 -2 Z" /><path pathLength="1" d="M3.6 7 L12 13 L20.4 7" /></svg></span></span>
-          <p class="carte-type">Courriel</p>
-          <p class="carte-valeur">tom.seveno56@gmail.com</p>
-          <p class="carte-note">Le moyen le plus direct pour me joindre.</p>
-          <div class="carte-actions">
-            <a class="pilule pilule-pleine" href="mailto:tom.seveno56@gmail.com">Écrire un courriel</a>
-            <button class="pilule" type="button" data-copier="tom.seveno56@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 9 H19 V19 H9 Z" /><path d="M5 15 V5 H15" /></svg><span class="pil-texte">Copier l'adresse</span></button>
-          </div>
-        </article>
-        <a class="carte" href="https://www.linkedin.com/in/tom-s%C3%A9veno-1286243b2/" target="_blank" rel="noopener" aria-label="Mon profil LinkedIn (nouvel onglet)">
-          <span class="carte-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span>
-          <span class="carte-ico"><span class="ico" data-logo="linkedin"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 4.5 H19 a1.5 1.5 0 0 1 1.5 1.5 V18 a1.5 1.5 0 0 1 -1.5 1.5 H5 a1.5 1.5 0 0 1 -1.5 -1.5 V6 a1.5 1.5 0 0 1 1.5 -1.5 Z" /><path pathLength="1" d="M9 8.8 a2 2 0 1 1 0 4 a2 2 0 1 1 0 -4" /><path pathLength="1" d="M5.8 16.6 C6.4 14.9 7.6 14.2 9 14.2 C10.4 14.2 11.6 14.9 12.2 16.6" /><path pathLength="1" d="M14.6 10 H18" /><path pathLength="1" d="M14.6 13.4 H18" /></svg><img alt="" /></span></span>
-          <span class="carte-type">LinkedIn</span>
-          <span class="carte-valeur">Tom Séveno</span>
-          <span class="carte-note">Parcours, formation et expériences.</span>
-          <span class="carte-cta">Voir le profil</span>
-        </a>
-        <a class="carte" href="https://github.com/tomseveno" target="_blank" rel="noopener" aria-label="Mon profil GitHub (nouvel onglet)">
-          <span class="carte-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span>
-          <span class="carte-ico"><span class="ico" data-logo="github"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M8.5 7.5 L4 12 L8.5 16.5" /><path pathLength="1" d="M15.5 7.5 L20 12 L15.5 16.5" /><path pathLength="1" d="M13.4 5 L10.6 19" /></svg><img alt="" /></span></span>
-          <span class="carte-type">GitHub</span>
-          <span class="carte-valeur">@tomseveno</span>
-          <span class="carte-note">Le code de ce site et mes projets.</span>
-          <span class="carte-cta">Voir le profil</span>
-        </a>
-      </div>
+      <ul class="canaux" aria-label="Me contacter">
+        <li class="canal">
+          <span class="canal-ico"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path pathLength="1" d="M5 5.5 H19 a2 2 0 0 1 2 2 V16.5 a2 2 0 0 1 -2 2 H5 a2 2 0 0 1 -2 -2 V7.5 a2 2 0 0 1 2 -2 Z" /><path pathLength="1" d="M3.6 7 L12 13 L20.4 7" /></svg></span></span>
+          <span class="canal-type">Courriel</span>
+          <a class="canal-lien" href="mailto:tom.seveno56@gmail.com">tom.seveno56<wbr>@gmail.com</a>
+          <span class="canal-actions">
+            <button class="canal-copier" type="button" data-copier="tom.seveno56@gmail.com" aria-label="Copier l'adresse"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 9 H19 V19 H9 Z" /><path d="M5 15 V5 H15" /></svg><span class="pil-texte">Copier</span></button>
+            <span class="canal-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span>
+          </span>
+        </li>
+        <li class="canal">
+          <span class="canal-ico"><span class="ico a-logo"><img src="images/logo-linkedin.png" alt="" width="22" height="22" /></span></span>
+          <span class="canal-type">LinkedIn</span>
+          <a class="canal-lien" href="https://www.linkedin.com/in/tom-s%C3%A9veno-1286243b2/" target="_blank" rel="noopener" aria-label="Tom Séveno sur LinkedIn (nouvel onglet)">Tom Séveno</a>
+          <span class="canal-actions"><span class="canal-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span></span>
+        </li>
+        <li class="canal">
+          <span class="canal-ico"><span class="ico a-logo"><img src="images/logo-github.svg" alt="" width="22" height="22" /></span></span>
+          <span class="canal-type">GitHub</span>
+          <a class="canal-lien" href="https://github.com/tomseveno" target="_blank" rel="noopener" aria-label="tomseveno sur GitHub (nouvel onglet)">@tomseveno</a>
+          <span class="canal-actions"><span class="canal-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span></span>
+        </li>
+      </ul>
 
       <div class="bandeau" aria-hidden="true">
         <div class="piste">
@@ -1481,36 +1462,6 @@
         b.style.setProperty('--my', (e.clientY - r.top) + 'px');
       });
     });
-    /* Logos officiels : affichés automatiquement s'ils sont déposés dans le dossier images */
-    [['github', ['images/logo-github.svg', 'images/logo-github.png']],
-     ['linkedin', ['images/logo-linkedin.svg', 'images/logo-linkedin.png']]].forEach(function (l) {
-      var essais = l[1].slice();
-      (function essayer() {
-        var src = essais.shift();
-        if (!src) return;
-        var test = new Image();
-        test.onload = function () {
-          document.querySelectorAll('.ico[data-logo="' + l[0] + '"]').forEach(function (slot) {
-            slot.querySelector('img').src = src; slot.classList.add('a-logo');
-          });
-        };
-        test.onerror = essayer;
-        test.src = src;
-      })();
-    });
-
-    document.querySelectorAll('.carte').forEach(function (c) {
-      c.addEventListener('pointermove', function (e) {
-        var r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-        c.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
-        c.style.setProperty('--my', (y * 100).toFixed(1) + '%');
-        if (aGsap && !reduit && sourisFine) gsap.to(c, { rotationY: (x - 0.5) * 7, rotationX: -(y - 0.5) * 7, y: -6, transformPerspective: 1000, duration: 0.6, ease: 'power3.out' });
-      });
-      c.addEventListener('pointerleave', function () {
-        if (aGsap && !reduit) gsap.to(c, { rotationY: 0, rotationX: 0, y: 0, duration: 1, ease: 'elastic.out(1, 0.6)' });
-      });
-    });
-
     var toast = document.querySelector('.toast'), toastTexte = document.querySelector('.toast-texte'), minuterie = null;
     function annoncer(texte) {
       toastTexte.textContent = texte;
@@ -1526,8 +1477,9 @@
             annoncer('Adresse copiée : ' + adresse);
             var txt = a.querySelector('.pil-texte');
             if (txt) {
-              a.classList.add('copie'); txt.textContent = 'Adresse copiée';
-              setTimeout(function () { a.classList.remove('copie'); txt.textContent = "Copier l'adresse"; }, 2400);
+              var orig = txt.dataset.orig || (txt.dataset.orig = txt.textContent);
+              a.classList.add('copie'); txt.textContent = 'Copiée';
+              setTimeout(function () { a.classList.remove('copie'); txt.textContent = orig; }, 2400);
             }
           }, function () {});
         } catch (err) { /* presse-papiers indisponible : le lien mailto suffit */ }
@@ -1797,6 +1749,25 @@
         scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.9, invalidateOnRefresh: true }
       });
 
+      // Passage sombre <-> clair : la section recouverte s'assombrit et recule,
+      // la nouvelle monte par-dessus et ses coins s'aplatissent en arrivant
+      document.querySelectorAll('.feuille').forEach(function (f) {
+        var prec = f.previousElementSibling;
+        if (!prec) return;
+        var voile = document.createElement('div');
+        voile.className = 'voile'; voile.setAttribute('aria-hidden', 'true');
+        prec.appendChild(voile);
+        prec.style.isolation = 'isolate';   // le voile reste sous la feuille qui monte
+        var contenus = Array.from(prec.children).filter(function (el) { return el !== voile; });
+        var st = function () { return { trigger: f, start: 'top bottom', end: 'top top', scrub: true, invalidateOnRefresh: true }; };
+        gsap.fromTo(voile, { opacity: 0 }, { opacity: 1, ease: 'power2.in', scrollTrigger: st() });
+        gsap.fromTo(contenus, { scale: 1, y: 0 }, {
+          scale: 0.94, y: function () { return window.innerHeight * 0.14; }, transformOrigin: '50% 100%',
+          ease: 'none', immediateRender: false, scrollTrigger: st()
+        });
+        gsap.fromTo(f, { '--rayon': '56px' }, { '--rayon': '0px', ease: 'power1.in', scrollTrigger: st() });
+      });
+
       // Titres : mots qui montent
       document.querySelectorAll('[data-split]').forEach(function (el) {
         var texte = el.textContent.trim();
@@ -1835,6 +1806,13 @@
       });
       gsap.fromTo('.portrait img', { scale: 1.3 }, { scale: 1, duration: 2.4, ease: 'expo.out', scrollTrigger: { trigger: portrait, start: 'top 82%' } });
       gsap.fromTo('.portrait img', { yPercent: -5 }, { yPercent: 5, ease: 'none', scrollTrigger: { trigger: '#apropos', start: 'top bottom', end: 'bottom top', scrub: true } });
+
+      // Contact : chaque ligne se dévoile de gauche à droite, puis son contenu monte
+      var canaux = gsap.utils.toArray('.canal');
+      gsap.timeline({ scrollTrigger: { trigger: '.canaux', start: 'top 86%' } })
+        .from(canaux, { clipPath: 'inset(0% 100% 0% 0%)', duration: 1.3, ease: 'expo.inOut', stagger: 0.12, clearProps: 'clipPath' })
+        .from(canaux.reduce(function (acc, c) { return acc.concat(Array.from(c.querySelectorAll('.canal-ico, .canal-type, .canal-lien, .canal-actions'))); }, []),
+          { y: 18, opacity: 0, duration: 1.1, ease: 'expo.out', stagger: 0.05 }, 0.35);
 
       // Niveaux de langue
       gsap.utils.toArray('.langue').forEach(function (l) {
