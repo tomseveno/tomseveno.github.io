@@ -140,16 +140,26 @@
     .rail ul a:hover svg path { animation: trace .9s var(--sortie); }
     @keyframes trace { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
     .rail-label {
-      position: absolute; left: calc(100% + 20px); top: 50%; translate: 0 -50%;
+      position: absolute; left: calc(100% + 14px); top: 50%; translate: 0 -50%;
       white-space: nowrap; pointer-events: none;
-      font-size: .9rem; font-weight: 600; color: var(--fond); background: var(--txt);
+      font-size: .9rem; font-weight: 600; color: var(--fond); background-color: var(--txt);
       padding: 7px 15px; border-radius: 999px;
       opacity: 0; transform: translateX(-10px); clip-path: inset(0 100% 0 0 round 999px);
-      transition: opacity .35s, transform .6s var(--sortie), clip-path .6s var(--sortie);
+      transition: opacity .35s, transform .6s var(--sortie), clip-path .6s var(--sortie), background-color 0s .6s, color 0s .6s;
     }
     .rail ul a:hover .rail-label, .rail ul a:focus-visible .rail-label {
       opacity: 1; transform: none; clip-path: inset(0 0 0 0 round 999px);
     }
+    /* En haut de l'accueil, les noms des sections restent affichés ; ils s'effacent dès qu'on défile */
+    .rail.ouvert .rail-label {
+      opacity: 1; transform: none; clip-path: inset(0 0 0 0 round 999px);
+      background-color: transparent; color: var(--txt2);
+      transition: opacity .5s, transform .8s var(--sortie), clip-path .8s var(--sortie), background-color 0s, color 0s;
+      transition-delay: calc(var(--i, 0) * 50ms), calc(var(--i, 0) * 50ms), calc(var(--i, 0) * 50ms), 0s, 0s;
+    }
+    .rail.ouvert.stable .rail-label { transition: opacity .35s, transform .6s var(--sortie), clip-path .6s var(--sortie), background-color .4s, color .4s; }
+    .rail.ouvert ul a[aria-current="true"] .rail-label { color: var(--txt); }
+    .rail.ouvert ul a:hover .rail-label, .rail.ouvert ul a:focus-visible .rail-label { background-color: var(--txt); color: var(--fond); }
 
     /* ============================ ACCUEIL ============================ */
     .hero {
@@ -340,14 +350,15 @@
     .g-etiquette { font-family: var(--titre); font-size: 18px; font-weight: 600; fill: var(--clair); paint-order: stroke; stroke: #111D33; stroke-width: 6px; }
 
     .escales { list-style: none; margin: 0; padding: 0; }
-    .escale { min-height: 90svh; display: flex; flex-direction: column; justify-content: center; }
+    @media (min-width: 861px) { .escales { padding-bottom: 22svh; } }   /* le globe reste en place jusqu'à Québec */
+    .escale { min-height: 58svh; display: flex; flex-direction: column; justify-content: center; }
     .escale > div > * {
       opacity: .16; transform: translateY(18px);
-      transition: opacity 1.1s var(--sortie), transform 1.1s var(--sortie);
+      transition: opacity .8s var(--sortie), transform .8s var(--sortie);
     }
-    .escale > div > *:nth-child(2) { transition-delay: .07s; }
-    .escale > div > *:nth-child(3) { transition-delay: .14s; }
-    .escale > div > *:nth-child(4) { transition-delay: .21s; }
+    .escale > div > *:nth-child(2) { transition-delay: .05s; }
+    .escale > div > *:nth-child(3) { transition-delay: .1s; }
+    .escale > div > *:nth-child(4) { transition-delay: .15s; }
     .escale.active > div > *, .no-js .escale > div > * { opacity: 1; transform: none; }
     .escale-date { display: block; font-family: var(--titre); font-weight: 600; font-size: .95rem; color: var(--acc); font-variant-numeric: tabular-nums; }
     .escale h3 {
@@ -461,7 +472,8 @@
       list-style: none; margin: 0; padding: 0;
       display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 1.4vw, 20px);
     }
-    .canal {
+    .canal { position: relative; display: grid; }
+    .carte {
       --mx: 50%; --my: 50%;
       position: relative; isolation: isolate; overflow: hidden;
       display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-rows: auto 1fr;
@@ -471,23 +483,23 @@
       box-shadow: inset 0 0 0 1px var(--ligne);
       transition: translate .9s var(--sortie), box-shadow .9s var(--sortie);
     }
-    .canal::before {   /* halo qui suit la souris */
+    .carte::before {   /* halo qui suit la souris */
       content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .6s;
       background: radial-gradient(340px circle at var(--mx) var(--my), rgba(236, 110, 159, .2), rgba(236, 110, 159, 0) 65%);
     }
-    .canal::after {    /* contour lumineux */
+    .carte::after {    /* contour lumineux */
       content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
       opacity: 0; transition: opacity .6s;
       background: radial-gradient(260px circle at var(--mx) var(--my), rgba(236, 110, 159, .95), rgba(236, 110, 159, 0) 72%);
       -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
       -webkit-mask-composite: xor; mask-composite: exclude;
     }
-    .canal:hover, .canal:focus-within {
+    .canal:hover .carte, .canal:focus-within .carte {
       translate: 0 -6px;
       box-shadow: inset 0 0 0 1px rgba(236, 110, 159, .22), 0 36px 70px -38px rgba(236, 110, 159, .6);
     }
-    .canal:hover::before, .canal:hover::after, .canal:focus-within::before, .canal:focus-within::after { opacity: 1; }
-    .canal:has(.canal-lien:focus-visible) { outline: 2px solid var(--acc); outline-offset: 4px; }
+    .canal:hover .carte::before, .canal:hover .carte::after, .canal:focus-within .carte::before, .canal:focus-within .carte::after { opacity: 1; }
+    .canal:has(.canal-lien:focus-visible) .carte { outline: 2px solid var(--acc); outline-offset: 4px; }
 
     .canal-fond {
       position: absolute; z-index: -1; right: -30px; bottom: -44px; width: 170px; height: 170px; pointer-events: none;
@@ -607,7 +619,7 @@
       .globe-colle { top: 12px; height: auto; padding: 6px 0; z-index: 0; }
       #globe { width: min(80vw, 42svh); }
       .g-etiquette { font-size: 30px; stroke-width: 8px; }
-      .escale { min-height: 72svh; justify-content: flex-end; padding-bottom: 6svh; position: relative; z-index: 1; }
+      .escale { min-height: 56svh; justify-content: flex-end; padding-bottom: 5svh; position: relative; z-index: 1; }
       .escale > div { background: rgba(13, 22, 40, .88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 18px 18px 6px; border: 1px solid var(--ligne); }
       .apropos-grille, .deux-col { grid-template-columns: 1fr; }
       .portrait { position: relative; top: 0; max-width: 380px; }
@@ -617,7 +629,7 @@
       .exp-plus { grid-column: 2; grid-row: 1 / span 3; }
       .det-contenu ul { padding-left: 1.1em; }
       .canaux { grid-template-columns: 1fr; gap: 10px; }
-      .canal {
+      .carte {
         grid-template-columns: auto minmax(0, 1fr) auto; grid-template-rows: auto; grid-template-areas: "ico nom actions";
         align-items: center; column-gap: 16px; min-height: 0; padding: 14px; border-radius: 20px;
       }
@@ -1025,25 +1037,31 @@
 
       <ul class="canaux" aria-label="Me contacter">
         <li class="canal">
-          <span class="canal-fond" aria-hidden="true"><img src="images/logo-github.svg" alt="" width="170" height="170" loading="lazy" /></span>
-          <span class="canal-ico" aria-hidden="true"><span class="ico a-logo"><img src="images/logo-github.svg" alt="" width="26" height="26" /></span></span>
-          <a class="canal-lien" href="https://github.com/tomseveno" target="_blank" rel="noopener" aria-label="GitHub (nouvel onglet)"><span class="canal-nom" aria-hidden="true"><span>GitHub</span><span>GitHub</span></span></a>
-          <span class="canal-actions"><span class="canal-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span></span>
+          <div class="carte">
+            <span class="canal-fond" aria-hidden="true"><img src="images/logo-github.svg" alt="" width="170" height="170" loading="lazy" /></span>
+            <span class="canal-ico" aria-hidden="true"><span class="ico a-logo"><img src="images/logo-github.svg" alt="" width="26" height="26" /></span></span>
+            <a class="canal-lien" href="https://github.com/tomseveno" target="_blank" rel="noopener" aria-label="GitHub (nouvel onglet)"><span class="canal-nom" aria-hidden="true"><span>GitHub</span><span>GitHub</span></span></a>
+            <span class="canal-actions"><span class="canal-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span></span>
+          </div>
         </li>
         <li class="canal">
-          <span class="canal-fond" aria-hidden="true"><img src="images/logo-linkedin.png" alt="" width="170" height="170" loading="lazy" /></span>
-          <span class="canal-ico" aria-hidden="true"><span class="ico a-logo"><img src="images/logo-linkedin.png" alt="" width="26" height="26" /></span></span>
-          <a class="canal-lien" href="https://www.linkedin.com/in/tom-s%C3%A9veno-1286243b2/" target="_blank" rel="noopener" aria-label="LinkedIn (nouvel onglet)"><span class="canal-nom" aria-hidden="true"><span>LinkedIn</span><span>LinkedIn</span></span></a>
-          <span class="canal-actions"><span class="canal-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span></span>
+          <div class="carte">
+            <span class="canal-fond" aria-hidden="true"><img src="images/logo-linkedin.png" alt="" width="170" height="170" loading="lazy" /></span>
+            <span class="canal-ico" aria-hidden="true"><span class="ico a-logo"><img src="images/logo-linkedin.png" alt="" width="26" height="26" /></span></span>
+            <a class="canal-lien" href="https://www.linkedin.com/in/tom-s%C3%A9veno-1286243b2/" target="_blank" rel="noopener" aria-label="LinkedIn (nouvel onglet)"><span class="canal-nom" aria-hidden="true"><span>LinkedIn</span><span>LinkedIn</span></span></a>
+            <span class="canal-actions"><span class="canal-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span></span>
+          </div>
         </li>
         <li class="canal">
-          <span class="canal-fond" aria-hidden="true"><svg class="ico-plein" viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mMail3" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" /><path class="pli" pathLength="1" d="M5.6 8.4 L12 12.9 L18.4 8.4" /></mask></defs><rect x="1.5" y="3.5" width="21" height="17" rx="3.4" fill="#E8ECF1" mask="url(#mMail3)" /></svg></span>
-          <span class="canal-ico" aria-hidden="true"><span class="ico"><svg class="ico-plein" viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mMail2" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" /><path class="pli" pathLength="1" d="M5.6 8.4 L12 12.9 L18.4 8.4" /></mask></defs><rect x="1.5" y="3.5" width="21" height="17" rx="3.4" fill="currentColor" mask="url(#mMail2)" /></svg></span></span>
-          <a class="canal-lien" href="mailto:tom.seveno56@gmail.com" aria-label="Courriel : écrire à tom.seveno56@gmail.com"><span class="canal-nom" aria-hidden="true"><span>Courriel</span><span>Courriel</span></span></a>
-          <span class="canal-actions">
-            <button class="canal-copier" type="button" data-copier="tom.seveno56@gmail.com" aria-label="Copier l'adresse courriel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 9 H19 V19 H9 Z" /><path d="M5 15 V5 H15" /></svg><span class="pil-texte">Copier</span></button>
-            <span class="canal-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span>
-          </span>
+          <div class="carte">
+            <span class="canal-fond" aria-hidden="true"><svg class="ico-plein" viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mMail3" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" /><path class="pli" pathLength="1" d="M5.6 8.4 L12 12.9 L18.4 8.4" /></mask></defs><rect x="1.5" y="3.5" width="21" height="17" rx="3.4" fill="#E8ECF1" mask="url(#mMail3)" /></svg></span>
+            <span class="canal-ico" aria-hidden="true"><span class="ico"><svg class="ico-plein" viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mMail2" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" /><path class="pli" pathLength="1" d="M5.6 8.4 L12 12.9 L18.4 8.4" /></mask></defs><rect x="1.5" y="3.5" width="21" height="17" rx="3.4" fill="currentColor" mask="url(#mMail2)" /></svg></span></span>
+            <a class="canal-lien" href="mailto:tom.seveno56@gmail.com" aria-label="Courriel : écrire à tom.seveno56@gmail.com"><span class="canal-nom" aria-hidden="true"><span>Courriel</span><span>Courriel</span></span></a>
+            <span class="canal-actions">
+              <button class="canal-copier" type="button" data-copier="tom.seveno56@gmail.com" aria-label="Copier l'adresse courriel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 9 H19 V19 H9 Z" /><path d="M5 15 V5 H15" /></svg><span class="pil-texte">Copier</span></button>
+              <span class="canal-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span>
+            </span>
+          </div>
         </li>
       </ul>
 
@@ -1083,9 +1101,10 @@
     // Caméra de l'ouverture : 0 = la Terre vue de loin, 1 = l'horizon de l'accueil
     var camera = { a: aGsap && !reduit ? 0 : 1, s: 1 };
     var effetAtterrissage = function () {};
+    var ouvrirRail = function () {};   // affiche les noms des sections une fois l'ouverture terminée
     var retirerVol = function () { var v = document.querySelector('.vol'); if (v && v.parentNode) v.parentNode.removeChild(v); };
     // Sécurité : tout s'affiche même si une bibliothèque ne charge pas
-    setTimeout(function () { if (!ouvertureLancee) { camera.a = 1; finAttente(); retirerVol(); } }, 6000);
+    setTimeout(function () { if (!ouvertureLancee) { camera.a = 1; finAttente(); retirerVol(); ouvrirRail(); } }, 6000);
 
     /* ---------- 1. Défilement fluide ---------- */
     var lenis = null;
@@ -1146,6 +1165,22 @@
       liens.forEach(function (l) { var s = document.getElementById(l.dataset.section); if (s) ioNav.observe(s); });
       activer('accueil'); placer(actif, true);
       window.addEventListener('resize', function () { placer(actif, true); });
+
+      // Noms des sections visibles en haut de l'accueil (sur ordinateur)
+      var rail = document.querySelector('.rail'), railPret = false;
+      var grandEcran = window.matchMedia('(min-width: 861px)');
+      liens.forEach(function (l, k) { var e = l.querySelector('.rail-label'); if (e) e.style.setProperty('--i', k); });
+      var minuterieRail = null;
+      function majOuvert() {
+        var ouvert = railPret && grandEcran.matches && window.scrollY < 40;
+        if (ouvert === rail.classList.contains('ouvert')) return;
+        rail.classList.toggle('ouvert', ouvert);
+        rail.classList.remove('stable'); clearTimeout(minuterieRail);
+        if (ouvert) minuterieRail = setTimeout(function () { rail.classList.add('stable'); }, 1000);
+      }
+      window.addEventListener('scroll', majOuvert, { passive: true });
+      window.addEventListener('resize', majOuvert);
+      ouvrirRail = function () { railPret = true; majOuvert(); };
     })();
 
     /* ---------- 3. Ciel étoilé ---------- */
@@ -1612,7 +1647,7 @@
     /* ---------- 5. Ouverture : la caméra plonge vers la Terre, la fusée se pose, puis l'accueil ---------- */
     function ouverture() {
       ouvertureLancee = true;
-      if (!aGsap || reduit) { camera.a = 1; finAttente(); retirerVol(); return; }
+      if (!aGsap || reduit) { camera.a = 1; finAttente(); retirerVol(); ouvrirRail(); return; }
       if (lenis) lenis.stop();
       var dejaVu = false;
       try { dejaVu = sessionStorage.getItem('ts-ouverture') === '1'; sessionStorage.setItem('ts-ouverture', '1'); } catch (err) { /* stockage indisponible */ }
@@ -1637,6 +1672,7 @@
         .fromTo('.rail li:not(.rail-indicateur), .rail li.rail-indicateur', { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.9, ease: 'back.out(2)', stagger: 0.04 }, 'accueil+=0.5')
         .fromTo('.fusee-sol', { opacity: 0 }, { opacity: 1, duration: 1 }, 'pose+=0.1')
         .add(function () { if (lenis) lenis.start(); }, 'accueil+=0.3')
+        .add(function () { ouvrirRail(); }, 'accueil+=0.95')
         .add(function () { if (typeof changerLangue === 'function') gsap.delayedCall(3.2, changerLangue); }, 'accueil+=1');
       gsap.set('.hero-trait', { scaleX: 0 });
       finAttente();
@@ -1806,10 +1842,16 @@
         return act;
       }
 
+      var blocs = Array.from(listeEscales.querySelectorAll('.escale'));
       function progression() {
-        var r = listeEscales.getBoundingClientRect();
-        var p = (window.innerHeight / 2 - r.top) / r.height;
-        return Math.max(0, Math.min(3, p * 4 - 0.5));
+        // 0 = Ploërmel au centre de l'écran, 3 = Québec au centre de l'écran
+        var mil = window.innerHeight / 2;
+        var c = blocs.map(function (b) { var r = b.getBoundingClientRect(); return r.top + r.height / 2; });
+        if (mil <= c[0]) return 0;
+        for (var k = 0; k < c.length - 1; k++) {
+          if (mil < c[k + 1]) return k + (mil - c[k]) / (c[k + 1] - c[k]);
+        }
+        return c.length - 1;
       }
 
       var courant = progression(), dernier = -1, dernierAct = -1;
@@ -1819,7 +1861,7 @@
       }
       function boucle() {
         var cible = progression();
-        courant += (cible - courant) * (reduit ? 1 : 0.085);
+        courant += (cible - courant) * (reduit ? 1 : 0.12);
         if (besoin || Math.abs(courant - dernier) > 0.0004) {
           var act = rendu(courant);
           dernier = courant; besoin = false;
@@ -1932,11 +1974,11 @@
       gsap.fromTo('.portrait img', { scale: 1.3 }, { scale: 1, duration: 2.4, ease: 'expo.out', scrollTrigger: { trigger: portrait, start: 'top 82%' } });
       gsap.fromTo('.portrait img', { yPercent: -5 }, { yPercent: 5, ease: 'none', scrollTrigger: { trigger: '#apropos', start: 'top bottom', end: 'bottom top', scrub: true } });
 
-      // Contact : les cartes montent en se redressant, puis logos, noms et flèches apparaissent
+      // Contact : les cartes montent (sans effet 3D ni zoom), puis logos, noms et flèches apparaissent
       gsap.timeline({ scrollTrigger: { trigger: '.canaux', start: 'top 88%' } })
-        .from('.canal', { y: 90, opacity: 0, rotationX: -24, transformPerspective: 900, transformOrigin: '50% 100%', duration: 1.6, ease: 'expo.out', stagger: 0.12 })
+        .fromTo('.canal', { y: 70, opacity: 0 }, { y: 0, opacity: 1, duration: 1.4, ease: 'expo.out', stagger: 0.12, clearProps: 'transform,opacity' })
         .from('.canal-ico', { scale: 0.2, rotation: -70, opacity: 0, duration: 1.3, ease: 'back.out(1.7)', stagger: 0.12, clearProps: 'transform' }, 0.25)
-        .from('.canal-nom span:first-child', { yPercent: 110, duration: 1.3, ease: 'expo.out', stagger: 0.12, clearProps: 'transform' }, 0.35)
+        .from('.canal-nom', { y: 28, opacity: 0, duration: 1.3, ease: 'expo.out', stagger: 0.12, clearProps: 'transform,opacity' }, 0.35)
         .from('.canal-actions > *', { scale: 0, opacity: 0, duration: 1, ease: 'back.out(2)', stagger: 0.07, clearProps: 'transform' }, 0.55);
       // Étoiles du contact : légère parallaxe
       gsap.fromTo('.contact-etoiles', { yPercent: -6 }, { yPercent: 6, ease: 'none', scrollTrigger: { trigger: '.contact', start: 'top bottom', end: 'bottom bottom', scrub: true } });
@@ -1982,17 +2024,25 @@
       }
       zone.appendChild(svg);
     })();
-    document.querySelectorAll('.canal').forEach(function (c) {
+    document.querySelectorAll('.canal').forEach(function (zone) {
+      // La zone de survol (<li>) ne bouge pas ; seule la carte à l'intérieur s'incline
+      var carte = zone.querySelector('.carte');
       var incline = aGsap && !reduit && sourisFine;
-      var rx = incline ? gsap.quickTo(c, 'rotationX', { duration: 0.9, ease: 'power3.out' }) : null;
-      var ry = incline ? gsap.quickTo(c, 'rotationY', { duration: 0.9, ease: 'power3.out' }) : null;
-      c.addEventListener('pointermove', function (e) {
-        var r = c.getBoundingClientRect(), px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
-        c.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
-        c.style.setProperty('--my', (py * 100).toFixed(1) + '%');
-        if (incline) { gsap.set(c, { transformPerspective: 900 }); rx((0.5 - py) * 7); ry((px - 0.5) * 9); }
+      var rx = null, ry = null;
+      if (incline) {
+        gsap.set(carte, { transformPerspective: 900 });
+        rx = gsap.quickTo(carte, 'rotationX', { duration: 0.9, ease: 'power3.out' });
+        ry = gsap.quickTo(carte, 'rotationY', { duration: 0.9, ease: 'power3.out' });
+      }
+      zone.addEventListener('pointermove', function (e) {
+        var r = zone.getBoundingClientRect();
+        var px = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+        var py = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+        carte.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+        carte.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+        if (incline) { rx((0.5 - py) * 5); ry((px - 0.5) * 7); }
       });
-      c.addEventListener('pointerleave', function () { if (incline) { rx(0); ry(0); } });
+      zone.addEventListener('pointerleave', function () { if (incline) { rx(0); ry(0); } });
     });
 
     /* ---------- 10. Expériences : ouverture en douceur ---------- */
