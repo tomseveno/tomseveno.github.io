@@ -34,7 +34,7 @@
       --sortie: cubic-bezier(.16, 1, .3, 1);
       --marge-g: var(--marge);  /* marge gauche (place pour la barre latérale) */
     }
-    @media (min-width: 861px) { :root { --marge-g: max(var(--marge), 128px); } }
+    @media (min-width: 861px) { :root { --marge-g: max(var(--marge), 142px); } }
 
     /* Le fond change de couleur en douceur selon la section affichée */
     body {
@@ -111,39 +111,39 @@
     .rail {
       position: fixed; z-index: 55; left: 20px; top: 50%; translate: 0 -50%;
       display: flex; flex-direction: column; align-items: center; gap: 12px;
-      padding: 10px 8px; border-radius: 999px;
+      padding: 12px 9px; border-radius: 999px;
       background: color-mix(in srgb, var(--fond) 72%, transparent);
       border: 1px solid var(--ligne);
       backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%);
       font-family: var(--titre);
       transition: background-color .5s, border-color .5s;
     }
-    .rail ul { list-style: none; margin: 0; padding: 0; position: relative; display: flex; flex-direction: column; gap: 4px; }
+    .rail ul { list-style: none; margin: 0; padding: 0; position: relative; display: flex; flex-direction: column; gap: 6px; }
     .rail li { position: relative; z-index: 1; }
     .rail li.rail-indicateur {
-      position: absolute; z-index: 0; left: 0; top: 0; width: 44px; height: 44px; border-radius: 50%;
+      position: absolute; z-index: 0; left: 0; top: 0; width: 52px; height: 52px; border-radius: 50%;
       background: var(--txt); pointer-events: none; transition: background-color .5s;
     }
     .rail ul a {
-      position: relative; width: 44px; height: 44px; border-radius: 50%;
+      position: relative; width: 52px; height: 52px; border-radius: 50%;
       display: grid; place-items: center; color: var(--txt2); text-decoration: none;
       transition: color .5s var(--sortie);
     }
     .rail ul a:hover { color: var(--txt); }
     .rail ul a[aria-current="true"] { color: var(--fond); }
-    .rail svg { width: 20px; height: 20px; overflow: visible; transition: transform .6s var(--sortie); }
+    .rail svg { width: 24px; height: 24px; overflow: visible; transition: transform .6s var(--sortie); }
     .rail svg path {
-      fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+      fill: none; stroke: currentColor; stroke-width: 1.65; stroke-linecap: round; stroke-linejoin: round;
       stroke-dasharray: 1; stroke-dashoffset: 0;
     }
     .rail ul a:hover svg { transform: scale(1.1); }
     .rail ul a:hover svg path { animation: trace .9s var(--sortie); }
     @keyframes trace { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
     .rail-label {
-      position: absolute; left: calc(100% + 18px); top: 50%; translate: 0 -50%;
+      position: absolute; left: calc(100% + 20px); top: 50%; translate: 0 -50%;
       white-space: nowrap; pointer-events: none;
-      font-size: .85rem; font-weight: 600; color: var(--fond); background: var(--txt);
-      padding: 6px 13px; border-radius: 999px;
+      font-size: .9rem; font-weight: 600; color: var(--fond); background: var(--txt);
+      padding: 7px 15px; border-radius: 999px;
       opacity: 0; transform: translateX(-10px); clip-path: inset(0 100% 0 0 round 999px);
       transition: opacity .35s, transform .6s var(--sortie), clip-path .6s var(--sortie);
     }
@@ -291,10 +291,28 @@
     /* ======================= SECTIONS (commun) ======================= */
     .section { position: relative; padding: clamp(110px, 18vh, 200px) var(--marge); padding-left: var(--marge-g); }
     .entete-section {
-      display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 34ch);
-      gap: 32px; align-items: end; margin-bottom: clamp(44px, 8vh, 88px);
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 25rem);
+      gap: 32px clamp(32px, 5vw, 88px); align-items: end; margin-bottom: clamp(48px, 8vh, 92px);
     }
-    .entete-section p { margin: 0; color: var(--txt2); font-size: 1rem; }
+    /* Texte d'introduction : numéro, trait, puis une phrase en italique */
+    .chapo { margin: 0; padding-bottom: .15em; }
+    .chapo-tete { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .chapo-num {
+      display: block; overflow: hidden; line-height: 1.3;
+      font-family: var(--titre); font-weight: 600; font-size: .82rem; letter-spacing: .06em;
+      color: var(--acc); font-variant-numeric: tabular-nums;
+    }
+    .chapo-num span { display: block; }
+    .chapo-trait {
+      flex: 1; height: 1px; transform-origin: left;
+      background: linear-gradient(90deg, var(--acc), var(--ligne) 45%);
+    }
+    .chapo-texte {
+      margin: 0; color: var(--txt);
+      font-family: var(--texte); font-style: italic; font-weight: 400;
+      font-size: clamp(1.12rem, 1.4vw, 1.3rem); line-height: 1.55; text-wrap: pretty;
+    }
+    .chapo-texte .cm { display: inline-block; }
     .titre-section {
       font-family: var(--titre); font-weight: 700; font-stretch: 82%;
       font-size: clamp(2.1rem, 4.4vw, 3.8rem); line-height: 1; letter-spacing: -.005em; margin: 0;
@@ -423,50 +441,104 @@
 
     /* ============================= CONTACT ============================= */
     .contact { padding-bottom: 32px; }
-    .canaux { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ligne); }
+    /* Ciel étoilé discret derrière la section */
+    .contact-ciel { position: absolute; inset: 0; z-index: -1; overflow: hidden; border-radius: inherit; pointer-events: none; }
+    .contact-etoiles {
+      position: absolute; left: 0; right: 0; top: -12%; height: 124%;
+      -webkit-mask-image: linear-gradient(to bottom, transparent, #000 28%, #000 62%, transparent 92%);
+      mask-image: linear-gradient(to bottom, transparent, #000 28%, #000 62%, transparent 92%);
+    }
+    .contact-etoiles svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+    .contact-etoiles .sc { animation: scintille 4s ease-in-out infinite; }
+    @keyframes scintille { 50% { opacity: .06; } }
+    .contact-lueur {
+      position: absolute; left: 50%; top: 46%; width: min(1100px, 110vw); height: 70%; translate: -50% -50%;
+      background: radial-gradient(closest-side, rgba(80, 122, 214, .16), rgba(80, 122, 214, 0));
+    }
+
+    /* Cartes GitHub, LinkedIn, courriel */
+    .canaux {
+      list-style: none; margin: 0; padding: 0;
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 1.4vw, 20px);
+    }
     .canal {
-      position: relative; isolation: isolate;
-      display: grid; grid-template-columns: 48px minmax(0, 150px) minmax(0, 1fr) auto; align-items: center; gap: 22px;
-      padding: 18px 10px; border-bottom: 1px solid var(--ligne);
+      --mx: 50%; --my: 50%;
+      position: relative; isolation: isolate; overflow: hidden;
+      display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-rows: auto 1fr;
+      grid-template-areas: "ico . actions" "nom nom nom";
+      min-height: clamp(184px, 25vh, 232px); padding: 22px 22px 24px 24px; border-radius: 24px;
+      background: linear-gradient(155deg, rgba(232, 236, 241, .075), rgba(232, 236, 241, .018) 58%);
+      box-shadow: inset 0 0 0 1px var(--ligne);
+      transition: translate .9s var(--sortie), box-shadow .9s var(--sortie);
     }
-    .canal::before {   /* reflet qui balaie la ligne au survol */
-      content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-      background: linear-gradient(90deg, rgba(236, 110, 159, .13), rgba(236, 110, 159, 0) 75%);
-      transform: scaleX(0); transform-origin: left; transition: transform .9s var(--sortie);
+    .canal::before {   /* halo qui suit la souris */
+      content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .6s;
+      background: radial-gradient(340px circle at var(--mx) var(--my), rgba(236, 110, 159, .2), rgba(236, 110, 159, 0) 65%);
     }
-    .canal::after {    /* fil rose qui se dessine sous la ligne */
-      content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; pointer-events: none;
-      background: var(--acc); transform: scaleX(0); transform-origin: left; transition: transform .9s var(--sortie);
+    .canal::after {    /* contour lumineux */
+      content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+      opacity: 0; transition: opacity .6s;
+      background: radial-gradient(260px circle at var(--mx) var(--my), rgba(236, 110, 159, .95), rgba(236, 110, 159, 0) 72%);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
     }
-    .canal:hover::before, .canal:focus-within::before, .canal:hover::after, .canal:focus-within::after { transform: scaleX(1); }
+    .canal:hover, .canal:focus-within {
+      translate: 0 -6px;
+      box-shadow: inset 0 0 0 1px rgba(236, 110, 159, .22), 0 36px 70px -38px rgba(236, 110, 159, .6);
+    }
+    .canal:hover::before, .canal:hover::after, .canal:focus-within::before, .canal:focus-within::after { opacity: 1; }
+    .canal:has(.canal-lien:focus-visible) { outline: 2px solid var(--acc); outline-offset: 4px; }
+
+    .canal-fond {
+      position: absolute; z-index: -1; right: -30px; bottom: -44px; width: 170px; height: 170px; pointer-events: none;
+      opacity: .045; transition: opacity .8s, translate 1.4s var(--sortie), rotate 1.4s var(--sortie);
+    }
+    .canal-fond img, .canal-fond svg { display: block; width: 100%; height: 100%; object-fit: contain; }
+    .canal:hover .canal-fond, .canal:focus-within .canal-fond { opacity: .1; translate: -12px -10px; rotate: -8deg; }
     .canal-ico {
-      width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center;
-      border: 1px solid var(--ligne); color: var(--txt);
-      transition: border-color .6s, scale .8s var(--sortie), rotate .8s var(--sortie);
+      grid-area: ico; position: relative; width: 56px; height: 56px; border-radius: 50%;
+      display: grid; place-items: center; color: var(--txt);
+      background: rgba(232, 236, 241, .06); box-shadow: inset 0 0 0 1px var(--ligne);
+      transition: scale .9s var(--sortie), background-color .6s;
     }
-    .canal-ico .ico, .canal-ico .ico img { width: 22px; height: 22px; }
-    .canal-ico svg { width: 21px; height: 21px; overflow: visible; }
-    .canal-ico svg path, .canal-copier svg path, .canal-fleche svg path {
+    .canal-ico .ico, .canal-ico .ico img, .canal-ico .ico-plein { width: 26px; height: 26px; }
+    .canal-ico .ico { transition: rotate .9s var(--sortie); }
+    /* Orbite et satellite autour du logo */
+    .canal-ico::before, .canal-ico::after {
+      content: ""; position: absolute; border-radius: 50%; pointer-events: none;
+      opacity: 0; scale: .6; transition: opacity .5s, scale 1s var(--sortie);
+      animation: orbite 9s linear infinite paused;
+    }
+    .canal-ico::before { inset: -9px; border: 1px dashed rgba(236, 110, 159, .5); }
+    .canal-ico::after { inset: -12px; background: radial-gradient(circle at 50% 3.5px, var(--acc) 0 2.4px, rgba(236, 110, 159, 0) 3.1px); animation-duration: 3.4s; }
+    @keyframes orbite { to { rotate: 1turn; } }
+    .canal:hover .canal-ico, .canal:focus-within .canal-ico { scale: 1.06; background-color: rgba(236, 110, 159, .1); }
+    .canal:hover .canal-ico .ico { rotate: -8deg; }
+    .canal:hover .canal-ico::before, .canal:hover .canal-ico::after,
+    .canal:focus-within .canal-ico::before, .canal:focus-within .canal-ico::after { opacity: 1; scale: 1; animation-play-state: running; }
+
+    .canal-lien {
+      grid-area: nom; align-self: end; margin-top: 30px;
+      font-family: var(--titre); font-weight: 700; font-stretch: 84%;
+      font-size: clamp(1.75rem, 2.6vw, 2.5rem); line-height: 1; letter-spacing: -.005em;
+      color: var(--txt); text-decoration: none;
+    }
+    .canal-lien::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }   /* toute la carte est cliquable */
+    .canal-lien:focus-visible { outline: none; }
+    .canal-nom { display: block; height: 1.14em; overflow: hidden; }
+    .canal-nom span { display: block; line-height: 1.14; transition: transform .8s var(--sortie); }
+    .canal-nom span + span { color: var(--acc); }
+    .canal:hover .canal-nom span, .canal:focus-within .canal-nom span { transform: translateY(-100%); }
+
+    .canal-actions { grid-area: actions; position: relative; z-index: 2; display: flex; align-items: center; gap: 8px; pointer-events: none; }
+    .canal-copier { pointer-events: auto; }
+    .canal-copier svg path, .canal-fleche svg path {
       fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
     }
-    .canal-ico svg path { stroke-dasharray: 1; stroke-dashoffset: 0; }
-    .canal:hover .canal-ico { border-color: var(--acc); scale: 1.08; rotate: -6deg; }
-    .canal:hover .canal-ico svg path { animation: trace .9s var(--sortie); }
-    .canal-type { font-family: var(--titre); font-size: .85rem; color: var(--txt2); }
-    .canal-lien {
-      font-family: var(--titre); font-weight: 600; font-stretch: 92%;
-      font-size: clamp(1.1rem, 1.7vw, 1.45rem); color: var(--txt); text-decoration: none;
-      overflow-wrap: break-word; transition: translate .8s var(--sortie);
-    }
-    .canal-lien::after { content: ""; position: absolute; inset: 0; z-index: 1; }   /* toute la ligne est cliquable */
-    .canal-lien:focus-visible { outline: none; }
-    .canal:focus-within { outline: 2px solid var(--acc); outline-offset: -2px; }
-    .canal:hover .canal-lien { translate: 10px 0; }
-    .canal-actions { display: flex; align-items: center; gap: 10px; }
     .canal-copier {
-      position: relative; z-index: 2; overflow: hidden; isolation: isolate;
-      display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 14px; border-radius: 999px;
-      font: 600 .82rem/1 var(--titre); color: var(--txt); background: transparent; border: 1px solid var(--ligne);
+      position: relative; overflow: hidden; isolation: isolate;
+      display: inline-flex; align-items: center; gap: 7px; height: 42px; padding: 0 16px; border-radius: 999px;
+      font: 600 .82rem/1 var(--titre); color: var(--txt); background: rgba(232, 236, 241, .04); border: 1px solid var(--ligne);
       cursor: pointer; transition: color .5s, border-color .5s;
     }
     .canal-copier::before {
@@ -477,18 +549,22 @@
     .canal-copier:hover::before, .canal-copier:focus-visible::before, .canal-copier.copie::before { transform: none; }
     .canal-copier svg { width: 14px; height: 14px; }
     .canal-fleche {
-      position: relative; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex: none;
-      border: 1px solid var(--ligne); color: var(--txt);
-      transition: background-color .5s, border-color .5s, color .5s;
+      position: relative; width: 44px; height: 44px; border-radius: 50%; overflow: hidden; flex: none;
+      box-shadow: inset 0 0 0 1px var(--ligne); color: var(--txt);
+      transition: background-color .5s, box-shadow .5s, color .5s;
     }
     .canal-fleche svg {
-      position: absolute; left: 50%; top: 50%; width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px;
-      transition: transform .6s var(--sortie);
+      position: absolute; left: 50%; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px;
+      transition: transform .7s var(--sortie);
     }
     .canal-fleche svg + svg { transform: translate(-160%, 160%); }
-    .canal:hover .canal-fleche { background: var(--txt); border-color: var(--txt); color: var(--fond); }
-    .canal:hover .canal-fleche svg:first-child { transform: translate(160%, -160%); }
-    .canal:hover .canal-fleche svg + svg { transform: none; }
+    .canal:hover .canal-fleche, .canal:focus-within .canal-fleche { background: var(--txt); box-shadow: inset 0 0 0 1px var(--txt); color: var(--fond); }
+    .canal:hover .canal-fleche svg:first-child, .canal:focus-within .canal-fleche svg:first-child { transform: translate(160%, -160%); }
+    .canal:hover .canal-fleche svg + svg, .canal:focus-within .canal-fleche svg + svg { transform: none; }
+    @media (min-width: 861px) and (max-width: 1180px) {
+      .canal-copier span { display: none; }
+      .canal-copier { width: 42px; padding: 0; justify-content: center; }
+    }
 
     /* Bandeau décoratif de fin de page */
     .bandeau {
@@ -526,7 +602,7 @@
       .reseau { height: 42px; padding: 0 14px 0 12px; gap: 8px; font-size: .88rem; }
       .toast { bottom: 84px; }
       .contact { padding-bottom: 110px; }
-      .entete-section { grid-template-columns: 1fr; gap: 14px; }
+      .entete-section { grid-template-columns: 1fr; gap: 24px; }
       .parcours-grille { grid-template-columns: 1fr; }
       .globe-colle { top: 12px; height: auto; padding: 6px 0; z-index: 0; }
       #globe { width: min(80vw, 42svh); }
@@ -540,13 +616,18 @@
       .exp-date, .exp-titre, .exp-lieu { grid-column: 1; }
       .exp-plus { grid-column: 2; grid-row: 1 / span 3; }
       .det-contenu ul { padding-left: 1.1em; }
-      .canal { grid-template-columns: 44px minmax(0, 1fr) auto; gap: 4px 14px; padding: 16px 4px; }
-      .canal-ico { width: 44px; height: 44px; grid-row: 1 / span 2; }
-      .canal-type { grid-column: 2; }
-      .canal-lien { grid-column: 2; font-size: .95rem; }
-      .canal-actions { grid-column: 3; grid-row: 1 / span 2; }
+      .canaux { grid-template-columns: 1fr; gap: 10px; }
+      .canal {
+        grid-template-columns: auto minmax(0, 1fr) auto; grid-template-rows: auto; grid-template-areas: "ico nom actions";
+        align-items: center; column-gap: 16px; min-height: 0; padding: 14px; border-radius: 20px;
+      }
+      .canal-ico { width: 50px; height: 50px; }
+      .canal-ico .ico, .canal-ico .ico img, .canal-ico .ico-plein { width: 24px; height: 24px; }
+      .canal-lien { margin: 0; align-self: center; font-size: 1.5rem; }
+      .canal-fond { display: none; }
       .canal-copier span { display: none; }
-      .canal-copier { width: 36px; padding: 0; justify-content: center; }
+      .canal-copier { width: 42px; padding: 0; justify-content: center; }
+      .chapo-texte { font-size: 1.1rem; }
       .cecr, .langue { grid-template-columns: 80px repeat(6, minmax(0, 1fr)); }
     }
 
@@ -557,6 +638,8 @@
     }
     @media (min-width: 861px) and (max-height: 640px) {
       .hero { --horizon: 96px; --zone-fusee: 190px; }
+      .rail ul a, .rail li.rail-indicateur { width: 46px; height: 46px; }
+      .rail ul { gap: 4px; }
     }
     @media (max-width: 860px) and (max-height: 700px) {
       .hero { --horizon: 132px; --zone-fusee: 246px; padding-top: 36px; }
@@ -567,7 +650,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .g-pouls, .fusee-flotte { animation: none; }
+      .g-pouls, .fusee-flotte, .contact-etoiles .sc, .canal-ico::before, .canal-ico::after { animation: none; }
       .escale > div > * { opacity: 1; transform: none; }
     }
   </style>
@@ -671,7 +754,10 @@
     <section class="section" id="parcours" data-theme="nuit">
       <div class="entete-section">
         <h2 class="titre-section" data-split>Parcours</h2>
-        <p data-reveal>Quatre escales, de la Bretagne au Québec. Faites défiler pour suivre le trajet sur le globe.</p>
+        <div class="chapo">
+          <span class="chapo-tete" aria-hidden="true"><span class="chapo-num"><span>01</span></span><span class="chapo-trait"></span></span>
+          <p class="chapo-texte">Quatre escales, de la Bretagne au Québec. Faites défiler pour suivre le trajet sur le globe.</p>
+        </div>
       </div>
 
       <div class="parcours-grille">
@@ -745,7 +831,10 @@
     <section class="section" id="experiences" data-theme="papier">
       <div class="entete-section">
         <h2 class="titre-section" data-split>Expériences</h2>
-        <p data-reveal>Cliquez sur une ligne pour voir le détail.</p>
+        <div class="chapo">
+          <span class="chapo-tete" aria-hidden="true"><span class="chapo-num"><span>02</span></span><span class="chapo-trait"></span></span>
+          <p class="chapo-texte">Cliquez sur une ligne pour voir le détail.</p>
+        </div>
       </div>
 
       <div class="liste-exp" data-cascade>
@@ -802,7 +891,10 @@
     <section class="section" id="travaux" data-theme="papier">
       <div class="entete-section">
         <h2 class="titre-section" data-split>Travaux récents</h2>
-        <p data-reveal>Une sélection de travaux réalisés à l'ICES et à l'Université Laval.</p>
+        <div class="chapo">
+          <span class="chapo-tete" aria-hidden="true"><span class="chapo-num"><span>03</span></span><span class="chapo-trait"></span></span>
+          <p class="chapo-texte">Une sélection de travaux réalisés à l'ICES et à l'Université Laval.</p>
+        </div>
       </div>
 
       <ul class="travaux" data-cascade>
@@ -848,7 +940,10 @@
     <section class="section" id="competences" data-theme="papier">
       <div class="entete-section">
         <h2 class="titre-section" data-split>Langues et compétences</h2>
-        <p data-reveal>Niveaux de langue selon le Cadre européen commun de référence.</p>
+        <div class="chapo">
+          <span class="chapo-tete" aria-hidden="true"><span class="chapo-num"><span>04</span></span><span class="chapo-trait"></span></span>
+          <p class="chapo-texte">Niveaux de langue selon le Cadre européen commun de référence.</p>
+        </div>
       </div>
 
       <div class="deux-col">
@@ -905,7 +1000,10 @@
     <section class="section" id="cv" data-theme="papier">
       <div class="entete-section">
         <h2 class="titre-section" data-split>Curriculum vitæ</h2>
-        <p data-reveal>Mon CV complet, à consulter en ligne ou à télécharger.</p>
+        <div class="chapo">
+          <span class="chapo-tete" aria-hidden="true"><span class="chapo-num"><span>05</span></span><span class="chapo-trait"></span></span>
+          <p class="chapo-texte">Mon CV complet, à consulter en ligne ou à télécharger.</p>
+        </div>
       </div>
       <!-- Place ton CV dans un dossier "cv" sous le nom "cv.pdf" : il s'affichera ici automatiquement -->
       <div id="cv-zone" data-lenis-prevent>
@@ -916,32 +1014,36 @@
 
     <!-- ================================ CONTACT ================================ -->
     <section class="section contact feuille" id="contact" data-theme="nuit">
+      <div class="contact-ciel" aria-hidden="true"><div class="contact-etoiles"></div><div class="contact-lueur"></div></div>
       <div class="entete-section">
         <h2 class="titre-section" data-split>Me contacter</h2>
-        <p data-reveal>Pour un stage, un projet de recherche ou un échange sur les questions de sécurité internationale.</p>
+        <div class="chapo">
+          <span class="chapo-tete" aria-hidden="true"><span class="chapo-num"><span>06</span></span><span class="chapo-trait"></span></span>
+          <p class="chapo-texte">Pour un stage, un projet de recherche ou un échange sur les questions de sécurité internationale.</p>
+        </div>
       </div>
 
       <ul class="canaux" aria-label="Me contacter">
         <li class="canal">
-          <span class="canal-ico"><span class="ico"><svg class="ico-plein" viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mMail2" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" /><path class="pli" pathLength="1" d="M5.6 8.4 L12 12.9 L18.4 8.4" /></mask></defs><rect x="1.5" y="3.5" width="21" height="17" rx="3.4" fill="currentColor" mask="url(#mMail2)" /></svg></span></span>
-          <span class="canal-type">Courriel</span>
-          <a class="canal-lien" href="mailto:tom.seveno56@gmail.com">tom.seveno56<wbr>@gmail.com</a>
+          <span class="canal-fond" aria-hidden="true"><img src="images/logo-github.svg" alt="" width="170" height="170" loading="lazy" /></span>
+          <span class="canal-ico" aria-hidden="true"><span class="ico a-logo"><img src="images/logo-github.svg" alt="" width="26" height="26" /></span></span>
+          <a class="canal-lien" href="https://github.com/tomseveno" target="_blank" rel="noopener" aria-label="GitHub (nouvel onglet)"><span class="canal-nom" aria-hidden="true"><span>GitHub</span><span>GitHub</span></span></a>
+          <span class="canal-actions"><span class="canal-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span></span>
+        </li>
+        <li class="canal">
+          <span class="canal-fond" aria-hidden="true"><img src="images/logo-linkedin.png" alt="" width="170" height="170" loading="lazy" /></span>
+          <span class="canal-ico" aria-hidden="true"><span class="ico a-logo"><img src="images/logo-linkedin.png" alt="" width="26" height="26" /></span></span>
+          <a class="canal-lien" href="https://www.linkedin.com/in/tom-s%C3%A9veno-1286243b2/" target="_blank" rel="noopener" aria-label="LinkedIn (nouvel onglet)"><span class="canal-nom" aria-hidden="true"><span>LinkedIn</span><span>LinkedIn</span></span></a>
+          <span class="canal-actions"><span class="canal-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span></span>
+        </li>
+        <li class="canal">
+          <span class="canal-fond" aria-hidden="true"><svg class="ico-plein" viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mMail3" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" /><path class="pli" pathLength="1" d="M5.6 8.4 L12 12.9 L18.4 8.4" /></mask></defs><rect x="1.5" y="3.5" width="21" height="17" rx="3.4" fill="#E8ECF1" mask="url(#mMail3)" /></svg></span>
+          <span class="canal-ico" aria-hidden="true"><span class="ico"><svg class="ico-plein" viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mMail2" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" /><path class="pli" pathLength="1" d="M5.6 8.4 L12 12.9 L18.4 8.4" /></mask></defs><rect x="1.5" y="3.5" width="21" height="17" rx="3.4" fill="currentColor" mask="url(#mMail2)" /></svg></span></span>
+          <a class="canal-lien" href="mailto:tom.seveno56@gmail.com" aria-label="Courriel : écrire à tom.seveno56@gmail.com"><span class="canal-nom" aria-hidden="true"><span>Courriel</span><span>Courriel</span></span></a>
           <span class="canal-actions">
-            <button class="canal-copier" type="button" data-copier="tom.seveno56@gmail.com" aria-label="Copier l'adresse"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 9 H19 V19 H9 Z" /><path d="M5 15 V5 H15" /></svg><span class="pil-texte">Copier</span></button>
+            <button class="canal-copier" type="button" data-copier="tom.seveno56@gmail.com" aria-label="Copier l'adresse courriel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 9 H19 V19 H9 Z" /><path d="M5 15 V5 H15" /></svg><span class="pil-texte">Copier</span></button>
             <span class="canal-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span>
           </span>
-        </li>
-        <li class="canal">
-          <span class="canal-ico"><span class="ico a-logo"><img src="images/logo-linkedin.png" alt="" width="22" height="22" /></span></span>
-          <span class="canal-type">LinkedIn</span>
-          <a class="canal-lien" href="https://www.linkedin.com/in/tom-s%C3%A9veno-1286243b2/" target="_blank" rel="noopener" aria-label="Tom Séveno sur LinkedIn (nouvel onglet)">Tom Séveno</a>
-          <span class="canal-actions"><span class="canal-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span></span>
-        </li>
-        <li class="canal">
-          <span class="canal-ico"><span class="ico a-logo"><img src="images/logo-github.svg" alt="" width="22" height="22" /></span></span>
-          <span class="canal-type">GitHub</span>
-          <a class="canal-lien" href="https://github.com/tomseveno" target="_blank" rel="noopener" aria-label="tomseveno sur GitHub (nouvel onglet)">@tomseveno</a>
-          <span class="canal-actions"><span class="canal-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span></span>
         </li>
       </ul>
 
@@ -1800,6 +1902,21 @@
         });
       });
 
+      // Textes d'introduction : le numéro monte, le trait se dessine, puis les mots se précisent
+      document.querySelectorAll('.chapo').forEach(function (c) {
+        var p = c.querySelector('.chapo-texte');
+        var mots = p.textContent.trim().split(/\s+/);
+        p.textContent = '';
+        mots.forEach(function (m, i) {
+          var sp = document.createElement('span'); sp.className = 'cm'; sp.textContent = m; p.appendChild(sp);
+          if (i < mots.length - 1) p.appendChild(document.createTextNode(' '));
+        });
+        gsap.timeline({ scrollTrigger: { trigger: c, start: 'top 90%' }, delay: 0.15 })
+          .from(c.querySelector('.chapo-num span'), { yPercent: 110, duration: 1.1, ease: 'expo.out' })
+          .from(c.querySelector('.chapo-trait'), { scaleX: 0, duration: 1.6, ease: 'expo.inOut' }, 0.05)
+          .from(p.querySelectorAll('.cm'), { opacity: 0, y: 14, filter: 'blur(8px)', duration: 1.2, ease: 'expo.out', stagger: 0.035, clearProps: 'filter' }, 0.3);
+      });
+
       gsap.utils.toArray('[data-reveal]').forEach(function (el) {
         gsap.from(el, { y: 36, opacity: 0, duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 90%' } });
       });
@@ -1815,12 +1932,14 @@
       gsap.fromTo('.portrait img', { scale: 1.3 }, { scale: 1, duration: 2.4, ease: 'expo.out', scrollTrigger: { trigger: portrait, start: 'top 82%' } });
       gsap.fromTo('.portrait img', { yPercent: -5 }, { yPercent: 5, ease: 'none', scrollTrigger: { trigger: '#apropos', start: 'top bottom', end: 'bottom top', scrub: true } });
 
-      // Contact : chaque ligne se dévoile de gauche à droite, puis son contenu monte
-      var canaux = gsap.utils.toArray('.canal');
-      gsap.timeline({ scrollTrigger: { trigger: '.canaux', start: 'top 86%' } })
-        .from(canaux, { clipPath: 'inset(0% 100% 0% 0%)', duration: 1.3, ease: 'expo.inOut', stagger: 0.12, clearProps: 'clipPath' })
-        .from(canaux.reduce(function (acc, c) { return acc.concat(Array.from(c.querySelectorAll('.canal-ico, .canal-type, .canal-lien, .canal-actions'))); }, []),
-          { y: 18, opacity: 0, duration: 1.1, ease: 'expo.out', stagger: 0.05 }, 0.35);
+      // Contact : les cartes montent en se redressant, puis logos, noms et flèches apparaissent
+      gsap.timeline({ scrollTrigger: { trigger: '.canaux', start: 'top 88%' } })
+        .from('.canal', { y: 90, opacity: 0, rotationX: -24, transformPerspective: 900, transformOrigin: '50% 100%', duration: 1.6, ease: 'expo.out', stagger: 0.12 })
+        .from('.canal-ico', { scale: 0.2, rotation: -70, opacity: 0, duration: 1.3, ease: 'back.out(1.7)', stagger: 0.12, clearProps: 'transform' }, 0.25)
+        .from('.canal-nom span:first-child', { yPercent: 110, duration: 1.3, ease: 'expo.out', stagger: 0.12, clearProps: 'transform' }, 0.35)
+        .from('.canal-actions > *', { scale: 0, opacity: 0, duration: 1, ease: 'back.out(2)', stagger: 0.07, clearProps: 'transform' }, 0.55);
+      // Étoiles du contact : légère parallaxe
+      gsap.fromTo('.contact-etoiles', { yPercent: -6 }, { yPercent: 6, ease: 'none', scrollTrigger: { trigger: '.contact', start: 'top bottom', end: 'bottom bottom', scrub: true } });
 
       // Niveaux de langue
       gsap.utils.toArray('.langue').forEach(function (l) {
@@ -1839,6 +1958,42 @@
         }
       });
     }
+
+    /* ---------- 9 bis. Contact : ciel étoilé, halo et légère inclinaison qui suivent la souris ---------- */
+    (function () {
+      var zone = document.querySelector('.contact-etoiles');
+      if (!zone) return;
+      var NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg'), graine = 11;
+      function alea() { graine = (graine * 16807) % 2147483647; return (graine - 1) / 2147483646; }
+      svg.setAttribute('aria-hidden', 'true');
+      for (var i = 0; i < 150; i++) {
+        var c = document.createElementNS(NS, 'circle'), t = alea();
+        c.setAttribute('cx', (alea() * 100).toFixed(2) + '%');
+        c.setAttribute('cy', (alea() * 100).toFixed(2) + '%');
+        c.setAttribute('r', (0.45 + t * t * 1.15).toFixed(2));
+        c.setAttribute('fill', alea() < 0.06 ? '#EC6E9F' : '#E8ECF1');
+        c.setAttribute('opacity', (0.25 + alea() * 0.6).toFixed(2));
+        if (alea() < 0.3) {
+          c.setAttribute('class', 'sc');
+          c.style.animationDuration = (3 + alea() * 4).toFixed(2) + 's';
+          c.style.animationDelay = (-alea() * 6).toFixed(2) + 's';
+        }
+        svg.appendChild(c);
+      }
+      zone.appendChild(svg);
+    })();
+    document.querySelectorAll('.canal').forEach(function (c) {
+      var incline = aGsap && !reduit && sourisFine;
+      var rx = incline ? gsap.quickTo(c, 'rotationX', { duration: 0.9, ease: 'power3.out' }) : null;
+      var ry = incline ? gsap.quickTo(c, 'rotationY', { duration: 0.9, ease: 'power3.out' }) : null;
+      c.addEventListener('pointermove', function (e) {
+        var r = c.getBoundingClientRect(), px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+        c.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+        c.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+        if (incline) { gsap.set(c, { transformPerspective: 900 }); rx((0.5 - py) * 7); ry((px - 0.5) * 9); }
+      });
+      c.addEventListener('pointerleave', function () { if (incline) { rx(0); ry(0); } });
+    });
 
     /* ---------- 10. Expériences : ouverture en douceur ---------- */
     document.querySelectorAll('.exp').forEach(function (d) {
