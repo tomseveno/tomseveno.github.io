@@ -205,7 +205,25 @@
     .hero-trait { display: block; width: 48px; height: 2px; background: var(--acc); margin-bottom: 18px; }
     .hero-role {
       font-family: var(--titre); font-weight: 600; font-stretch: 92%;
-      font-size: clamp(1.2rem, 1.7vw, 1.5rem); line-height: 1.2; margin-bottom: 8px;
+      font-size: clamp(1.15rem, 1.55vw, 1.4rem); line-height: 1.25; margin-bottom: 14px; text-wrap: balance;
+    }
+    /* Spécialité : pastille lumineuse avec une étoile qui tourne */
+    .hero-specialite {
+      position: relative; overflow: hidden; isolation: isolate;
+      display: inline-flex; align-items: center; gap: 9px; margin-bottom: 12px;
+      padding: 7px 17px 7px 13px; border-radius: 999px;
+      font-family: var(--titre); font-weight: 600; font-size: .93rem; letter-spacing: .01em; line-height: 1.3; color: var(--clair);
+      background: rgba(236, 110, 159, .1);
+      box-shadow: inset 0 0 0 1px rgba(236, 110, 159, .4), 0 10px 30px -16px rgba(236, 110, 159, .7);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      transition: box-shadow .6s var(--sortie), background-color .6s;
+    }
+    .hero-specialite:hover { background-color: rgba(236, 110, 159, .16); box-shadow: inset 0 0 0 1px rgba(236, 110, 159, .7), 0 12px 36px -14px rgba(236, 110, 159, .8); }
+    .hs-etoile { display: inline-block; color: var(--rose-nuit); font-size: .78rem; animation: hs-tourne 12s linear infinite; }
+    @keyframes hs-tourne { to { rotate: 1turn; } }
+    .hs-reflet {
+      position: absolute; inset: 0; z-index: -1; pointer-events: none; visibility: hidden;
+      background: linear-gradient(105deg, transparent 25%, rgba(255, 255, 255, .22) 50%, transparent 75%);
     }
     .hero-detail { color: var(--txt2); font-size: 1rem; line-height: 1.6; margin-bottom: 16px; }
     .hero-rotation { font-family: var(--titre); font-size: .95rem; color: var(--txt2); }
@@ -457,6 +475,11 @@
     .travail h3 { font-family: var(--texte); font-weight: 600; font-size: clamp(1.12rem, 1.5vw, 1.3rem); line-height: 1.35; margin: 0 0 .35em; transition: transform .8s var(--sortie); }
     .travail:hover h3 { transform: translateX(8px); }
     .travail p { margin: 0; color: var(--txt2); max-width: 62ch; font-size: 1rem; }
+    .travaux-note {
+      display: flex; align-items: center; gap: 9px; margin: 22px 0 0;
+      font-family: var(--titre); font-size: .82rem; letter-spacing: .01em; color: var(--txt2);
+    }
+    .travaux-note span { color: var(--acc); font-size: .7rem; }
 
     /* ====================== LANGUES ET COMPÉTENCES ====================== */
     .deux-col { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(40px, 7vw, 120px); }
@@ -589,7 +612,6 @@
       grid-area: adr; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start;
       gap: 8px 10px; margin-top: 12px;
     }
-    .canal-courriel .canal-copier { order: -1; }   /* le bouton se place juste à gauche de l'adresse */
     .canal-adresse {
       font-family: var(--titre); font-weight: 500; font-size: .95rem; line-height: 1.35; color: var(--txt2);
       overflow-wrap: anywhere; transition: color .5s;
@@ -716,7 +738,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .g-pouls, .fusee-flotte, .contact-etoiles .sc, .i-molette, .i-onde, .i-clic, .i-ecrit, .i-point, .i-fleche, .i-avion, .canal-ico::before, .canal-ico::after { animation: none; }
+      .g-pouls, .fusee-flotte, .hs-etoile, .contact-etoiles .sc, .i-molette, .i-onde, .i-clic, .i-ecrit, .i-point, .i-fleche, .i-avion, .canal-ico::before, .canal-ico::after { animation: none; }
       .escale > div > * { opacity: 1; transform: none; }
     }
   </style>
@@ -757,8 +779,9 @@
 
         <div class="hero-info">
           <span class="hero-trait" aria-hidden="true"></span>
-          <p class="hero-role">Sécurité internationale</p>
-          <p class="hero-detail">Étudiant à la maîtrise en études internationales<br />Université Laval, Québec</p>
+          <p class="hero-role">Étudiant à la maîtrise en études internationales</p>
+          <p class="hero-specialite"><span class="hs-etoile" aria-hidden="true">✦</span><span>Spécialité en sécurité internationale</span><span class="hs-reflet" aria-hidden="true"></span></p>
+          <p class="hero-detail">Université Laval, Québec</p>
           <p class="hero-rotation">Je travaille sur
             <span class="rot-zone"><span>le terrorisme et l'IA</span></span>
           </p>
@@ -826,7 +849,7 @@
 
       <div class="parcours-grille">
         <div class="globe-colle">
-          <svg id="globe" viewBox="0 0 600 600" role="img" aria-label="Globe retraçant le parcours de Tom Séveno : Ploërmel, La Roche-sur-Yon, Livingston en Alabama, puis Québec"></svg>
+          <svg id="globe" viewBox="0 0 600 600" role="img" aria-label="Globe retraçant le parcours de Tom Séveno : Ploërmel, La Roche-sur-Yon, l'Alabama, puis Québec"></svg>
           <p class="globe-legende" id="globe-legende" aria-hidden="true"></p>
         </div>
 
@@ -836,23 +859,20 @@
               <span class="escale-date">2018 – 2022</span>
               <h3>Ploërmel, Bretagne</h3>
               <p class="fort">Mes racines. Baccalauréat au lycée La Mennais.</p>
-              <p>Un premier stage au Musée de la Résistance de Saint-Marcel, puis, chaque été depuis 2023, la responsabilité de la collecte des céréales chez Eureden.</p>
             </div>
           </li>
           <li class="escale">
             <div>
-              <span class="escale-date">2022 – <span class="a-completer">20XX</span></span>
+              <span class="escale-date">2023 – 2026</span>
               <h3>La Roche-sur-Yon, Vendée</h3>
-              <p class="fort">Licence de science politique à l'ICES, établissement membre de la Conférence des grandes écoles.</p>
-              <p>Affaires et relations internationales, politiques publiques, économie et gestion de crise. Projet de recherche : « L'intelligence artificielle au service du terrorisme » (2025).</p>
+              <p class="fort">Licence de science politique à l'ICES.</p>
             </div>
           </li>
           <li class="escale">
             <div>
               <span class="escale-date">Janvier – juin 2025</span>
-              <h3>Livingston, Alabama</h3>
+              <h3>Alabama</h3>
               <p class="fort">Semestre de mobilité à l'University of West Alabama. GPA de 4.0, inscrit à la President's List.</p>
-              <p>Étude du système politique et juridique américain, et une immersion qui a forgé mon adaptabilité et mon ouverture d'esprit.</p>
             </div>
           </li>
           <li class="escale">
@@ -860,7 +880,6 @@
               <span class="escale-date">Depuis 2026</span>
               <h3>Québec</h3>
               <p class="fort">Maîtrise en études internationales à l'Université Laval, concentration sécurité internationale.</p>
-              <p>Terrorisme et technologies émergentes, prévention de l'extrémisme violent, politiques de défense.</p>
             </div>
           </li>
         </ol>
@@ -875,17 +894,14 @@
         </figure>
 
         <div class="apropos-texte">
-          <h2 class="phrase" data-lecture>Je cherche à comprendre comment naissent les crises, et comment les États et les organisations internationales y répondent.</h2>
+          <h2 class="phrase" data-lecture>Je me destine à l'analyse des menaces : comprendre comment le terrorisme et l'intelligence artificielle transforment la sécurité internationale, pour aider les décideurs à les anticiper.</h2>
           <p data-reveal>Formé en science politique à l'ICES, je poursuis aujourd'hui une maîtrise en études internationales à l'Université Laval.</p>
-          <p data-reveal>Mon semestre aux États-Unis m'a plongé dans un autre système politique et juridique. Ma préparation militaire au 511<sup>e</sup> régiment du Train m'a fait découvrir de l'intérieur la chaîne opérationnelle de l'Armée de terre.</p>
-          <p data-reveal>Je souhaite mettre ces compétences au service de la recherche stratégique, de la diplomatie ou d'une organisation internationale.</p>
 
           <ul class="interets" data-cascade>
             <li><strong>Terrorisme et technologies émergentes</strong><span>Usage de l'intelligence artificielle par les groupes terroristes, prévention de l'extrémisme violent, encadrement juridique international.</span></li>
             <li><strong>Gestion de crise</strong><span>Prise de décision, coordination des acteurs et réponse des organisations internationales.</span></li>
             <li><strong>Usage de la force et droit international</strong><span>Frappes de drones, légitimité et soutien de l'opinion publique.</span></li>
             <li><strong>Politiques de défense</strong><span>Réarmement canadien et base industrielle de défense.</span></li>
-            <li><strong>Théories des relations internationales</strong><span>Du réalisme au constructivisme : Aron, Morgenthau, Waltz, Wendt, Bourdieu.</span></li>
           </ul>
         </div>
       </div>
@@ -969,7 +985,7 @@
           <span class="travail-type">Bibliographie commentée</span>
           <div>
             <h3>L'émergence de l'IA dans les groupes terroristes et les tueries de masse</h3>
-            <p>Dynamiques politiques et encadrement juridique à l'international : quinze sources en science politique et en droit.</p>
+            <p>Dynamiques politiques et encadrement juridique à l'international.</p>
           </div>
         </li>
         <li class="travail">
@@ -983,7 +999,7 @@
           <span class="travail-type">Projet d'équipe</span>
           <div>
             <h3>Le réarmement canadien et la Stratégie industrielle de défense</h3>
-            <p>Analyse interdisciplinaire ; responsable des graphiques, des schémas et de l'appareil de notes.</p>
+            <p>Analyse interdisciplinaire liant les différentes disciplines des études internationales.</p>
           </div>
         </li>
         <li class="travail">
@@ -994,6 +1010,7 @@
           </div>
         </li>
       </ul>
+      <p class="travaux-note" data-reveal><span aria-hidden="true">✦</span>Travaux universitaires, non publiés.</p>
     </section>
 
     <!-- ======================== LANGUES ET COMPÉTENCES ======================== -->
@@ -1048,7 +1065,7 @@
           </ul>
           <h3 class="sous-titre">En dehors des cours</h3>
           <ul class="etiquettes" data-cascade>
-            <li>Astronomie</li><li>Échecs</li><li>Musculation</li><li>Badminton</li><li>Ski alpin</li><li>Sports mécaniques</li>
+            <li>Astronomie</li><li>Échecs</li><li>Musculation</li><li>Badminton</li><li>Ski alpin</li><li>Sports automobiles</li>
           </ul>
         </div>
       </div>
@@ -1146,7 +1163,15 @@
     // Caméra de l'ouverture : 0 = la Terre vue de loin, 1 = l'horizon de l'accueil
     var camera = { a: aGsap && !reduit ? 0 : 1, s: 1 };
     var effetAtterrissage = function () {};
-    var ouvrirRail = function () {};   // affiche les noms des sections une fois l'ouverture terminée
+    var ouvrirRail = function () {};
+    // Reflet qui traverse la pastille « Spécialité » (à l'ouverture et au survol)
+    var refletSpecialite = function () {
+      var r = document.querySelector('.hs-reflet');
+      if (!r || !window.gsap || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      gsap.fromTo(r, { xPercent: -120, autoAlpha: 1 }, { xPercent: 120, autoAlpha: 1, duration: 1.3, ease: 'power2.inOut', overwrite: true,
+        onComplete: function () { gsap.set(r, { autoAlpha: 0 }); } });
+    };
+    (function () { var p = document.querySelector('.hero-specialite'); if (p) p.addEventListener('pointerenter', function () { refletSpecialite(); }); })();   // affiche les noms des sections une fois l'ouverture terminée
     var retirerVol = function () { var v = document.querySelector('.vol'); if (v && v.parentNode) v.parentNode.removeChild(v); };
     // Sécurité : tout s'affiche même si une bibliothèque ne charge pas
     setTimeout(function () { if (!ouvertureLancee) { camera.a = 1; finAttente(); retirerVol(); ouvrirRail(); } }, 6000);
@@ -1718,6 +1743,7 @@
         .fromTo('.fusee-sol', { opacity: 0 }, { opacity: 1, duration: 1 }, 'pose+=0.1')
         .add(function () { if (lenis) lenis.start(); }, 'accueil+=0.3')
         .add(function () { ouvrirRail(); }, 'accueil+=0.95')
+        .add(function () { refletSpecialite(); }, 'accueil+=1.1')
         .add(function () { if (typeof changerLangue === 'function') gsap.delayedCall(3.2, changerLangue); }, 'accueil+=1');
       gsap.set('.hero-trait', { scaleX: 0 });
       finAttente();
@@ -1820,10 +1846,10 @@
       if (!window.d3) return;
 
       var E = [
-        { nom: 'Ploërmel', co: [-2.40, 47.93], rot: [2.4, -47.9], ech: 4.2, coord: '47°56′ N, 2°24′ O' },
-        { nom: 'La Roche-sur-Yon', co: [-1.43, 46.67], rot: [1.43, -46.4], ech: 3.0, coord: '46°40′ N, 1°26′ O' },
-        { nom: 'Livingston, Alabama', co: [-88.19, 32.58], rot: [58, -36], ech: 1.0, coord: '32°35′ N, 88°11′ O', dessous: true },
-        { nom: 'Québec', co: [-71.21, 46.81], rot: [44, -40], ech: 1.12, coord: '46°49′ N, 71°13′ O' }
+        { nom: 'Ploërmel', co: [-2.40, 47.93], rot: [2.4, -47.9], ech: 4.2, coord: 'France' },
+        { nom: 'La Roche-sur-Yon', co: [-1.43, 46.67], rot: [1.43, -46.4], ech: 3.0, coord: 'France' },
+        { nom: 'Alabama', co: [-86.83, 32.79], rot: [58, -36], ech: 1.0, coord: 'États-Unis', dessous: true },
+        { nom: 'Québec', co: [-71.21, 46.81], rot: [44, -40], ech: 1.12, coord: 'Canada' }
       ];
       var R = 250, C = 300;
       var proj = d3.geoOrthographic().translate([C, C]).clipAngle(90).precision(0.4);
