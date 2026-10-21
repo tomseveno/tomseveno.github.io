@@ -159,6 +159,7 @@
     }
     .rail.ouvert.stable .rail-label { transition: opacity .35s, transform .6s var(--sortie), clip-path .6s var(--sortie), background-color .4s, color .4s; }
     .rail.ouvert ul a[aria-current="true"] .rail-label { color: var(--txt); }
+    .rail.ouvert .rail-label { pointer-events: auto; cursor: pointer; }   /* les noms sont cliquables (ils font partie du lien) */
     .rail.ouvert ul a:hover .rail-label, .rail.ouvert ul a:focus-visible .rail-label { background-color: var(--txt); color: var(--fond); }
 
     /* ============================ ACCUEIL ============================ */
@@ -301,28 +302,68 @@
     /* ======================= SECTIONS (commun) ======================= */
     .section { position: relative; padding: clamp(110px, 18vh, 200px) var(--marge); padding-left: var(--marge-g); }
     .entete-section {
-      display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 25rem);
-      gap: 32px clamp(32px, 5vw, 88px); align-items: end; margin-bottom: clamp(48px, 8vh, 92px);
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 27rem);
+      grid-template-areas: "ligne ligne" "titre chapo";
+      column-gap: clamp(32px, 6vw, 110px); row-gap: clamp(22px, 3.4vh, 34px);
+      align-items: center; margin-bottom: clamp(48px, 8vh, 92px);
     }
-    /* Texte d'introduction : numéro, trait, puis une phrase en italique */
-    .chapo { margin: 0; padding-bottom: .15em; }
-    .chapo-tete { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .entete-section .titre-section { grid-area: titre; }
+    /* Ligne d'en-tête : numéro de section, trait et étoile qui le dessine */
+    .entete-ligne { grid-area: ligne; display: flex; align-items: center; gap: 16px; }
     .chapo-num {
       display: block; overflow: hidden; line-height: 1.3;
       font-family: var(--titre); font-weight: 600; font-size: .82rem; letter-spacing: .06em;
       color: var(--acc); font-variant-numeric: tabular-nums;
     }
     .chapo-num span { display: block; }
-    .chapo-trait {
-      flex: 1; height: 1px; transform-origin: left;
-      background: linear-gradient(90deg, var(--acc), var(--ligne) 45%);
+    .chapo-trait { flex: 1; height: 1px; transform-origin: left; background: linear-gradient(90deg, var(--acc), var(--ligne) 35%); }
+    .chapo-etoile { color: var(--acc); font-size: .85rem; line-height: 1; display: inline-block; }
+    /* Texte d'introduction : un encadré avec une petite icône animée */
+    .chapo {
+      grid-area: chapo; position: relative; overflow: hidden; isolation: isolate;
+      display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 16px;
+      padding: 16px 22px 16px 16px; border-radius: 18px;
+      background: rgba(127, 140, 160, .07); background: color-mix(in srgb, var(--txt) 4.5%, transparent);
+      box-shadow: inset 0 0 0 1px var(--ligne), 0 18px 40px -30px rgba(3, 7, 16, .35);
     }
+    .chapo-ico {
+      width: 46px; height: 46px; border-radius: 50%; flex: none;
+      display: grid; place-items: center; color: var(--acc);
+      background: rgba(236, 110, 159, .12); background: color-mix(in srgb, var(--acc) 12%, transparent);
+    }
+    .chapo-ico svg { width: 22px; height: 22px; overflow: visible; }
+    .chapo-ico svg path, .chapo-ico svg rect, .chapo-ico svg circle {
+      fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .chapo-ico svg .i-point { fill: currentColor; stroke: none; }
     .chapo-texte {
       margin: 0; color: var(--txt);
-      font-family: var(--texte); font-style: italic; font-weight: 400;
-      font-size: clamp(1.12rem, 1.4vw, 1.3rem); line-height: 1.55; text-wrap: pretty;
+      font-family: var(--texte); font-weight: 400; font-size: clamp(1.03rem, 1.2vw, 1.14rem); line-height: 1.55;
     }
-    .chapo-texte .cm { display: inline-block; }
+    .chapo-texte .cl { display: block; overflow: hidden; padding-bottom: .12em; margin-bottom: -.12em; }
+    .chapo-texte .cl-i { display: block; }
+    .chapo-reflet {   /* reflet qui traverse l'encadré à son apparition */
+      position: absolute; inset: 0; z-index: -1; pointer-events: none; visibility: hidden;
+      background: linear-gradient(105deg, transparent 25%, rgba(236, 110, 159, .16) 50%, transparent 75%);
+    }
+    /* Icônes animées en boucle, discrètement */
+    .i-molette { animation: molette 1.9s cubic-bezier(.45, 0, .55, 1) infinite; }
+    @keyframes molette { 0% { transform: translateY(-.5px); opacity: 0; } 18% { opacity: 1; } 62%, 100% { transform: translateY(3.5px); opacity: 0; } }
+    .i-onde { transform-box: fill-box; transform-origin: center; animation: onde 2.3s ease-out infinite; }
+    @keyframes onde { 0% { transform: scale(.2); opacity: .9; } 55%, 100% { transform: scale(1.7); opacity: 0; } }
+    .i-clic { animation: clic 2.3s ease-in-out infinite; }
+    @keyframes clic { 0%, 16%, 100% { transform: translate(0, 0); } 7% { transform: translate(.7px, .7px); } }
+    .i-ecrit { stroke-dasharray: 1; animation: ecrit 3.2s ease-in-out infinite; }
+    .i-ecrit.i2 { animation-delay: .35s; }
+    @keyframes ecrit { 0% { stroke-dashoffset: 1; } 35%, 78% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -1; } }
+    .i-point { animation: point 1.4s ease-in-out infinite; }
+    .chapo-ico circle:nth-of-type(2) { animation-delay: .16s; }
+    .chapo-ico circle:nth-of-type(3) { animation-delay: .32s; }
+    @keyframes point { 0%, 60%, 100% { transform: translateY(0); opacity: .45; } 30% { transform: translateY(-1.8px); opacity: 1; } }
+    .i-fleche { animation: descend 2s ease-in-out infinite; }
+    @keyframes descend { 0%, 100% { transform: translateY(-1px); } 50% { transform: translateY(1.8px); } }
+    .i-avion { animation: plane 3.2s ease-in-out infinite; }
+    @keyframes plane { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(1.3px, -1.5px); } }
     .titre-section {
       font-family: var(--titre); font-weight: 700; font-stretch: 82%;
       font-size: clamp(2.1rem, 4.4vw, 3.8rem); line-height: 1; letter-spacing: -.005em; margin: 0;
@@ -476,8 +517,8 @@
     .carte {
       --mx: 50%; --my: 50%;
       position: relative; isolation: isolate; overflow: hidden;
-      display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-rows: auto 1fr;
-      grid-template-areas: "ico . actions" "nom nom nom";
+      display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-rows: auto 1fr minmax(48px, auto);
+      grid-template-areas: "ico . actions" "nom nom nom" "adr adr adr";
       min-height: clamp(184px, 25vh, 232px); padding: 22px 22px 24px 24px; border-radius: 24px;
       background: linear-gradient(155deg, rgba(232, 236, 241, .075), rgba(232, 236, 241, .018) 58%);
       box-shadow: inset 0 0 0 1px var(--ligne);
@@ -543,14 +584,25 @@
     .canal:hover .canal-nom span, .canal:focus-within .canal-nom span { transform: translateY(-100%); }
 
     .canal-actions { grid-area: actions; position: relative; z-index: 2; display: flex; align-items: center; gap: 8px; pointer-events: none; }
-    .canal-copier { pointer-events: auto; }
+    /* Adresse et bouton « Copier le courriel » côte à côte (le bouton passe dessous si la carte est étroite) */
+    .canal-courriel {
+      grid-area: adr; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start;
+      gap: 8px 10px; margin-top: 12px;
+    }
+    .canal-courriel .canal-copier { order: -1; }   /* le bouton se place juste à gauche de l'adresse */
+    .canal-adresse {
+      font-family: var(--titre); font-weight: 500; font-size: .95rem; line-height: 1.35; color: var(--txt2);
+      overflow-wrap: anywhere; transition: color .5s;
+    }
+    .canal:hover .canal-adresse, .canal:focus-within .canal-adresse { color: var(--txt); }
     .canal-copier svg path, .canal-fleche svg path {
       fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
     }
     .canal-copier {
-      position: relative; overflow: hidden; isolation: isolate;
-      display: inline-flex; align-items: center; gap: 7px; height: 42px; padding: 0 16px; border-radius: 999px;
-      font: 600 .82rem/1 var(--titre); color: var(--txt); background: rgba(232, 236, 241, .04); border: 1px solid var(--ligne);
+      z-index: 2; flex: none;
+      position: relative; overflow: hidden; isolation: isolate; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 13px; border-radius: 999px;
+      font: 600 .78rem/1 var(--titre); color: var(--txt); background: rgba(232, 236, 241, .04); border: 1px solid var(--ligne);
       cursor: pointer; transition: color .5s, border-color .5s;
     }
     .canal-copier::before {
@@ -574,8 +626,8 @@
     .canal:hover .canal-fleche svg:first-child, .canal:focus-within .canal-fleche svg:first-child { transform: translate(160%, -160%); }
     .canal:hover .canal-fleche svg + svg, .canal:focus-within .canal-fleche svg + svg { transform: none; }
     @media (min-width: 861px) and (max-width: 1180px) {
-      .canal-copier span { display: none; }
-      .canal-copier { width: 42px; padding: 0; justify-content: center; }
+      /* Cartes plus étroites : le bouton passe sous l'adresse */
+      .carte { grid-template-rows: auto 1fr minmax(84px, auto); }
     }
 
     /* Bandeau décoratif de fin de page */
@@ -614,7 +666,9 @@
       .reseau { height: 42px; padding: 0 14px 0 12px; gap: 8px; font-size: .88rem; }
       .toast { bottom: 84px; }
       .contact { padding-bottom: 110px; }
-      .entete-section { grid-template-columns: 1fr; gap: 24px; }
+      .entete-section { grid-template-columns: 1fr; grid-template-areas: "ligne" "titre" "chapo"; row-gap: 20px; }
+      .chapo { padding: 14px 18px 14px 14px; gap: 14px; }
+      .chapo-ico { width: 42px; height: 42px; }
       .parcours-grille { grid-template-columns: 1fr; }
       .globe-colle { top: 12px; height: auto; padding: 6px 0; z-index: 0; }
       #globe { width: min(80vw, 42svh); }
@@ -633,13 +687,13 @@
         grid-template-columns: auto minmax(0, 1fr) auto; grid-template-rows: auto; grid-template-areas: "ico nom actions";
         align-items: center; column-gap: 16px; min-height: 0; padding: 14px; border-radius: 20px;
       }
+      .carte-mail { grid-template-rows: auto auto; grid-template-areas: "ico nom actions" "adr adr adr"; }
+      .canal-courriel { margin-top: 12px; gap: 8px 6px; }
+      .canal-adresse { font-size: .85rem; }
       .canal-ico { width: 50px; height: 50px; }
       .canal-ico .ico, .canal-ico .ico img, .canal-ico .ico-plein { width: 24px; height: 24px; }
       .canal-lien { margin: 0; align-self: center; font-size: 1.5rem; }
       .canal-fond { display: none; }
-      .canal-copier span { display: none; }
-      .canal-copier { width: 42px; padding: 0; justify-content: center; }
-      .chapo-texte { font-size: 1.1rem; }
       .cecr, .langue { grid-template-columns: 80px repeat(6, minmax(0, 1fr)); }
     }
 
@@ -662,7 +716,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .g-pouls, .fusee-flotte, .contact-etoiles .sc, .canal-ico::before, .canal-ico::after { animation: none; }
+      .g-pouls, .fusee-flotte, .contact-etoiles .sc, .i-molette, .i-onde, .i-clic, .i-ecrit, .i-point, .i-fleche, .i-avion, .canal-ico::before, .canal-ico::after { animation: none; }
       .escale > div > * { opacity: 1; transform: none; }
     }
   </style>
@@ -765,11 +819,9 @@
     <!-- =============================== PARCOURS =============================== -->
     <section class="section" id="parcours" data-theme="nuit">
       <div class="entete-section">
+        <span class="entete-ligne" aria-hidden="true"><span class="chapo-num"><span>01</span></span><span class="chapo-trait"></span><span class="chapo-etoile">✦</span></span>
         <h2 class="titre-section" data-split>Parcours</h2>
-        <div class="chapo">
-          <span class="chapo-tete" aria-hidden="true"><span class="chapo-num"><span>01</span></span><span class="chapo-trait"></span></span>
-          <p class="chapo-texte">Quatre escales, de la Bretagne au Québec. Faites défiler pour suivre le trajet sur le globe.</p>
-        </div>
+        <div class="chapo"><span class="chapo-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="7" y="3.5" width="10" height="17" rx="5" /><path class="i-molette" d="M12 7.5 V10" /></svg></span><p class="chapo-texte">Quatre escales, de la Bretagne au Québec. Faites défiler pour suivre le trajet sur le globe.</p><span class="chapo-reflet" aria-hidden="true"></span></div>
       </div>
 
       <div class="parcours-grille">
@@ -842,11 +894,9 @@
     <!-- ============================= EXPÉRIENCES ============================= -->
     <section class="section" id="experiences" data-theme="papier">
       <div class="entete-section">
+        <span class="entete-ligne" aria-hidden="true"><span class="chapo-num"><span>02</span></span><span class="chapo-trait"></span><span class="chapo-etoile">✦</span></span>
         <h2 class="titre-section" data-split>Expériences</h2>
-        <div class="chapo">
-          <span class="chapo-tete" aria-hidden="true"><span class="chapo-num"><span>02</span></span><span class="chapo-trait"></span></span>
-          <p class="chapo-texte">Cliquez sur une ligne pour voir le détail.</p>
-        </div>
+        <div class="chapo"><span class="chapo-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path class="i-clic" d="M9 5 V18 L12.1 15.1 L14.4 20.3 L16.5 19.4 L14.2 14.3 L18.3 14.1 Z" /><circle class="i-onde" cx="9" cy="5" r="3.2" /></svg></span><p class="chapo-texte">Cliquez sur une ligne pour voir le détail.</p><span class="chapo-reflet" aria-hidden="true"></span></div>
       </div>
 
       <div class="liste-exp" data-cascade>
@@ -902,11 +952,9 @@
     <!-- =============================== TRAVAUX =============================== -->
     <section class="section" id="travaux" data-theme="papier">
       <div class="entete-section">
+        <span class="entete-ligne" aria-hidden="true"><span class="chapo-num"><span>03</span></span><span class="chapo-trait"></span><span class="chapo-etoile">✦</span></span>
         <h2 class="titre-section" data-split>Travaux récents</h2>
-        <div class="chapo">
-          <span class="chapo-tete" aria-hidden="true"><span class="chapo-num"><span>03</span></span><span class="chapo-trait"></span></span>
-          <p class="chapo-texte">Une sélection de travaux réalisés à l'ICES et à l'Université Laval.</p>
-        </div>
+        <div class="chapo"><span class="chapo-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3.5 H14 L18.5 8 V20.5 H6 Z" /><path d="M14 3.5 V8 H18.5" /><path class="i-ecrit" pathLength="1" d="M9 12.5 H15.5" /><path class="i-ecrit i2" pathLength="1" d="M9 16 H15.5" /></svg></span><p class="chapo-texte">Une sélection de travaux réalisés à l'ICES et à l'Université Laval.</p><span class="chapo-reflet" aria-hidden="true"></span></div>
       </div>
 
       <ul class="travaux" data-cascade>
@@ -951,11 +999,9 @@
     <!-- ======================== LANGUES ET COMPÉTENCES ======================== -->
     <section class="section" id="competences" data-theme="papier">
       <div class="entete-section">
+        <span class="entete-ligne" aria-hidden="true"><span class="chapo-num"><span>04</span></span><span class="chapo-trait"></span><span class="chapo-etoile">✦</span></span>
         <h2 class="titre-section" data-split>Langues et compétences</h2>
-        <div class="chapo">
-          <span class="chapo-tete" aria-hidden="true"><span class="chapo-num"><span>04</span></span><span class="chapo-trait"></span></span>
-          <p class="chapo-texte">Niveaux de langue selon le Cadre européen commun de référence.</p>
-        </div>
+        <div class="chapo"><span class="chapo-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5 H20 V15.5 H11 L7 19 V15.5 H4 Z" /><circle class="i-point" cx="8.8" cy="10.5" r="1.05" /><circle class="i-point" cx="12" cy="10.5" r="1.05" /><circle class="i-point" cx="15.2" cy="10.5" r="1.05" /></svg></span><p class="chapo-texte">Niveaux de langue selon le Cadre européen commun de référence.</p><span class="chapo-reflet" aria-hidden="true"></span></div>
       </div>
 
       <div class="deux-col">
@@ -1011,11 +1057,9 @@
     <!-- ================================== CV ================================== -->
     <section class="section" id="cv" data-theme="papier">
       <div class="entete-section">
+        <span class="entete-ligne" aria-hidden="true"><span class="chapo-num"><span>05</span></span><span class="chapo-trait"></span><span class="chapo-etoile">✦</span></span>
         <h2 class="titre-section" data-split>Curriculum vitæ</h2>
-        <div class="chapo">
-          <span class="chapo-tete" aria-hidden="true"><span class="chapo-num"><span>05</span></span><span class="chapo-trait"></span></span>
-          <p class="chapo-texte">Mon CV complet, à consulter en ligne ou à télécharger.</p>
-        </div>
+        <div class="chapo"><span class="chapo-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="i-fleche"><path d="M12 4 V14" /><path d="M8 10.5 L12 14.5 L16 10.5" /></g><path d="M5 19.5 H19" /></svg></span><p class="chapo-texte">Mon CV complet, à consulter en ligne ou à télécharger.</p><span class="chapo-reflet" aria-hidden="true"></span></div>
       </div>
       <!-- Place ton CV dans un dossier "cv" sous le nom "cv.pdf" : il s'affichera ici automatiquement -->
       <div id="cv-zone" data-lenis-prevent>
@@ -1028,11 +1072,9 @@
     <section class="section contact feuille" id="contact" data-theme="nuit">
       <div class="contact-ciel" aria-hidden="true"><div class="contact-etoiles"></div><div class="contact-lueur"></div></div>
       <div class="entete-section">
+        <span class="entete-ligne" aria-hidden="true"><span class="chapo-num"><span>06</span></span><span class="chapo-trait"></span><span class="chapo-etoile">✦</span></span>
         <h2 class="titre-section" data-split>Me contacter</h2>
-        <div class="chapo">
-          <span class="chapo-tete" aria-hidden="true"><span class="chapo-num"><span>06</span></span><span class="chapo-trait"></span></span>
-          <p class="chapo-texte">Pour un stage, un projet de recherche ou un échange sur les questions de sécurité internationale.</p>
-        </div>
+        <div class="chapo"><span class="chapo-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><g class="i-avion"><path d="M3.5 11.2 L20.5 4 L15.2 20 L11.6 12.8 Z" /><path d="M11.6 12.8 L20.5 4" /></g></svg></span><p class="chapo-texte">Pour un stage, un projet de recherche ou un échange sur les questions de sécurité internationale.</p><span class="chapo-reflet" aria-hidden="true"></span></div>
       </div>
 
       <ul class="canaux" aria-label="Me contacter">
@@ -1053,12 +1095,15 @@
           </div>
         </li>
         <li class="canal">
-          <div class="carte">
+          <div class="carte carte-mail">
             <span class="canal-fond" aria-hidden="true"><svg class="ico-plein" viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mMail3" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" /><path class="pli" pathLength="1" d="M5.6 8.4 L12 12.9 L18.4 8.4" /></mask></defs><rect x="1.5" y="3.5" width="21" height="17" rx="3.4" fill="#E8ECF1" mask="url(#mMail3)" /></svg></span>
             <span class="canal-ico" aria-hidden="true"><span class="ico"><svg class="ico-plein" viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mMail2" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" /><path class="pli" pathLength="1" d="M5.6 8.4 L12 12.9 L18.4 8.4" /></mask></defs><rect x="1.5" y="3.5" width="21" height="17" rx="3.4" fill="currentColor" mask="url(#mMail2)" /></svg></span></span>
             <a class="canal-lien" href="mailto:tom.seveno56@gmail.com" aria-label="Courriel : écrire à tom.seveno56@gmail.com"><span class="canal-nom" aria-hidden="true"><span>Courriel</span><span>Courriel</span></span></a>
+            <span class="canal-courriel">
+              <span class="canal-adresse">tom.seveno56<wbr>@gmail.com</span>
+              <button class="canal-copier" type="button" data-copier="tom.seveno56@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 9 H19 V19 H9 Z" /><path d="M5 15 V5 H15" /></svg><span class="pil-texte">Copier le courriel</span></button>
+            </span>
             <span class="canal-actions">
-              <button class="canal-copier" type="button" data-copier="tom.seveno56@gmail.com" aria-label="Copier l'adresse courriel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 9 H19 V19 H9 Z" /><path d="M5 15 V5 H15" /></svg><span class="pil-texte">Copier</span></button>
               <span class="canal-fleche" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></span>
             </span>
           </div>
@@ -1625,7 +1670,7 @@
             var txt = a.querySelector('.pil-texte');
             if (txt) {
               var orig = txt.dataset.orig || (txt.dataset.orig = txt.textContent);
-              a.classList.add('copie'); txt.textContent = 'Copiée';
+              a.classList.add('copie'); txt.textContent = 'Courriel copié';
               setTimeout(function () { a.classList.remove('copie'); txt.textContent = orig; }, 2400);
             }
           }, function () {});
@@ -1944,19 +1989,58 @@
         });
       });
 
-      // Textes d'introduction : le numéro monte, le trait se dessine, puis les mots se précisent
-      document.querySelectorAll('.chapo').forEach(function (c) {
-        var p = c.querySelector('.chapo-texte');
-        var mots = p.textContent.trim().split(/\s+/);
+      // En-têtes : l'étoile file le long du trait, le numéro monte, puis le texte se dévoile ligne par ligne
+      function decouperLignes(p, texte) {
+        var mots = texte.split(' ');
         p.textContent = '';
-        mots.forEach(function (m, i) {
-          var sp = document.createElement('span'); sp.className = 'cm'; sp.textContent = m; p.appendChild(sp);
+        var spans = mots.map(function (m, i) {
+          var sp = document.createElement('span'); sp.style.display = 'inline-block'; sp.textContent = m; p.appendChild(sp);
           if (i < mots.length - 1) p.appendChild(document.createTextNode(' '));
+          return sp;
         });
-        gsap.timeline({ scrollTrigger: { trigger: c, start: 'top 90%' }, delay: 0.15 })
-          .from(c.querySelector('.chapo-num span'), { yPercent: 110, duration: 1.1, ease: 'expo.out' })
-          .from(c.querySelector('.chapo-trait'), { scaleX: 0, duration: 1.6, ease: 'expo.inOut' }, 0.05)
-          .from(p.querySelectorAll('.cm'), { opacity: 0, y: 14, filter: 'blur(8px)', duration: 1.2, ease: 'expo.out', stagger: 0.035, clearProps: 'filter' }, 0.3);
+        var lignes = [], haut = null;
+        spans.forEach(function (sp) {
+          if (sp.offsetTop !== haut) { lignes.push([]); haut = sp.offsetTop; }
+          lignes[lignes.length - 1].push(sp.textContent);
+        });
+        p.textContent = '';
+        return lignes.map(function (l) {
+          var m = document.createElement('span'), i = document.createElement('span');
+          m.className = 'cl'; i.className = 'cl-i'; i.textContent = l.join(' ');
+          m.appendChild(i); p.appendChild(m);
+          return i;
+        });
+      }
+      document.querySelectorAll('.entete-section').forEach(function (ent) {
+        var boite = ent.querySelector('.chapo'), p = ent.querySelector('.chapo-texte'), num = ent.querySelector('.chapo-num span');
+        var trait = ent.querySelector('.chapo-trait'), etoile = ent.querySelector('.chapo-etoile');
+        var ico = ent.querySelector('.chapo-ico'), reflet = ent.querySelector('.chapo-reflet');
+        if (!boite || !p || !trait) return;
+        gsap.set(boite, { autoAlpha: 0, y: 26 });
+        gsap.set(ico, { scale: 0.3, rotation: -45, opacity: 0 });
+        gsap.set(trait, { scaleX: 0 });
+        gsap.set(num, { yPercent: 110 });
+        gsap.set(etoile, { opacity: 0 });
+        ScrollTrigger.create({
+          trigger: ent, start: 'top 86%', once: true,
+          onEnter: function () {
+            var texte = p.textContent.trim().replace(/\s+/g, ' ');
+            var lignes = decouperLignes(p, texte);
+            gsap.timeline()
+              .to(boite, { autoAlpha: 1, y: 0, duration: 1.3, ease: 'expo.out', clearProps: 'transform' }, 0.3)
+              .to(ico, { scale: 1, rotation: 0, opacity: 1, duration: 1.1, ease: 'back.out(2.2)', clearProps: 'transform' }, 0.45)
+              .fromTo(reflet, { xPercent: -110, autoAlpha: 1 }, { xPercent: 110, autoAlpha: 1, duration: 1.5, ease: 'power2.inOut', onComplete: function () { gsap.set(reflet, { autoAlpha: 0 }); } }, 0.9)
+              .to(trait, { scaleX: 1, duration: 1.8, ease: 'expo.inOut' }, 0)
+              .fromTo(etoile, { x: function () { return -trait.offsetWidth - 16; }, rotation: -540 },
+                { x: 0, rotation: 0, duration: 1.8, ease: 'expo.inOut' }, 0)
+              .to(etoile, { opacity: 1, duration: 0.4, ease: 'power1.out' }, 0.05)
+              .to(num, { yPercent: 0, duration: 1.1, ease: 'expo.out' }, 0.15)
+              .from(lignes, {
+                yPercent: 110, duration: 1.6, ease: 'power4.out', stagger: 0.12,
+                onComplete: function () { p.textContent = texte; }   // texte normal ensuite (s'adapte à la fenêtre)
+              }, 0.55);
+          }
+        });
       });
 
       gsap.utils.toArray('[data-reveal]').forEach(function (el) {
@@ -1979,7 +2063,8 @@
         .fromTo('.canal', { y: 70, opacity: 0 }, { y: 0, opacity: 1, duration: 1.4, ease: 'expo.out', stagger: 0.12, clearProps: 'transform,opacity' })
         .from('.canal-ico', { scale: 0.2, rotation: -70, opacity: 0, duration: 1.3, ease: 'back.out(1.7)', stagger: 0.12, clearProps: 'transform' }, 0.25)
         .from('.canal-nom', { y: 28, opacity: 0, duration: 1.3, ease: 'expo.out', stagger: 0.12, clearProps: 'transform,opacity' }, 0.35)
-        .from('.canal-actions > *', { scale: 0, opacity: 0, duration: 1, ease: 'back.out(2)', stagger: 0.07, clearProps: 'transform' }, 0.55);
+        .from('.canal-adresse', { y: 16, opacity: 0, duration: 1.2, ease: 'expo.out', clearProps: 'transform,opacity' }, 0.5)
+        .from('.canal-actions > *, .canal-copier', { scale: 0, opacity: 0, duration: 1, ease: 'back.out(2)', stagger: 0.07, clearProps: 'transform' }, 0.55);
       // Étoiles du contact : légère parallaxe
       gsap.fromTo('.contact-etoiles', { yPercent: -6 }, { yPercent: 6, ease: 'none', scrollTrigger: { trigger: '.contact', start: 'top bottom', end: 'bottom bottom', scrub: true } });
 
@@ -1990,7 +2075,28 @@
 
       // Bandeau de fin de page, accéléré par la vitesse de défilement
       var piste = document.querySelector('.piste');
-      var defile = gsap.to(piste, { xPercent: -50, duration: 34, ease: 'none', repeat: -1 });
+      var groupesB = piste.querySelectorAll('.groupe'), motifB = groupesB[0].innerHTML, defile = null, largeurFenetre = 0;
+      function remplirBandeau() {
+        // Chaque groupe doit être plus large que l'écran : on répète la phrase autant de fois que nécessaire
+        largeurFenetre = window.innerWidth;
+        groupesB.forEach(function (g) { g.innerHTML = motifB; });
+        var w = groupesB[0].getBoundingClientRect().width;
+        if (!w) return;
+        var n = Math.max(1, Math.ceil((largeurFenetre + 240) / w)), html = '';
+        for (var k = 0; k < n; k++) html += motifB;
+        groupesB.forEach(function (g) { g.innerHTML = html; });
+        var ts = defile ? defile.timeScale() : 1;
+        if (defile) defile.kill();
+        gsap.set(piste, { xPercent: 0 });
+        defile = gsap.to(piste, { xPercent: -50, duration: (w * n) / 34, ease: 'none', repeat: -1 }).timeScale(ts);
+      }
+      remplirBandeau();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(remplirBandeau);
+      var minuterieB = null;
+      window.addEventListener('resize', function () {
+        clearTimeout(minuterieB);
+        minuterieB = setTimeout(function () { if (Math.abs(window.innerWidth - largeurFenetre) > 2) remplirBandeau(); }, 250);
+      });
       ScrollTrigger.create({
         trigger: '.contact', start: 'top bottom', end: 'bottom top',
         onUpdate: function (st) {
