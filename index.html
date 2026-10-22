@@ -497,16 +497,16 @@
     /* ============================ À PROPOS ============================ */
     /* Bouton mode clair / mode sombre : le soleil se change en lune */
     .mode-bouton {
-      position: absolute; z-index: 5; top: clamp(78px, 10vh, 96px); right: 20px;
-      display: inline-flex; align-items: center; gap: 9px; height: 42px; padding: 0 16px 0 6px; border-radius: 999px;
-      font: 600 .84rem/1 var(--titre); color: var(--txt); cursor: pointer; -webkit-tap-highlight-color: transparent;
-      background: rgba(20, 32, 58, .04); background: color-mix(in srgb, var(--txt) 5%, transparent);
-      border: 1px solid var(--ligne);
-      transition: background-color .5s, border-color .5s, color .5s, translate .6s var(--sortie);
+      /* discret : juste le soleil ou la lune, centré en haut de la page blanche */
+      position: absolute; z-index: 5; top: 24px; left: 50%; margin-left: -20px;
+      display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%;
+      background: none; color: var(--txt); cursor: pointer; -webkit-tap-highlight-color: transparent;
+      transition: translate .6s var(--sortie);
     }
-    .mode-bouton:hover, .mode-bouton:focus-visible { border-color: var(--acc); translate: 0 -2px; }
+    .mode-bouton:hover, .mode-bouton:focus-visible { translate: 0 -2px; }
+    .mode-bouton:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
     .mode-ico-zone {
-      width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; flex: none;
+      width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; flex: none;
       color: #E3901E; background: rgba(242, 169, 59, .18);
       transition: color .8s ease, background-color .8s ease, rotate 1s var(--sortie);
     }
@@ -516,13 +516,10 @@
     .mode-ombre { transform: translate(9px, -9px); transition: transform .9s var(--sortie); }
     .mode-rayons { transform-origin: 12px 12px; transition: transform .9s var(--sortie), opacity .5s ease; }
     .mode-rayons path { fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; }
-    .mode-texte { display: block; height: 1.25em; line-height: 1.25; overflow: hidden; }
-    .mode-texte span { display: block; transition: transform .7s var(--sortie); }
     html[data-mode="sombre"] .mode-ico-zone { color: #E8ECF1; background: rgba(232, 236, 241, .1); }
     html[data-mode="sombre"] .mode-astre { transform: scale(1); }
     html[data-mode="sombre"] .mode-ombre { transform: none; }
     html[data-mode="sombre"] .mode-rayons { transform: rotate(-90deg) scale(.4); opacity: 0; }
-    html[data-mode="sombre"] .mode-texte span { transform: translateY(-100%); }
     .apropos-grille { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: clamp(36px, 7vw, 120px); align-items: start; }
     .portrait { margin: 0; position: sticky; top: 110px; overflow: hidden; aspect-ratio: 3 / 4; background: var(--ligne); }
     .portrait img { width: 100%; height: 112%; object-fit: cover; object-position: center top; display: block; margin-top: -6%; }
@@ -796,19 +793,6 @@
       .carte { grid-template-rows: auto 1fr minmax(84px, auto); }
     }
 
-    /* Bandeau décoratif de fin de page */
-    .bandeau {
-      overflow: hidden; margin: clamp(48px, 8vh, 84px) calc(-1 * var(--marge)) 0 calc(-1 * var(--marge-g));
-      border-top: 1px solid var(--ligne); border-bottom: 1px solid var(--ligne);
-    }
-    .piste { display: flex; width: max-content; }
-    .groupe { display: flex; align-items: center; }
-    .groupe span {
-      font-family: var(--titre); font-weight: 700; font-stretch: 80%;
-      font-size: clamp(1.7rem, 4.4vw, 3.8rem); line-height: 1.2; padding: .12em .4em; white-space: nowrap;
-      color: transparent; -webkit-text-stroke: 1px var(--txt2);
-    }
-    .groupe .etoile { color: var(--acc); -webkit-text-stroke: 0; font-size: clamp(1.1rem, 2.4vw, 2rem); }
     .pied {
       display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
       margin-top: clamp(64px, 12vh, 140px); padding-top: 24px; border-top: 1px solid var(--ligne);
@@ -890,7 +874,7 @@
       .portrait { position: relative; top: 0; max-width: 380px; }
       .travail { grid-template-columns: 1fr; gap: 6px; }
       .interets li { grid-template-columns: 1fr; gap: 6px; }
-      .mode-bouton { top: 78px; right: 20px; height: 40px; }
+      .mode-bouton { top: 20px; }
       .int-fil.pret { padding-left: 26px; }
       .int-fil.pret .int-axe { left: 3px; }
       .exp summary { grid-template-columns: minmax(0, 1fr) 20px; gap: 4px 16px; }
@@ -1060,7 +1044,6 @@
           <g class="mode-rayons"><path d="M12 1.6 V3.9 M12 20.1 V22.4 M1.6 12 H3.9 M20.1 12 H22.4 M4.65 4.65 L6.3 6.3 M17.7 17.7 L19.35 19.35 M4.65 19.35 L6.3 17.7 M17.7 6.3 L19.35 4.65" /></g>
           <circle class="mode-astre" cx="12" cy="12" r="8.2" mask="url(#masqueLune)" />
         </svg></span>
-        <span class="mode-texte" aria-hidden="true"><span>Mode sombre</span><span>Mode clair</span></span>
       </button>
       <div class="apropos-grille">
         <figure class="portrait">
@@ -1322,13 +1305,6 @@
         </li>
       </ul>
 
-      <div class="bandeau" aria-hidden="true">
-        <div class="piste">
-          <div class="groupe"><span>Restons en contact</span><span class="etoile">✦</span><span>Sécurité internationale</span><span class="etoile">✦</span></div>
-          <div class="groupe"><span>Restons en contact</span><span class="etoile">✦</span><span>Sécurité internationale</span><span class="etoile">✦</span></div>
-        </div>
-      </div>
-
       <footer class="pied">
         <span>© 2026 Tom Séveno. Site hébergé sur GitHub Pages.</span>
         <a class="haut-lien" href="#haut" aria-label="Retour en haut de la page">
@@ -1416,8 +1392,6 @@
       "États-Unis": "United States",
       "Activer le mode sombre": "Switch to dark mode",
       "Activer le mode clair": "Switch to light mode",
-      "Mode sombre": "Dark mode",
-      "Mode clair": "Light mode",
       "Portrait de Tom Séveno": "Portrait of Tom Séveno",
       "Je m'oriente vers l'analyse des menaces : comprendre comment le terrorisme et l'intelligence artificielle transforment la sécurité internationale, pour aider les décideurs à les anticiper.": "I'm working toward a career in threat analysis: understanding how terrorism and artificial intelligence are transforming international security, to help decision-makers anticipate them.",
       "Formé en Science Politique à l'Institut catholique d'études supérieures (ICES), je poursuis aujourd'hui une maîtrise en études internationales à l'Université Laval.": "Trained in Political Science at the Institut catholique d'études supérieures (ICES), I am now pursuing a master's degree in International Studies at Université Laval.",
@@ -1513,7 +1487,6 @@
       "Copier le courriel": "Copy email",
       "Courriel copié": "Email copied",
       "Adresse copiée :": "Address copied:",
-      "Restons en contact": "Let's keep in touch",
       "© 2026 Tom Séveno. Site hébergé sur GitHub Pages.": "© 2026 Tom Séveno. Hosted on GitHub Pages.",
       "Retour en haut": "Back to top",
       "Retour en haut de la page": "Back to the top of the page"
@@ -2521,42 +2494,6 @@
       // Niveaux de langue
       gsap.utils.toArray('.langue').forEach(function (l) {
         gsap.from(l.querySelectorAll('.seg i'), { scaleX: 0, duration: 1, ease: 'power3.out', stagger: 0.09, scrollTrigger: { trigger: l, start: 'top 90%' } });
-      });
-
-      // Bandeau de fin de page, accéléré par la vitesse de défilement
-      var piste = document.querySelector('.piste');
-      var groupesB = piste.querySelectorAll('.groupe'), motifB = groupesB[0].innerHTML, defile = null, largeurFenetre = 0;
-      function remplirBandeau() {
-        // Chaque groupe doit être plus large que l'écran : on répète la phrase autant de fois que nécessaire
-        largeurFenetre = window.innerWidth;
-        var tmp = document.createElement('div'); tmp.innerHTML = motifB; traduireArbre(tmp, langueSite);
-        var motif = tmp.innerHTML;
-        groupesB.forEach(function (g) { g.innerHTML = motif; });
-        var w = groupesB[0].getBoundingClientRect().width;
-        if (!w) return;
-        var n = Math.max(1, Math.ceil((largeurFenetre + 240) / w)), html = '';
-        for (var k = 0; k < n; k++) html += motif;
-        groupesB.forEach(function (g) { g.innerHTML = html; });
-        var ts = defile ? defile.timeScale() : 1;
-        if (defile) defile.kill();
-        gsap.set(piste, { xPercent: 0 });
-        defile = gsap.to(piste, { xPercent: -50, duration: (w * n) / 34, ease: 'none', repeat: -1 }).timeScale(ts);
-      }
-      remplirBandeau();
-      apresLangue.push(function () { remplirBandeau(); });
-      if (document.fonts && document.fonts.ready) document.fonts.ready.then(remplirBandeau);
-      var minuterieB = null;
-      window.addEventListener('resize', function () {
-        clearTimeout(minuterieB);
-        minuterieB = setTimeout(function () { if (Math.abs(window.innerWidth - largeurFenetre) > 2) remplirBandeau(); }, 250);
-      });
-      ScrollTrigger.create({
-        trigger: '.contact', start: 'top bottom', end: 'bottom top',
-        onUpdate: function (st) {
-          var v = Math.min(Math.abs(st.getVelocity()) / 500, 5);
-          gsap.to(defile, { timeScale: 1 + v, duration: 0.3, overwrite: true,
-            onComplete: function () { gsap.to(defile, { timeScale: 1, duration: 1.6 }); } });
-        }
       });
     }
 
