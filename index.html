@@ -405,6 +405,12 @@
       margin: 0; color: var(--txt);
       font-family: var(--texte); font-weight: 400; font-size: clamp(1.03rem, 1.2vw, 1.14rem); line-height: 1.55;
     }
+    /* Sur ordinateur : lignes de longueur équilibrée et encadré ajusté à son texte (voir ajusterChapos dans le script),
+       pour un bloc bien rempli sans les blancs d'un texte justifié. Sur téléphone : encadré pleine largeur. */
+    @media (min-width: 861px) {
+      .chapo { justify-self: end; }
+      .chapo-texte { text-wrap: balance; }
+    }
     .chapo-texte .cl { display: block; overflow: hidden; padding-bottom: .12em; margin-bottom: -.12em; }
     .chapo-texte .cl-i { display: block; }
     .chapo-reflet {   /* reflet qui traverse l'encadré à son apparition */
@@ -1141,7 +1147,7 @@
           </li>
           <li class="escale">
             <div>
-              <span class="escale-date">Depuis 2026</span>
+              <span class="escale-date">Depuis septembre 2026</span>
               <h3>Québec, Canada</h3>
               <p class="fort">Maîtrise en études internationales à l'Université Laval, spécialité <a class="spec-lien" href="https://www.ulaval.ca/etudes/programmes/maitrise-en-etudes-internationales-securite-internationale" target="_blank" rel="noopener" data-info="Voir le programme" aria-label="Sécurité internationale : voir le programme à l'Université Laval (nouvel onglet)">sécurité internationale<svg class="spec-fleche" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 L17 7" /><path d="M9 7 H17 V15" /></svg></a>.</p>
             </div>
@@ -1522,7 +1528,7 @@
       "Licence de Science Politique à l'Institut catholique d'études supérieures (ICES).": "Bachelor's degree in Political Science at the Institut catholique d'études supérieures (ICES).",
       "Janvier – juin 2025": "January – June 2025",
       "Semestre de mobilité à l'University of West Alabama. GPA de 4.0, inscrit à la President's List.": "Exchange semester at the University of West Alabama. 4.0 GPA, named to the President's List.",
-      "Depuis 2026": "Since 2026",
+      "Depuis septembre 2026": "Since September 2026",
       "Maîtrise en études internationales à l'Université Laval, spécialité": "Master's degree in International Studies at Université Laval, specializing in",
       "sécurité internationale": "international security",
       "Voir le programme": "View the program",
@@ -1782,6 +1788,28 @@
           .to(vol, { y: -(r.top + 180), scale: 1.5, duration: 0.6, ease: 'power2.in' }, 0);   // la fusée file vers le haut
       });
     });
+
+    // Encadrés d'introduction : sur ordinateur, l'encadré épouse la largeur de son texte, pour qu'il soit bien rempli
+    function ajusterChapos() {
+      var large = window.matchMedia('(min-width: 861px)').matches;
+      document.querySelectorAll('.chapo-texte').forEach(function (p) {
+        if (p.querySelector('.cl')) return;              // lignes en cours d'animation : on n'y touche pas
+        p.style.width = '';
+        if (!large) return;
+        var r = document.createRange(); r.selectNodeContents(p);
+        var rects = r.getClientRects(), g = Infinity, d = -Infinity;
+        for (var i = 0; i < rects.length; i++) {
+          if (rects[i].width > 0) { g = Math.min(g, rects[i].left); d = Math.max(d, rects[i].right); }
+        }
+        var k = p.offsetWidth ? p.getBoundingClientRect().width / p.offsetWidth : 1;   // la section peut être légèrement mise à l'échelle
+        if (d > g && k > 0) p.style.width = Math.ceil((d - g) / k + 1) + 'px';
+      });
+    }
+    ajusterChapos();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajusterChapos);
+    apresLangue.push(ajusterChapos);
+    var minuteurChapos;
+    window.addEventListener('resize', function () { clearTimeout(minuteurChapos); minuteurChapos = setTimeout(ajusterChapos, 150); });
 
     /* ---------- 2. Changement de fond selon la section ---------- */
     // Chaque section porte sa couleur ; seuls les éléments fixes (barre latérale…) suivent la section affichée au centre
@@ -2760,7 +2788,7 @@
               .to(num, { yPercent: 0, duration: 1.1, ease: 'expo.out' }, 0.15)
               .from(lignes, {
                 yPercent: 110, duration: 1.6, ease: 'power4.out', stagger: 0.12,
-                onComplete: function () { var tr = traduireTexte(texte, langueSite); p.textContent = tr !== null ? tr : texte; }   // texte normal ensuite
+                onComplete: function () { var tr = traduireTexte(texte, langueSite); p.textContent = tr !== null ? tr : texte; ajusterChapos(); }   // texte normal ensuite
               }, 0.55);
           }
         });
