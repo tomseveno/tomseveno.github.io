@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mon portrait - Tom Séveno</title>
   <meta name="description" content="Tom Séveno, étudiant à la maîtrise en études internationales, spécialité sécurité internationale, à l'Université Laval." />
-  <script>document.documentElement.className = 'js attente';try { if (localStorage.getItem('ts-mode') === 'sombre') document.documentElement.setAttribute('data-mode', 'sombre'); } catch (e) {}</script>
+  <script>document.documentElement.className = 'js';try { if (localStorage.getItem('ts-mode') === 'sombre') document.documentElement.setAttribute('data-mode', 'sombre'); } catch (e) {}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -93,14 +93,6 @@
     html.lenis, html.lenis body { height: auto; }
     .lenis.lenis-smooth { scroll-behavior: auto !important; }
     .lenis.lenis-stopped { overflow: hidden; }
-
-    /* ================ OUVERTURE : arrivée depuis l'orbite ================ */
-    .fusee-intro { transform-origin: 50% 100%; }
-
-    /* Avant l'animation d'ouverture */
-    .attente .lettre { transform: translateY(115%); }
-    .attente .hero-info > *, .attente .hero-je, .attente .reseau, .attente .fusee-sol, .attente .rail, .attente .menu-bouton, .attente .langues,
-    .attente #ciel, .attente #terre, .attente .fusee { opacity: 0; }
 
     /* ======================= PROGRESSION + CURSEUR ======================= */
     .progression {
@@ -208,10 +200,10 @@
     /* ============================ ACCUEIL ============================ */
     .hero {
       --horizon: 118px;      /* hauteur de Terre visible en bas de l'écran */
-      --zone-fusee: 232px;   /* espace réservé à la fusée */
+      --zone-bas: 178px;     /* espace laissé en bas, au-dessus de l'horizon */
       position: relative; min-height: 100svh; overflow: hidden; isolation: isolate;
       display: grid; place-items: center; text-align: center;
-      padding: 60px var(--marge) var(--zone-fusee);
+      padding: 60px var(--marge) var(--zone-bas);
       -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 90px), transparent);
       mask-image: linear-gradient(to bottom, #000 calc(100% - 90px), transparent);
     }
@@ -220,10 +212,9 @@
       background: radial-gradient(62% 40% at 50% 100%, rgba(80, 122, 214, .2), transparent 72%);
       opacity: var(--lueur, 1);
     }
-    #ciel, #terre, #fumee { position: absolute; left: 0; width: 100%; display: block; pointer-events: none; }
+    #ciel, #terre { position: absolute; left: 0; width: 100%; display: block; pointer-events: none; }
     #ciel { top: -5%; height: 110%; z-index: 0; }
     #terre { top: 0; height: 100%; z-index: 1; }
-    #fumee { top: 0; height: 100%; z-index: 3; }
     .hero-centre { position: relative; z-index: 4; display: flex; flex-direction: column; align-items: center; }
 
     .hero-titre { margin: 0; display: flex; flex-direction: column; align-items: center; font-weight: 400; }
@@ -320,37 +311,6 @@
     .roule { display: block; height: 1.3em; line-height: 1.3; overflow: hidden; }
     .roule span { display: block; transition: transform .6s var(--sortie); }
     .reseau:hover .roule span, .reseau:focus-visible .roule span { transform: translateY(-100%); }
-
-    /* Fusée (remplace « Défiler ») */
-    .fusee-zone {
-      position: absolute; z-index: 2; left: 50%; bottom: var(--horizon); translate: -50% 0;
-      width: 124px; height: 110px; display: block; color: var(--clair-2); text-decoration: none;
-      -webkit-tap-highlight-color: transparent; outline-offset: 8px; border-radius: 12px;
-    }
-    .fusee { position: absolute; left: 50%; bottom: -21px; width: 52px; margin-left: -26px; display: block; }
-    .fusee-intro, .fusee-flotte { display: block; }
-    .fusee-flotte { animation: flotte 3.4s ease-in-out infinite; }
-    @keyframes flotte { 50% { transform: translateY(-4px); } }
-    .fusee-svg { display: block; width: 52px; height: auto; overflow: visible; transform-origin: 50% 62%; }
-    .fusee-sol { position: absolute; left: 0; right: 0; bottom: 0; height: 0; display: block; }
-    .fusee-halo {
-      position: absolute; left: 50%; bottom: -16px; width: 110px; height: 30px; margin-left: -55px; border-radius: 50%;
-      background: radial-gradient(closest-side, rgba(236, 110, 159, .6), rgba(236, 110, 159, 0)); opacity: .3;
-    }
-    .fusee-pad {
-      position: absolute; left: 50%; bottom: -1px; width: 78px; height: 2px; margin-left: -39px; border-radius: 2px;
-      background: linear-gradient(90deg, rgba(236, 110, 159, 0), var(--rose-nuit), rgba(236, 110, 159, 0));
-      box-shadow: 0 0 16px 2px rgba(236, 110, 159, .35);
-    }
-    .fusee-label {
-      position: absolute; left: 50%; top: 24px; translate: -50% 0;
-      height: 1.3em; line-height: 1.3; overflow: hidden; white-space: nowrap;
-      font-family: var(--titre); font-size: .8rem; letter-spacing: .03em; color: var(--clair-2);
-    }
-    .fusee-label span { display: block; text-align: center; transition: transform .6s var(--sortie); }
-    .fusee-zone:hover .fusee-label span, .fusee-zone:focus-visible .fusee-label span,
-    .fusee-zone.lance .fusee-label span { transform: translateY(-100%); }
-    .fusee-zone.lance .fl-alt { color: var(--rose-nuit); font-weight: 600; }
 
     /* Message « adresse copiée » */
     .toast {
@@ -856,37 +816,17 @@
     }
     .pied a { color: var(--txt2); }
     .pied { align-items: center; }
-    /* Retour en haut : une petite fusée dans un cercle (le cercle se remplit avec le défilement) ; au clic, elle décolle */
-    .haut-fusee { display: inline-flex; align-items: center; gap: 14px; color: var(--txt); text-decoration: none; -webkit-tap-highlight-color: transparent; }
-    .hf-texte { display: block; height: 1.3em; line-height: 1.3; overflow: hidden; font: 600 .92rem/1.3 var(--titre); }
-    .hf-texte span { display: block; transition: transform .6s var(--sortie); }
-    .hf-texte span + span { color: var(--acc); }
-    .haut-fusee:hover .hf-texte span, .haut-fusee:focus-visible .hf-texte span, .haut-fusee.decolle .hf-texte span { transform: translateY(-100%); }
-    .hf-cercle {
-      position: relative; width: 64px; height: 64px; flex: none; border-radius: 50%; overflow: hidden;
-      display: grid; place-items: center; background: rgba(232, 236, 241, .04); transition: background-color .5s;
+    /* Retour en haut : une flèche dans un cercle */
+    .haut-lien { display: inline-flex; align-items: center; gap: 14px; color: var(--txt); text-decoration: none; -webkit-tap-highlight-color: transparent; }
+    .haut-texte { font: 600 .92rem/1.3 var(--titre); transition: color .3s; }
+    .haut-fleche {
+      width: 48px; height: 48px; flex: none; border-radius: 50%; display: grid; place-items: center;
+      border: 1.5px solid var(--ligne); transition: border-color .3s, background-color .3s;
     }
-    .hf-anneau { position: absolute; inset: 0; width: 100%; height: 100%; rotate: -90deg; }
-    .hf-piste { fill: none; stroke: var(--ligne); stroke-width: 1.5; }
-    .hf-progres { fill: none; stroke: var(--acc); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
-    .hf-fusee { display: block; width: 20px; height: 34px; }
-    .hf-fusee svg { display: block; width: 100%; height: 100%; overflow: visible; }
-    .hf-flamme { transform-origin: 14px 35.5px; transform: scaleY(.4); transition: transform .4s ease; }
-    .haut-fusee:hover .hf-cercle, .haut-fusee:focus-visible .hf-cercle { background: rgba(236, 110, 159, .12); }
-    .haut-fusee:hover .hf-fusee { animation: hf-vibre .14s linear infinite; }
-    .haut-fusee:hover .hf-flamme, .haut-fusee.decolle .hf-flamme { transform: scaleY(1.05); animation: hf-flamme .16s ease-in-out infinite alternate; }
-    .haut-fusee.decolle .hf-fusee { animation: none; }
-    /* Fusée en vol (copie posée au-dessus de la page pendant la remontée) */
-    .hf-vol { position: fixed; z-index: 95; width: 20px; height: 34px; pointer-events: none; will-change: transform; }
-    .hf-vol svg { position: relative; display: block; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 6px rgba(236, 110, 159, .55)); }
-    .hf-vol .hf-flamme { transform: scaleY(1.15); animation: hf-flamme .12s ease-in-out infinite alternate; }
-    .hf-trainee {
-      position: absolute; left: 50%; top: 88%; width: 6px; height: 150px; margin-left: -3px; border-radius: 3px;
-      transform-origin: top; transform: scaleY(0); filter: blur(1.5px);
-      background: linear-gradient(rgba(255, 214, 170, .95), rgba(236, 110, 159, .55) 35%, rgba(236, 110, 159, 0));
-    }
-    @keyframes hf-vibre { 25% { translate: .6px -.4px; } 50% { translate: -.6px .3px; } 75% { translate: .4px .5px; } }
-    @keyframes hf-flamme { from { transform: scaleY(.85); } to { transform: scaleY(1.25); } }
+    .haut-fleche svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .3s ease; }
+    .haut-lien:hover .haut-texte, .haut-lien:focus-visible .haut-texte { color: var(--acc); }
+    .haut-lien:hover .haut-fleche, .haut-lien:focus-visible .haut-fleche { border-color: var(--acc); background: rgba(236, 110, 159, .1); }
+    .haut-lien:hover .haut-fleche svg, .haut-lien:focus-visible .haut-fleche svg { transform: translateY(-3px); }
 
     /* Éléments à compléter (surlignés) : cherche "a-completer" dans ce fichier */
     .a-completer { background: #F3E58A; color: #14203A; padding: 0 4px; border-radius: 2px; }
@@ -930,7 +870,7 @@
       .menu-lien[aria-current="true"] .menu-ico { background: var(--clair); color: var(--nuit); border-color: var(--clair); }
       .menu-lien[aria-current="true"] .menu-nom { color: var(--rose-nuit); }
       .menu-lien:active .menu-ico { background: rgba(232, 236, 241, .14); }
-      .hero { --horizon: 150px; --zone-fusee: 282px; padding: 52px var(--marge) var(--zone-fusee); }
+      .hero { --horizon: 150px; --zone-bas: 210px; padding: 52px var(--marge) var(--zone-bas); }
       .hero-nom { font-size: 18vw; }
       .hero-detail { font-size: .95rem; }
       .reseau { height: 42px; padding: 0 14px 0 12px; gap: 8px; font-size: .88rem; }
@@ -973,17 +913,17 @@
     }
 
     @media (min-width: 861px) and (max-height: 760px) {
-      .hero { --zone-fusee: 212px; padding-top: 40px; }
+      .hero { --zone-bas: 168px; padding-top: 40px; }
       .hero-rotation { display: none; }
       .hero-detail { margin-bottom: 0; }
     }
     @media (min-width: 861px) and (max-height: 640px) {
-      .hero { --horizon: 96px; --zone-fusee: 190px; }
+      .hero { --horizon: 96px; --zone-bas: 150px; }
       .rail ul a, .rail li.rail-indicateur { width: 46px; height: 46px; }
       .rail ul { gap: 4px; }
     }
     @media (max-width: 860px) and (max-height: 700px) {
-      .hero { --horizon: 132px; --zone-fusee: 246px; padding-top: 36px; }
+      .hero { --horizon: 132px; --zone-bas: 186px; padding-top: 36px; }
       .hero-rotation { display: none; }
       .hero-detail { margin-bottom: 0; }
       .reseaux { gap: 8px; }
@@ -991,7 +931,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .g-pouls, .fusee-flotte, .hs-etoile, .hf-fusee, .hf-flamme, .escale.active .spec-lien, .parcours-etoiles .sc, .contact-etoiles .sc, .i-molette, .i-onde, .i-clic, .i-ecrit, .i-point, .i-fleche, .i-avion, .canal-ico::before, .canal-ico::after { animation: none; }
+      .g-pouls, .hs-etoile, .escale.active .spec-lien, .parcours-etoiles .sc, .contact-etoiles .sc, .i-molette, .i-onde, .i-clic, .i-ecrit, .i-point, .i-fleche, .i-avion, .canal-ico::before, .canal-ico::after { animation: none; }
       .escale > div > * { opacity: 1; transform: none; }
     }
   </style>
@@ -1035,7 +975,6 @@
     <section class="hero" id="accueil" data-theme="nuit" aria-label="Accueil">
       <canvas id="ciel" aria-hidden="true"></canvas>
       <canvas id="terre" aria-hidden="true"></canvas>
-      <canvas id="fumee" aria-hidden="true"></canvas>
 
       <div class="hero-centre">
         <h1 class="hero-titre" aria-label="Je suis Tom Séveno">
@@ -1062,49 +1001,6 @@
           <li><a class="reseau aimant" href="mailto:tom.seveno56@gmail.com" data-copier="tom.seveno56@gmail.com" aria-label="Écrire à tom.seveno56@gmail.com"><span class="ico"><svg class="ico-plein" viewBox="0 0 24 24" aria-hidden="true"><defs><mask id="mMail1" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#fff" /><path class="pli" pathLength="1" d="M5.6 8.4 L12 12.9 L18.4 8.4" /></mask></defs><rect x="1.5" y="3.5" width="21" height="17" rx="3.4" fill="currentColor" mask="url(#mMail1)" /></svg></span><span class="roule" aria-hidden="true"><span>Courriel</span><span>Courriel</span></span></a></li>
         </ul>
       </div>
-
-      <a class="fusee-zone" href="#parcours" aria-label="Décoller vers la section Parcours">
-        <span class="fusee"><span class="fusee-intro"><span class="fusee-flotte">
-            <svg class="fusee-svg" viewBox="0 0 60 130" aria-hidden="true">
-              <defs>
-                <linearGradient id="fCorps" x1="0" x2="1" y1="0" y2="0">
-                  <stop offset="0" stop-color="#AEB9CB" /><stop offset=".38" stop-color="#F5F7FB" />
-                  <stop offset=".62" stop-color="#E2E7EF" /><stop offset="1" stop-color="#8C99B0" />
-                </linearGradient>
-                <linearGradient id="fRose" x1="0" x2="1" y1="0" y2="0">
-                  <stop offset="0" stop-color="#F38FB7" /><stop offset="1" stop-color="#A8235A" />
-                </linearGradient>
-                <linearGradient id="fFlamme" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0" stop-color="#FFF4F8" /><stop offset=".22" stop-color="#FFC08A" />
-                  <stop offset=".55" stop-color="#EC6E9F" stop-opacity=".85" /><stop offset="1" stop-color="#EC6E9F" stop-opacity="0" />
-                </linearGradient>
-                <linearGradient id="fCoeur" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0" stop-color="#FFFFFF" /><stop offset=".6" stop-color="#FFE9C2" stop-opacity=".9" />
-                  <stop offset="1" stop-color="#FFE9C2" stop-opacity="0" />
-                </linearGradient>
-              </defs>
-              <g class="flamme" transform="translate(30 91) scale(.84 .32) translate(-30 -91)">
-                <path fill="url(#fFlamme)" d="M20.5 91 C19.5 104 24.5 117 30 129 C35.5 117 40.5 104 39.5 91 Z" />
-                <path fill="url(#fCoeur)" d="M24.8 91 C24.6 99 27.2 106 30 112 C32.8 106 35.4 99 35.2 91 Z" />
-              </g>
-              <path fill="url(#fRose)" d="M16 58 C9 64 6 75 6 90 L16 83 Z" />
-              <path fill="url(#fRose)" d="M44 58 C51 64 54 75 54 90 L44 83 Z" />
-              <path fill="#56637C" d="M21 83 H39 L36.4 91.5 H23.6 Z" />
-              <path fill="url(#fCorps)" d="M30 2.5 C40 12.5 45 26.5 45 42.5 V83 H15 V42.5 C15 26.5 20 12.5 30 2.5 Z" />
-              <path fill="url(#fRose)" d="M30 2.5 C36.4 8.9 40.5 16.4 42.5 24.5 H17.5 C19.5 16.4 23.6 8.9 30 2.5 Z" />
-              <path fill="#14203A" opacity=".16" d="M15 24.5 H45 V27.2 H15 Z" />
-              <rect x="15" y="68.5" width="30" height="3" fill="#EC6E9F" />
-              <circle cx="30" cy="45" r="7.2" fill="#14203A" stroke="#8FA4C4" stroke-width="2.4" />
-              <path d="M26 42.4 a4.8 4.8 0 0 1 4.9 -2.3" fill="none" stroke="#E4ECF8" stroke-width="1.4" stroke-linecap="round" />
-              <path fill="#A8235A" d="M28.5 71.5 H31.5 V91 L30 93 L28.5 91 Z" />
-            </svg>
-        </span></span></span>
-        <span class="fusee-sol" aria-hidden="true">
-          <span class="fusee-halo"></span>
-          <span class="fusee-pad"></span>
-          <span class="fusee-label"><span>Défiler</span><span class="fl-alt">Décoller</span></span>
-        </span>
-      </a>
 
     </section>
 
@@ -1435,21 +1331,9 @@
 
       <footer class="pied">
         <span>© 2026 Tom Séveno. Site hébergé sur GitHub Pages.</span>
-        <a class="haut-fusee" href="#haut" aria-label="Retour en haut de la page">
-          <span class="hf-texte" aria-hidden="true"><span>Retour en haut</span><span>Décollage !</span></span>
-          <span class="hf-cercle" aria-hidden="true">
-            <svg class="hf-anneau" viewBox="0 0 64 64"><circle class="hf-piste" cx="32" cy="32" r="29" /><circle class="hf-progres" cx="32" cy="32" r="29" pathLength="1" /></svg>
-            <span class="hf-fusee"><svg viewBox="0 0 28 48">
-              <defs><linearGradient id="hfFlamme" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FFF4F8" /><stop offset=".3" stop-color="#FFC08A" /><stop offset="1" stop-color="#EC6E9F" stop-opacity="0" /></linearGradient></defs>
-              <path class="hf-flamme" fill="url(#hfFlamme)" d="M10.4 35.5 C10 40.5 11.8 44.5 14 48 C16.2 44.5 18 40.5 17.6 35.5 Z" />
-              <path fill="#EC6E9F" d="M7.6 22 C4.2 24.8 3 29.6 3 35.6 L8 32.6 Z" />
-              <path fill="#EC6E9F" d="M20.4 22 C23.8 24.8 25 29.6 25 35.6 L20 32.6 Z" />
-              <path fill="#56637C" d="M10.6 33.6 H17.4 L16.4 36.6 H11.6 Z" />
-              <path fill="#E8ECF1" d="M14 1.5 C19 6.5 21 13 21 20 V34 H7 V20 C7 13 9 6.5 14 1.5 Z" />
-              <path fill="#EC6E9F" d="M14 1.5 C17.2 4.7 19.2 8.4 20.2 12.5 H7.8 C8.8 8.4 10.8 4.7 14 1.5 Z" />
-              <circle cx="14" cy="20" r="3.3" fill="#14203A" stroke="#8FA4C4" stroke-width="1.4" />
-            </svg></span>
-          </span>
+        <a class="haut-lien" href="#haut" aria-label="Retour en haut de la page">
+          <span class="haut-texte">Retour en haut</span>
+          <span class="haut-fleche" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 19 V5" /><path d="M6 11 L12 5 L18 11" /></svg></span>
         </a>
       </footer>
     </section>
@@ -1474,9 +1358,8 @@
     if (aGsap) gsap.registerPlugin(ScrollTrigger);
     var finAttente = function () { html.classList.remove('attente'); };
     var ouvertureLancee = false;
-    // Caméra de l'ouverture : 0 = la Terre vue de loin, 1 = l'horizon de l'accueil
-    var camera = { a: aGsap && !reduit ? 0 : 1, s: 1 };
-    var effetAtterrissage = function () {};
+    // Caméra : 1 = l'horizon de la Terre en bas de l'accueil
+    var camera = { a: 1, s: 1 };
     var refairePhrase = null;   // reconstruit la grande phrase d'À propos (changement de langue)
     var ouvrirRail = function () {};
     // Reflet qui traverse la pastille « Spécialité » (à l'ouverture et au survol)
@@ -1516,9 +1399,6 @@
       "LinkedIn (nouvel onglet)": "LinkedIn (new tab)",
       "Écrire à tom.seveno56@gmail.com": "Email tom.seveno56@gmail.com",
       "Courriel": "Email",
-      "Décoller vers la section Parcours": "Lift off to the Journey section",
-      "Défiler": "Scroll",
-      "Décoller": "Lift off",
       "Quatre escales, de la Bretagne au Québec. Faites défiler pour suivre le trajet sur le globe.": "Four stops, from Brittany to Quebec. Scroll to follow the journey on the globe.",
       "Globe retraçant le parcours de Tom Séveno : Ploërmel, La Roche-sur-Yon, l'Alabama, puis Québec": "Globe tracing Tom Séveno's journey: Ploërmel, La Roche-sur-Yon, Alabama, then Quebec City",
       "Ploërmel, Bretagne, France": "Ploërmel, Brittany, France",
@@ -1636,7 +1516,6 @@
       "Restons en contact": "Let's keep in touch",
       "© 2026 Tom Séveno. Site hébergé sur GitHub Pages.": "© 2026 Tom Séveno. Hosted on GitHub Pages.",
       "Retour en haut": "Back to top",
-      "Décollage !": "Lift-off!",
       "Retour en haut de la page": "Back to the top of the page"
     };
     var INVERSE = {};
@@ -1745,7 +1624,7 @@
         (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })();
       }
     }
-    document.querySelectorAll('a[href^="#"]:not(.fusee-zone):not(.haut-fusee)').forEach(function (a) {
+    document.querySelectorAll('a[href^="#"]:not(.haut-lien)').forEach(function (a) {
       a.addEventListener('click', function (e) {
         var id = a.getAttribute('href');
         var cible = id === '#haut' ? 0 : document.querySelector(id);
@@ -1753,39 +1632,13 @@
       });
     });
 
-    // Retour en haut : la page remonte tout de suite (0,6 s) pendant que la petite fusée
-    // file vers le haut de l'écran avec sa traînée ; elle revient ensuite à sa place.
-    document.querySelectorAll('.haut-fusee').forEach(function (a) {
-      var fusee = a.querySelector('.hf-fusee'), enVol = false;
+    // Retour en haut : la page remonte rapidement (0,6 s)
+    document.querySelectorAll('.haut-lien').forEach(function (a) {
       var vive = function (x) { return 1 - Math.pow(1 - x, 4); };   // démarre vite, se pose en douceur
-      function remonter() {
-        if (lenis) lenis.scrollTo(0, reduit ? { immediate: true } : { duration: 0.6, easing: vive });
-        else window.scrollTo({ top: 0, behavior: reduit ? 'auto' : 'smooth' });
-      }
       a.addEventListener('click', function (e) {
         e.preventDefault();
-        remonter();                                   // la remontée part dès le clic
-        if (!aGsap || reduit || enVol) return;
-        enVol = true;
-        var r = fusee.getBoundingClientRect();
-        var vol = document.createElement('div');
-        vol.className = 'hf-vol'; vol.setAttribute('aria-hidden', 'true');
-        vol.style.left = r.left + 'px'; vol.style.top = r.top + 'px';
-        vol.innerHTML = '<span class="hf-trainee"></span>' + fusee.innerHTML;
-        document.body.appendChild(vol);
-        var trainee = vol.querySelector('.hf-trainee');
-        a.classList.add('decolle');
-        gsap.set(fusee, { opacity: 0 });
-        gsap.timeline({
-          onComplete: function () {
-            vol.remove();
-            a.classList.remove('decolle');
-            gsap.fromTo(fusee, { y: 42, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'expo.out' });
-            enVol = false;
-          }
-        })
-          .to(trainee, { scaleY: 1, duration: 0.2, ease: 'power2.out' }, 0)                   // la traînée s'allume
-          .to(vol, { y: -(r.top + 180), scale: 1.5, duration: 0.6, ease: 'power2.in' }, 0);   // la fusée file vers le haut
+        if (lenis) lenis.scrollTo(0, reduit ? { immediate: true } : { duration: 0.6, easing: vive });
+        else window.scrollTo({ top: 0, behavior: reduit ? 'auto' : 'smooth' });
       });
     });
 
@@ -2016,16 +1869,10 @@
       if (reduit) dessin(0); else requestAnimationFrame(boucle);
     })();
 
-    /* ---------- 3 bis. Planète, satellites et fusée ---------- */
+    /* ---------- 3 bis. Planète et satellites ---------- */
     (function () {
       var hero = document.querySelector('.hero');
       var cT = document.getElementById('terre'), xT = cT.getContext('2d');
-      var cF = document.getElementById('fumee'), xF = cF.getContext('2d');
-      var zoneF = document.querySelector('.fusee-zone');
-      var svgF = document.querySelector('.fusee-svg');
-      var flamme = svgF.querySelector('.flamme');
-      var halo = document.querySelector('.fusee-halo');
-      var altF = document.querySelector('.fl-alt');
       var RAD = Math.PI / 180, TOUR = Math.PI * 2;
       var W = 0, H = 0, R = 0, cx = 0, cy = 0, horizon = 118, actif = true;
       var degTerre, degHalo, degAir;
@@ -2065,7 +1912,7 @@
         var dpr = Math.min(window.devicePixelRatio || 1, 1.75);
         W = hero.clientWidth; H = hero.clientHeight;
         horizon = parseFloat(getComputedStyle(hero).getPropertyValue('--horizon')) || 118;
-        [cT, cF].forEach(function (c) { c.width = W * dpr; c.height = H * dpr; c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0); });
+        [cT].forEach(function (c) { c.width = W * dpr; c.height = H * dpr; c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0); });
         R = Math.max(W * 0.92, 420); cx = W / 2; cy = H - horizon + R;
         degTerre = xT.createRadialGradient(cx, cy, R - 170, cx, cy, R);
         degTerre.addColorStop(0, '#060B17'); degTerre.addColorStop(1, '#122140');
@@ -2089,22 +1936,6 @@
         var Rr = Math.exp(Math.log(r0) + (Math.log(R) - Math.log(r0)) * a);
         var top = top0 + (topF - top0) * a;
         return { R: Rr, cy: top + Rr, a: a, top: top, top0: top0 };
-      }
-
-      // La fusée suit la caméra : minuscule au loin, elle grandit et se pose sur sa base
-      var fuseeIntro = document.querySelector('.fusee-intro');
-      function placerFusee(G) {
-        if (G.a >= 1) {
-          if (camera.s !== 1) { fuseeIntro.style.transform = ''; svgF.style.filter = ''; camera.s = 1; }
-          return;
-        }
-        var sol = H - horizon;
-        var ech = 0.12 + 0.88 * Math.pow(G.a, 1.8);
-        var ecart = Math.pow(1 - G.a, 1.3) * Math.max(0, G.top0 - H * 0.16);
-        camera.s = ech;
-        fuseeIntro.style.transform = 'translate3d(0,' + ((G.top - sol) - ecart).toFixed(1) + 'px,0) scale(' + ech.toFixed(4) + ')';
-        var plasma = Math.max(0, 1 - Math.abs(G.a - 0.48) / 0.2);   // rentrée atmosphérique
-        svgF.style.filter = plasma > 0.01 ? 'drop-shadow(0 0 ' + (4 + plasma * 14).toFixed(1) + 'px rgba(255, 150, 110, ' + (plasma * 0.9).toFixed(2) + '))' : '';
       }
 
       var sPose = 0;
@@ -2199,124 +2030,10 @@
         xT.strokeStyle = 'rgba(176, 204, 255, .8)'; xT.lineWidth = 1.2;
         xT.beginPath(); xT.arc(cx, cyr, Rr, 0, TOUR); xT.stroke();
 
-        placerFusee(G);
       }
-
-      /* Fusée : flamme, fumée, étincelles */
-      var poussee = 0.32, altPrec = 0, enVol = false, survol = false, incl = 0, inclCible = 0;
-      var lancement = { actif: false, poussee: 0, secousse: 0 };
-      var fumees = [], etincelles = [], effets = [];
-      var sprite = (function () {
-        var c = document.createElement('canvas'); c.width = c.height = 64;
-        var g = c.getContext('2d'), r = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-        r.addColorStop(0, 'rgba(208, 218, 238, 1)'); r.addColorStop(0.45, 'rgba(208, 218, 238, .45)'); r.addColorStop(1, 'rgba(208, 218, 238, 0)');
-        g.fillStyle = r; g.fillRect(0, 0, 64, 64); return c;
-      })();
-      var echelle = 1;
-      function fumee(x, y, vx, vy, r, g, a, d) {
-        var k = echelle;
-        if (fumees.length < 440) fumees.push({ x: x, y: y, vx: vx * k, vy: vy * k, r: r * k, g: g * k, a: a, d: d });
-      }
-      function etincelle(x, y, vx, vy, v) {
-        var k = echelle;
-        if (etincelles.length < 280) etincelles.push({ x: x, y: y, vx: vx * k, vy: vy * k, v: v, v0: v, c: Math.random() < 0.5 ? '255, 210, 168' : '236, 110, 159' });
-      }
-      function etatFusee() {
-        var hr = hero.getBoundingClientRect(), fr = svgF.getBoundingClientRect();
-        var by = fr.top + fr.height * (91.5 / 130) - hr.top;
-        var sol = H - horizon;
-        return { x: fr.left + fr.width / 2 - hr.left, y: by, sol: sol, alt: (sol - 12) - by };
-      }
-      function poussiere(e, force) {
-        for (var i = 0; i < 30 * force; i++) {
-          var dir = i % 2 ? -1 : 1;
-          fumee(e.x + dir * Math.random() * 8, e.sol - 2 - Math.random() * 3, dir * (1 + Math.random() * 3.4) * force, -(0.1 + Math.random() * 0.45),
-            4 + Math.random() * 4, 0.3 + Math.random() * 0.3, 0.13 + Math.random() * 0.06, 0.0035);
-        }
-      }
-
-      function etape() {
-        echelle = camera.a < 1 ? camera.s : 1;
-        var e = etatFusee();
-        var vit = e.alt - altPrec; altPrec = e.alt;
-        var vol = e.alt > 16;
-        if (enVol && !vol && !lancement.actif) poussiere(e, 0.8);   // atterrissage
-        enVol = vol;
-        var cible = lancement.actif ? lancement.poussee : vol ? 1.15 + Math.min(Math.abs(vit) * 0.05, 1.1) : survol ? 0.68 : 0.32;
-        poussee += (cible - poussee) * 0.14;
-        var vacille = poussee * (0.86 + Math.random() * 0.28);
-        flamme.setAttribute('transform', 'translate(30 91) scale(' + (0.78 + poussee * 0.2).toFixed(3) + ' ' + vacille.toFixed(3) + ') translate(-30 -91)');
-        var sec = Math.max(lancement.secousse, vol ? Math.min(Math.max(poussee - 1.2, 0), 0.7) : 0);
-        incl += ((vol || lancement.actif ? 0 : inclCible) - incl) * 0.06;
-        svgF.style.transform = 'translate(' + ((Math.random() - 0.5) * sec * 2).toFixed(2) + 'px,' + ((Math.random() - 0.5) * sec).toFixed(2) + 'px) rotate(' + incl.toFixed(2) + 'deg)';
-        cT.style.translate = lancement.secousse > 0.05 ? ((Math.random() - 0.5) * lancement.secousse * 0.8).toFixed(2) + 'px ' + ((Math.random() - 0.5) * lancement.secousse * 0.5).toFixed(2) + 'px' : '';
-        halo.style.opacity = Math.max(0, Math.min(1, (0.2 + poussee * 0.42) * (1 - Math.min(e.alt, 180) / 180))).toFixed(3);
-
-        // Émission
-        var bas = e.y + 4;
-        if (poussee < 0.5) {
-          if (Math.random() < 0.16) fumee(e.x + (Math.random() - 0.5) * 3, bas + 6, (Math.random() - 0.5) * 0.3, 0.35 + Math.random() * 0.4, 2.5, 0.12, 0.09, 0.004);
-        } else {
-          var n = Math.round(poussee * 2.2);
-          for (var i = 0; i < n; i++) {
-            fumee(e.x + (Math.random() - 0.5) * 5, bas + 8 + poussee * 8, (Math.random() - 0.5) * 0.8, (1.2 + Math.random() * 1.6) * poussee,
-              3 + poussee * 2.5, 0.22 + poussee * 0.18, 0.08 + poussee * 0.05, 0.0045);
-          }
-          var m = Math.round(poussee * 1.7);
-          for (var j = 0; j < m; j++) etincelle(e.x + (Math.random() - 0.5) * 4, bas + 6, (Math.random() - 0.5) * 1.5, (2.2 + Math.random() * 3) * poussee, 16 + Math.random() * 22);
-        }
-        var proche = e.alt < 80 ? 1 - Math.max(e.alt, 0) / 80 : 0;
-        if (poussee > 0.85 && proche > 0) {
-          var k = Math.round(poussee * 3 * proche);
-          for (var q = 0; q < k; q++) {
-            var dir = Math.random() < 0.5 ? -1 : 1;
-            fumee(e.x + dir * (4 + Math.random() * 10), e.sol - 2 - Math.random() * 4, dir * (1.6 + Math.random() * 3.4) * poussee, -(0.15 + Math.random() * 0.5),
-              5 + Math.random() * 4, 0.35 + Math.random() * 0.3, 0.15 + Math.random() * 0.08, 0.0035);
-          }
-        }
-
-        // Rendu des particules
-        xF.clearRect(0, 0, W, H);
-        for (var a = fumees.length - 1; a >= 0; a--) {
-          var p = fumees[a];
-          p.x += p.vx; p.y += p.vy; p.vx *= 0.965; p.vy = p.vy * 0.955 - 0.012; p.r += p.g; p.a -= p.d;
-          if (p.a <= 0) { fumees[a] = fumees[fumees.length - 1]; fumees.pop(); continue; }
-          xF.globalAlpha = p.a; xF.drawImage(sprite, p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
-        }
-        xF.globalCompositeOperation = 'lighter';
-        for (var b = etincelles.length - 1; b >= 0; b--) {
-          var st = etincelles[b];
-          st.x += st.vx; st.y += st.vy; st.vy *= 0.97; st.v -= 1;
-          if (st.v <= 0) { etincelles[b] = etincelles[etincelles.length - 1]; etincelles.pop(); continue; }
-          xF.globalAlpha = st.v / st.v0; xF.fillStyle = 'rgb(' + st.c + ')'; xF.fillRect(st.x - 1, st.y - 1, 2, 2);
-        }
-        for (var f = effets.length - 1; f >= 0; f--) {
-          var ef = effets[f]; ef.t += 1;
-          if (ef.type === 'eclair') {
-            var al = 1 - ef.t / 42;
-            if (al <= 0) { effets.splice(f, 1); continue; }
-            var gr = xF.createRadialGradient(ef.x, ef.y, 0, ef.x, ef.y, 240);
-            gr.addColorStop(0, 'rgba(255, 224, 238, ' + (al * 0.6).toFixed(3) + ')'); gr.addColorStop(1, 'rgba(236, 110, 159, 0)');
-            xF.globalAlpha = 1; xF.fillStyle = gr; xF.fillRect(ef.x - 240, ef.y - 240, 480, 480);
-          } else {
-            var u = ef.t / 72;
-            if (u >= 1) { effets.splice(f, 1); continue; }
-            var rr = 20 + (1 - Math.pow(1 - u, 3)) * 560;
-            xF.globalAlpha = (1 - u) * 0.6; xF.strokeStyle = '#F4A9C6'; xF.lineWidth = 1.6;
-            xF.beginPath(); xF.ellipse(ef.x, ef.y, rr, rr * 0.12, 0, 0, TOUR); xF.stroke();
-          }
-        }
-        xF.globalCompositeOperation = 'source-over'; xF.globalAlpha = 1;
-      }
-
-      effetAtterrissage = function () {
-        var e = etatFusee();
-        effets.push({ type: 'eclair', x: e.x, y: e.sol, t: 24 }, { type: 'onde', x: e.x, y: e.sol, t: 0 });
-        poussiere(e, 1);
-      };
 
       function boucle(t) {
-        if (actif) { dessinerTerre(t); etape(); }
+        if (actif) dessinerTerre(t);
         requestAnimationFrame(boucle);
       }
 
@@ -2327,46 +2044,10 @@
         requestAnimationFrame(boucle);
         hero.addEventListener('pointermove', function (ev) {
           derive.x = ev.clientX / W - 0.5; derive.y = ev.clientY / window.innerHeight - 0.5;
-          var fr = svgF.getBoundingClientRect();
-          inclCible = Math.max(-8, Math.min(8, (ev.clientX - (fr.left + fr.width / 2)) / 40));
         });
-        hero.addEventListener('pointerleave', function () { inclCible = 0; derive.x = derive.y = 0; });
-        zoneF.addEventListener('pointerenter', function () { survol = true; });
-        zoneF.addEventListener('pointerleave', function () { survol = false; });
+        hero.addEventListener('pointerleave', function () { derive.x = derive.y = 0; });
       }
 
-      /* Décollage : compte à rebours, allumage, puis la page défile */
-      zoneF.addEventListener('click', function (ev) {
-        ev.preventDefault();
-        var cible = document.getElementById('parcours');
-        function aller(duree) {
-          if (lenis) lenis.scrollTo(cible, { duration: duree, lock: true, easing: function (x) { return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; } });
-          else cible.scrollIntoView({ behavior: reduit ? 'auto' : 'smooth' });
-        }
-        if (lancement.actif) return;
-        if (!aGsap || reduit || enVol || window.scrollY > 40) { aller(1.6); return; }
-        lancement.actif = true;
-        zoneF.classList.add('lance');
-        gsap.timeline()
-          .call(function () { altF.textContent = '3'; }, null, 0)
-          .to(lancement, { poussee: 0.95, secousse: 0.8, duration: 0.3, ease: 'power1.in' }, 0)
-          .call(function () { altF.textContent = '2'; }, null, 0.34)
-          .to(lancement, { poussee: 1.35, secousse: 1.6, duration: 0.3, ease: 'power1.in' }, 0.34)
-          .call(function () { altF.textContent = '1'; }, null, 0.68)
-          .to(lancement, { poussee: 2.1, secousse: 2.8, duration: 0.3, ease: 'power1.in' }, 0.68)
-          .call(function () {
-            altF.textContent = 'Décollage';
-            hyperActif = true; setTimeout(function () { hyperActif = false; }, 2900);
-            var e = etatFusee();
-            effets.push({ type: 'eclair', x: e.x, y: e.sol, t: 0 }, { type: 'onde', x: e.x, y: e.sol, t: 0 });
-            poussiere(e, 1.6);
-            for (var i = 0; i < 40; i++) etincelle(e.x, e.sol - 2, (Math.random() - 0.5) * 9, -Math.random() * 3, 20 + Math.random() * 26);
-            aller(2.4);
-          }, null, 1.02)
-          .to(lancement, { secousse: 0, duration: 1.4, ease: 'power2.out' }, 1.06)
-          .call(function () { lancement.actif = false; }, null, 1.6)
-          .call(function () { zoneF.classList.remove('lance'); altF.textContent = 'Décoller'; }, null, 3.8);
-      });
 
     })();
 
@@ -2412,43 +2093,13 @@
       });
     });
 
-    /* ---------- 5. Ouverture : la caméra plonge vers la Terre, la fusée se pose, puis l'accueil ---------- */
+    /* ---------- 5. Arrivée sur l'accueil : tout s'affiche directement ---------- */
     function ouverture() {
       ouvertureLancee = true;
-      if (!aGsap || reduit) { camera.a = 1; finAttente(); retirerVol(); ouvrirRail(); return; }
-      if (lenis) lenis.stop();
-      var dejaVu = false;
-      try { dejaVu = sessionStorage.getItem('ts-ouverture') === '1'; sessionStorage.setItem('ts-ouverture', '1'); } catch (err) { /* stockage indisponible */ }
-      var D = dejaVu ? 1 : 1.7;   // durée de l'approche (plus courte si la page a déjà été vue)
-      var bureau = window.matchMedia('(min-width: 861px)').matches;
-
-      var tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-      tl.fromTo('#ciel', { opacity: 0, scale: 1.2 }, { opacity: 1, duration: 0.9, ease: 'power2.out' }, 0)
-        .to('#ciel', { scale: 1, duration: D + 0.3, ease: 'power2.inOut' }, 0)
-        .fromTo('#terre', { opacity: 0 }, { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0)
-        .fromTo('.fusee', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.1)
-        .to(camera, { a: 1, duration: D, ease: 'power3.inOut' }, 0.15)
-        .addLabel('pose', 0.15 + D)
-        .call(effetAtterrissage, null, 'pose')
-        .addLabel('accueil', 'pose-=0.35')
-        .fromTo('.hero-je', { opacity: 0, y: 14, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.1, clearProps: 'filter' }, 'accueil')
-        .fromTo(lettres, { y: 0, yPercent: 115 }, { y: 0, yPercent: 0, duration: 1.3, stagger: 0.04 }, 'accueil+=0.05')
-        .fromTo('.hero-trait', { scaleX: 0 }, { scaleX: 1, duration: 1, ease: 'expo.inOut' }, 'accueil+=0.3')
-        .fromTo('.hero-info > *:not(.hero-trait)', { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 1.1, stagger: 0.08 }, 'accueil+=0.4')
-        .fromTo('.reseau', { opacity: 0, y: 18, filter: 'blur(6px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1, stagger: 0.07, clearProps: 'filter' }, 'accueil+=0.6')
-        .fromTo('.rail', { opacity: 0, x: bureau ? -26 : 0, y: bureau ? 0 : 26 }, { opacity: 1, x: 0, y: 0, duration: 1.1 }, 'accueil+=0.4')
-        .fromTo('.rail li:not(.rail-indicateur), .rail li.rail-indicateur', { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.9, ease: 'back.out(2)', stagger: 0.04 }, 'accueil+=0.5')
-        .fromTo('.langues', { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 1, clearProps: 'transform' }, 'accueil+=0.55')
-        .fromTo('.menu-bouton', { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.9, ease: 'back.out(2)', clearProps: 'transform' }, 'accueil+=0.5')
-        .fromTo('.fusee-sol', { opacity: 0 }, { opacity: 1, duration: 1 }, 'pose+=0.1')
-        .add(function () { if (lenis) lenis.start(); }, 'accueil+=0.3')
-        .add(function () { ouvrirRail(); }, 'accueil+=0.95')
-        .add(function () { refletSpecialite(); }, 'accueil+=1.1')
-        .add(function () { if (typeof changerLangue === 'function') gsap.delayedCall(3.2, changerLangue); }, 'accueil+=1');
-      gsap.set('.hero-trait', { scaleX: 0 });
-      finAttente();
+      camera.a = 1; finAttente(); retirerVol(); ouvrirRail();
+      if (aGsap && !reduit) gsap.delayedCall(3.2, function () { if (typeof changerLangue === 'function') changerLangue(); });
     }
-    (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(ouverture);
+    ouverture();
 
     /* Lettres qui s'élargissent sous la souris */
     if (aGsap && !reduit && sourisFine) {
@@ -2677,7 +2328,6 @@
     if (aGsap && !reduit) {
       // Barre de progression de lecture
       gsap.to('.progression', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.4 } });
-      gsap.to('.hf-progres', { strokeDashoffset: 0, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 0.4 } });
 
       // L'accueil s'éloigne en douceur
       var sortie = { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true, invalidateOnRefresh: true };
@@ -2685,12 +2335,7 @@
       gsap.to('.hero-centre', { y: -110, scale: 0.97, opacity: 0, ease: 'none',
         scrollTrigger: { trigger: '.hero', start: 'top top', end: '70% top', scrub: true } });
       gsap.to('#ciel', { yPercent: 18, ease: 'none', scrollTrigger: sortie });
-      gsap.to(['#terre', '.fusee-sol'], { y: function () { return heroEl.offsetHeight * 0.32; }, ease: 'none', scrollTrigger: sortie });
-      // La fusée décolle quand on fait défiler, et se repose quand on remonte
-      gsap.to('.fusee', {
-        y: function () { return -(heroEl.offsetHeight + 280); }, ease: 'power2.in',
-        scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.9, invalidateOnRefresh: true }
-      });
+      gsap.to('#terre', { y: function () { return heroEl.offsetHeight * 0.32; }, ease: 'none', scrollTrigger: sortie });
 
       // Passage sombre <-> clair : la section recouverte s'assombrit et recule,
       // la nouvelle monte par-dessus et ses coins s'aplatissent en arrivant
@@ -2827,7 +2472,7 @@
         ScrollTrigger.addEventListener('refresh', mesurer);
         // Entrée : le fil se dessine, le point apparaît, les sujets montent l'un après l'autre
         gsap.timeline({ scrollTrigger: { trigger: fil, start: 'top 97%' } })
-          .from(sujets, { y: 16, opacity: 0, duration: 0.8, ease: 'expo.out', stagger: 0.06, clearProps: 'transform,opacity' }, 0)
+          .from(liste.querySelectorAll('li > *'), { y: 16, opacity: 0, duration: 0.7, ease: 'expo.out', stagger: 0.04, clearProps: 'transform,opacity' }, 0)
           .from(axe, { scaleY: 0, duration: 1.1, ease: 'expo.inOut' }, 0)
           .from(point, { scale: 0, duration: 0.7, ease: 'back.out(2.4)' }, 0.2);
         // Lecture : le point glisse le long du fil au rythme du défilement
